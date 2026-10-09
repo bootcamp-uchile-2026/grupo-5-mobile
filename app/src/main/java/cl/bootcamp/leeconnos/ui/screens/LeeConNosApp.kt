@@ -1,6 +1,7 @@
 package cl.bootcamp.leeconnos.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,6 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import cl.bootcamp.leeconnos.ui.components.AppBottomBar
+import cl.bootcamp.leeconnos.ui.components.AppTopBar
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
 @Composable
@@ -27,7 +30,6 @@ fun LeeConNosApp(
 
 
     //Refactorizar toda esta lógica
-
     val esPantallaPrincipal = ScreenRoutes.entries.any { it.route == rutaActual }
 
     val rutasFlotantes = listOf(
@@ -61,10 +63,24 @@ fun LeeConNosApp(
 
     Scaffold(
 
+        topBar = {
+            AppTopBar(titulo = "")
+        },
+
+        bottomBar = {
+            AppBottomBar(
+                rutaActual = rutaActual
+            )
+        },
+
+        snackbarHost = { },
+        modifier = Modifier.fillMaxSize()
+
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues = innerPadding)
         ){
 
@@ -79,7 +95,7 @@ fun LeeConNosApp(
                 ) {
 
                     composable(ScreenRoutes.HOME.route) {
-                        //HomeScreen
+                        HomeScreen()
                     }
                 }
 
