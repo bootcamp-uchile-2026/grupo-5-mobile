@@ -5,46 +5,45 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import cl.bootcamp.leeconnos.R
 
 enum class ScreenRoutes(
     val route: String,
     val title: String,
-    val selectedIcon: ImageVector,
-    val unSelectedIcon: ImageVector
+    val icon: Int,
+    val selectedColor: Color? = null,
+    val iconSelectedColor: Color? = null
 ) {
     HOME(
         route = "inicio",
         title = "Inicio",
-        selectedIcon = Icons.Filled.Home,
-        unSelectedIcon = Icons.Outlined.Home
+        icon = R.drawable.ic_home
     ),
 
     CATALOGO(
         route = "catalogo",
         title = "Catálogo",
-        selectedIcon = Icons.Filled.Home,
-        unSelectedIcon = Icons.Outlined.Home
+        icon = R.drawable.ic_catalogo
     ),
 
     DESCUBRE(
         route = "descubre",
         title = "Descubre",
-        selectedIcon = Icons.Filled.Home,
-        unSelectedIcon = Icons.Outlined.Home
+        icon = R.drawable.ic_descubre
     ),
 
     COMUNIDAD(
         route = "comunidad",
         title = "Comunidad",
-        selectedIcon = Icons.Filled.Home,
-        unSelectedIcon = Icons.Outlined.Home
+        icon = R.drawable.ic_comunidad
     ),
 
     MI_CUENTA(
         route = "mi_cuenta",
         title = "Mi Cuenta",
-        selectedIcon = Icons.Filled.Person,
-        unSelectedIcon = Icons.Outlined.Person
+        icon = R.drawable.ic_perfil
     )
 }

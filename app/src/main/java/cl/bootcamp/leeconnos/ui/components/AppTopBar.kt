@@ -17,63 +17,18 @@ import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
-    titulo: String?,
-    mostrarBotonAtras: Boolean,
-    mostrarActionIcons: Boolean,
-    notificacionesSelected: Boolean,
-    favoritosSelected: Boolean,
-    carritoSelected: Boolean,
-    onNavigateBack: () -> Unit,
-    onNavigateToCarrito: () -> Unit,
-    onNavigateToFavoritos: () -> Unit,
-    onNavigateToNotificaciones: () -> Unit
-) {
-
+    titulo: String
+){
     TopAppBar(
-        title = {
 
-            if(titulo != null){
-                Text(
-                    text = titulo
-                )
-
-            } else {
-
-                TextField(
-                    value = "",
-                    onValueChange = {},
-                    label = {},
-                    shape = RoundedCornerShape(50),
-                    singleLine = true,
-                    readOnly = true, //Solo para hito 1
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Buscar"
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    )
-                )
-            }
-        },
+        title = { Text(text = titulo) },
 
         navigationIcon = {
-            if(mostrarBotonAtras){
-                AppNavigationIconArrowBack(onNavigateBack)
-            }
+            //NavigationIconArrowBack()
         },
 
         actions = {
-            if (mostrarActionIcons) {
 
-                AppActionIconNotificaciones(notificacionesSelected, onNavigateToNotificaciones)
-                AppActionIconFavoritos(favoritosSelected, onNavigateToFavoritos)
-                AppActionIconCarrito(carritoSelected, onNavigateToCarrito)
-            }
         },
 
         colors = TopAppBarDefaults.topAppBarColors(
