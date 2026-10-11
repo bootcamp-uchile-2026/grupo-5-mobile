@@ -19,19 +19,29 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    // Colores principales de la marca
+    primary = BrandPrimary,
+    primaryContainer = BrandPrimaryLight,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    secondary = BrandSecondary,
+    secondaryContainer = BrandSecondaryLight,
+
+    tertiary = BrandTertiary,
+    tertiaryContainer = BrandTertiaryLight,
+
+    // Fondos estructurales
+    background = BgPrimaryWhite,
+    surface = BgPrimaryWhite,
+
+    // Estados de error
+    error = ErrorPrimary,
+    errorContainer = ErrorLightBg,
+
+    // Colores "On" (Texto o iconos que van por encima de los colores anteriores)
+    onPrimary = White,
+    onSecondary = BrandNeutral, // Texto oscuro sobre tu fondo amarillo
+    onBackground = BrandNeutral, // Tu gris oscuro (#303030) para el texto general
+    onSurface = BrandNeutral
 )
 
 @Composable

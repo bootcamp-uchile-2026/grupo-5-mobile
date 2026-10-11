@@ -10,17 +10,32 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+val White = Color(0xFFFFFFFF)
+
 //Colores de la app
 
-val lightText = Color(0xFF303030)
-val darkText = Color(0xFFFFFFFF)
+// Brand
+val BrandPrimary = Color(0xFF6200EE)
+val BrandPrimaryLight = Color(0xFFCEB0FA)
+val BrandPrimaryDark = Color(0xFF4600A9)
 
-//Modo claro
-val lightBottomBar = Color(0xFFF6F6F6)
-val lightOnSelectedIcon = Color(0xFF4600A9)
-val lightOnSelectedBottomBarItem = Color(0xFF5900D9)
+val BrandSecondary = Color(0xFFFFB400)
+val BrandSecondaryLight = Color(0xFFFFE8B0)
 
+val BrandTertiary = Color(0xFF10C9CB)
+val BrandTertiaryLight = Color(0xFFB5EEEF)
 
-val darkBottomBar = Color(0xFF303030)
-val darkOnSelectedIcon = Color(0xFF9654F4)
-val darkOnSelectedBottomBarItem = Color(0xFF8133F1)
+val BrandNeutral = Color(0xFF303030)
+val BrandNeutralLight = Color(0xFFC4C4C4)
+
+// Backgrounds
+val BgPrimaryWhite = Color(0xFFFCFCFC)
+val BgPrimaryDark = Color(0xFF141414)
+
+// Semantic
+val ErrorPrimary = Color(0xFFD92929)
+val ErrorLightBg = Color(0xFFFFF7F7)
+
+val SuccessPrimary = Color(0xFF42CB10)
+val WarningPrimary = Color(0xFFFFE100)
+val InfoPrimary = Color(0xFF0D6FF0)

@@ -15,8 +15,7 @@ fun SeccionBienvenida(
 ) {
 
     Column(
-        modifier = Modifier
-            .padding(vertical = 16.dp, horizontal = 16.dp)
+        modifier = Modifier.padding(vertical = 16.dp)
     ) {
 
         Text(
@@ -32,11 +31,6 @@ fun SeccionBienvenida(
         Text(
             text = "Leeconnos",
             style = MaterialTheme.typography.titleLarge
-        )
-
-        ImagenBannerHorizontal(
-            painterId = R.drawable.banner_bienvenida,
-            contentDescription = ""
         )
     }
 }
