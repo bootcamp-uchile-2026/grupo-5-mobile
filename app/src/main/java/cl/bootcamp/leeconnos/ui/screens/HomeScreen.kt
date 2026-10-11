@@ -1,6 +1,5 @@
 package cl.bootcamp.leeconnos.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -11,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.AppTopBarDefault
+import cl.bootcamp.leeconnos.ui.components.BannerComunidad
 import cl.bootcamp.leeconnos.ui.components.CarruselLibros
 import cl.bootcamp.leeconnos.ui.components.CarruselLibrosRecomendados
 import cl.bootcamp.leeconnos.ui.components.SeccionBienvenida
@@ -32,7 +32,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
         ) {
 
             item {
@@ -49,6 +49,13 @@ fun HomeScreen(
                 CarruselLibrosRecomendados(
                     titulo = "Recomendados de nuestros libreros"
                 )
+
+                Spacer(modifier = Modifier.height(64.dp))
+            }
+
+            item {
+
+                BannerComunidad()
 
                 Spacer(modifier = Modifier.height(64.dp))
             }
