@@ -7,11 +7,13 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import cl.bootcamp.leeconnos.ui.screens.ScreenRoutes
+import androidx.compose.ui.res.painterResource
+import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 
 @Composable
 fun AppBottomBar(
-    rutaActual: String
+    rutaActual: String,
+    onNavigateTo: (String) -> Unit
 ) {
 
     NavigationBar(
@@ -25,7 +27,7 @@ fun AppBottomBar(
 
             NavigationBarItem(
                 selected = estaSeleccionada,
-                label = { Text(pantalla.title) },
+                label = { Text(text = pantalla.title, style = MaterialTheme.typography.labelSmall) },
                 colors = NavigationBarItemColors(
                     selectedIconColor = MaterialTheme.colorScheme.surface,
                     selectedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -37,12 +39,14 @@ fun AppBottomBar(
                 ),
                 icon = {
                     Icon(
-                        imageVector = if(estaSeleccionada) pantalla.selectedIcon else pantalla.unSelectedIcon,
+                        painter = painterResource(id = pantalla.icon),
                         contentDescription = pantalla.title
                     )
                 },
                 onClick = {
-
+                    if (rutaActual != pantalla.route) {
+                        onNavigateTo(pantalla.route)
+                    }
                 }
             )
         }

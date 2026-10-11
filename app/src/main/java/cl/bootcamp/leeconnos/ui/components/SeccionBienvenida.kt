@@ -31,7 +31,7 @@ fun SeccionBienvenida(
 
         Text(
             text = "Leeconnos",
-            style = MaterialTheme.typography.displaySmall
+            style = MaterialTheme.typography.titleLarge
         )
 
         ImagenBannerHorizontal(
