@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.ui.theme.AppTitleFontFamily
 
 @Composable
 fun SeccionBienvenida(
@@ -20,17 +21,18 @@ fun SeccionBienvenida(
 
         Text(
             text = "Hola, $nombre",
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Text(
             text = "Bienvenido a",
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Text(
             text = "Leeconnos",
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = AppTitleFontFamily
         )
     }
 }
