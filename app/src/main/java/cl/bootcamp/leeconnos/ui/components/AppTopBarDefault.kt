@@ -1,6 +1,7 @@
 package cl.bootcamp.leeconnos.ui.components
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,7 +17,7 @@ fun AppTopBarDefault(
 ){
     //Búsqueda + Lista Deseados + Carrito
 
-    TopAppBar(
+    CenterAlignedTopAppBar(
 
         title = {
             //TODO: Aquí el buscador? o en navigation icons

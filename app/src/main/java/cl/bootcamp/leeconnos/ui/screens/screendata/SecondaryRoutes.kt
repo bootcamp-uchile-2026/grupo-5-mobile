@@ -13,14 +13,14 @@ sealed class SecondaryRoutes(
     //TOP BAR [Flotantes]
     object Carrito : SecondaryRoutes(
         route = "carrito",
-        title = "Carrito",
+        title = "Mi carrito",
         icon = R.drawable.ic_carrito,
         showGlobalTopBar = false,
         showBottomBar = false
     )
     object ListaDeseados : SecondaryRoutes(
         route = "lista_deseados",
-        title = "Lista de Deseados",
+        title = "Lista de deseados",
         icon = R.drawable.ic_corazon_deseados,
         showGlobalTopBar = false,
         showBottomBar = false
