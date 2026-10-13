@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.components.BottomBarDetalleCompra
+import cl.bootcamp.leeconnos.ui.components.CantidadItems
 import cl.bootcamp.leeconnos.ui.components.ItemCarrito
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 
@@ -56,6 +57,11 @@ fun CarritoScreen(
         ) {
 
             item {
+
+                CantidadItems(
+                    cantidad = 3
+                )
+
                 Spacer(modifier = Modifier.height(24.dp))
             }
 

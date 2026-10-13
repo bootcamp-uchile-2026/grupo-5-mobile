@@ -28,14 +28,9 @@ fun ItemCarrito(
             .fillMaxWidth()
     ) {
 
-        Image(
-            painter = painterResource(id = R.drawable.fondo_transparente),
-            contentDescription = "Foto del libro",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .weight(.3f)
-                .clip(shape = MaterialTheme.shapes.extraSmall)
-                .aspectRatio(0.7f)
+        ImagenItem(
+            imagen = "",
+            modifier = Modifier.weight(.3f)
         )
 
         DetalleItemCarrito(
