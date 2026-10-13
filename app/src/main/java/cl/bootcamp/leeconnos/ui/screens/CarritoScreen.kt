@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.AppTopBarSimpleNavigation
+import cl.bootcamp.leeconnos.ui.components.BottomBarDetalleCompra
 import cl.bootcamp.leeconnos.ui.components.ItemCarrito
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 
@@ -37,7 +38,13 @@ fun CarritoScreen(
                 titulo = SecondaryRoutes.Carrito.title,
                 onNavigateBack = { onNavigateBack() }
             )
+        },
+
+        bottomBar = {
+
+            BottomBarDetalleCompra()
         }
+
     ) { paddingValues ->
 
         LazyColumn(
