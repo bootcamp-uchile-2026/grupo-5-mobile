@@ -212,10 +212,22 @@ fun LeeConNosApp(
             }
 
 
-            composable(SecondaryRoutes.Carrito.route) {
-                CarritoScreen(
-                    onNavigateBack = { navController.popBackStack() }
-                )
+            navigation(
+                startDestination = SecondaryRoutes.Carrito.route,
+                route = "graph_carrito"
+            ){
+
+                composable(SecondaryRoutes.Carrito.route) {
+                    CarritoScreen(
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable(SecondaryRoutes.ConfirmacionCompra.route) {
+//                    CarritoScreen(
+//                        onNavigateBack = { navController.popBackStack() }
+//                    )
+                }
             }
 
             composable(SecondaryRoutes.ListaDeseados.route) {

@@ -18,6 +18,14 @@ sealed class SecondaryRoutes(
         showGlobalTopBar = false,
         showBottomBar = false
     )
+
+    object ConfirmacionCompra : SecondaryRoutes(
+        route = "confirmacion_compra",
+        title = "Confirmación compra",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
     object ListaDeseados : SecondaryRoutes(
         route = "lista_deseados",
         title = "Lista de deseados",
