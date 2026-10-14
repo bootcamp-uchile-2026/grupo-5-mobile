@@ -12,11 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun TarjetaLibro(
-    estaEnListaDeseados: Boolean,
-    onAddClick: () -> Unit
+    libro: Libro,
+    onAddClick: (Libro) -> Unit
 ){
 
         Card(
@@ -36,13 +37,16 @@ fun TarjetaLibro(
                     )
 
                     BotonFlotanteAgregarListaDeseados(
-                        estaEnListaDeseados = estaEnListaDeseados,
+
+                        libro = libro,
                         modifier = Modifier.align(Alignment.BottomEnd),
                         onIconButtonClick = onAddClick
                     )
                 }
 
-                DetalleTarjetaLibro()
+                DetalleTarjetaLibro(
+                    libro = libro
+                )
             }
         }
 

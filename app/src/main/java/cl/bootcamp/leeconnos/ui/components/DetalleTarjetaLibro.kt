@@ -19,10 +19,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun DetalleTarjetaLibro(
-    //Objeto libro
+    libro: Libro
 ) {
 
     Column(
@@ -31,7 +32,7 @@ fun DetalleTarjetaLibro(
             .padding(8.dp)
     ) {
         Text(
-            text = "El perfume",
+            text = libro.titulo,
             style = MaterialTheme.typography.bodySmall,
             minLines = 2,
             maxLines = 2,
@@ -41,7 +42,7 @@ fun DetalleTarjetaLibro(
         )
 
         Text(
-            text = "Patric Süskind",
+            text = libro.autor,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Light,
             maxLines = 1,
@@ -53,7 +54,7 @@ fun DetalleTarjetaLibro(
             modifier = Modifier.fillMaxWidth()
         ){
             Text(
-                text = "$ 18.830",
+                text = "$ ${libro.precio}",
                 style = MaterialTheme.typography.bodyMedium,
             )
 
@@ -72,7 +73,7 @@ fun DetalleTarjetaLibro(
         }
 
         Text(
-            text = "$ 26.900",
+            text = "$ 10000",
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Light,
             textDecoration = TextDecoration.LineThrough
