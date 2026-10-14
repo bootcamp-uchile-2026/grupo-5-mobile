@@ -13,12 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun BotonFlotanteAgregarListaDeseados(
-    estaEnListaDeseados: Boolean = false,
+    libro: Libro,
     modifier: Modifier,
-    onIconButtonClick: () -> Unit
+    onIconButtonClick: (Libro) -> Unit
 ){
 
     IconButton(
@@ -31,13 +32,13 @@ fun BotonFlotanteAgregarListaDeseados(
             )
             .background(color = MaterialTheme.colorScheme.surface),
         onClick = {
-            onIconButtonClick()
+            onIconButtonClick(libro)
         }
     ) {
         Icon(
-            painterResource(id = if(estaEnListaDeseados) R.drawable.ic_corazon_deseados_filled else R.drawable.ic_corazon_deseados),
+            painterResource(id = if(libro.estaEnListaDeseados) R.drawable.ic_corazon_deseados_filled else R.drawable.ic_corazon_deseados),
             contentDescription = "Agregar a lista deseados",
-            tint = if(estaEnListaDeseados) Color(0xFFF86767) else Color.Black
+            tint = if(libro.estaEnListaDeseados) Color(0xFFF86767) else Color.Black
         )
     }
 }

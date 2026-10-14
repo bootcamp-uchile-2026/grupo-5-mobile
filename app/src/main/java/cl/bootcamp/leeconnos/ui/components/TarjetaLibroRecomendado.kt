@@ -12,10 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun TarjetaLibroRecomendado(
-    //Aquí recibir objeto libro
+    libro: Libro
 ){
 
     Box(
@@ -31,13 +32,13 @@ fun TarjetaLibroRecomendado(
 
                 ImagenTarjetaLibro(
                     imagen = R.drawable.fondo_transparente,
-                    contentDescription = "Titulo del libro"
+                    contentDescription = libro.titulo
                 )
 
                 DetalleTarjetaLibroRecomendado(
-                    titulo = "Titulo del libro",
-                    autor = "Autor",
-                    valoracion = "4.5",
+                    titulo = libro.titulo,
+                    autor = libro.autor,
+                    valoracion = "",
                     cantidadOpiniones = "12"
                 )
             }

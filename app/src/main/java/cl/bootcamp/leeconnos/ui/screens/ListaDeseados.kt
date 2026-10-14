@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,7 +26,7 @@ fun ListaDeseadosScreen(
     onNavigateBack: () -> Unit
 ){
     val cantidadItemsCarrito by mainViewModel.cantidadItemsCarrito.collectAsState()
-    val cantidad by mainViewModel.cantidadItemsListaDeseados.collectAsState()
+    val listaItems by mainViewModel.itemsListaDeseados.collectAsState()
 
     Scaffold(
         topBar = {
@@ -52,17 +53,17 @@ fun ListaDeseadosScreen(
             item {
 
                 CantidadItems(
-                    cantidadItems = { cantidad }
+                    cantidadItems = { listaItems.size }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            items(count = cantidad) {
+            items(listaItems) { item ->
 
                 ItemListaDeseados(
                     onDeleteClick = {
-                        mainViewModel.eliminarItemListaDeseados()
+                        mainViewModel.eliminarItemListaDeseados(libroId = item.id)
                     },
                     onAddClick = {
                         mainViewModel.agregarItemCarrito()
