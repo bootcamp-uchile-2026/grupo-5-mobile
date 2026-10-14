@@ -15,7 +15,8 @@ import cl.bootcamp.leeconnos.R
 
 @Composable
 fun ItemListaDeseados(
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onAddClick: () -> Unit
 ){
 
     Row(
@@ -30,7 +31,8 @@ fun ItemListaDeseados(
         )
 
         DetalleItemListaDeseados(
-            modifier = Modifier.weight(.6f)
+            modifier = Modifier.weight(.6f),
+            onAddClick = onAddClick
         )
 
         IconButton(

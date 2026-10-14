@@ -6,7 +6,8 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun DetalleItemListaDeseados(
-    modifier: Modifier
+    modifier: Modifier,
+    onAddClick: () -> Unit
 ){
     Column(
         modifier = modifier
@@ -21,7 +22,9 @@ fun DetalleItemListaDeseados(
         )
         
         BotonAgregarAlCarrito(
-            onBtnClick = {}
+            onBtnClick = {
+                onAddClick()
+            }
         )
     }
 }

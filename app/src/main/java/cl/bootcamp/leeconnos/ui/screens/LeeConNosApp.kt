@@ -26,7 +26,7 @@ import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
 @Composable
 fun LeeConNosApp(
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -137,6 +137,7 @@ fun LeeConNosApp(
 
                 composable(ScreenRoutes.HOME.route) {
                     HomeScreen(
+                        mainViewModel = viewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         }
@@ -150,6 +151,7 @@ fun LeeConNosApp(
             ) {
                 composable(ScreenRoutes.CATALOGO.route) {
                     CatalogoScreen(
+                        mainViewModel = viewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         }
@@ -219,6 +221,7 @@ fun LeeConNosApp(
 
                 composable(SecondaryRoutes.Carrito.route) {
                     CarritoScreen(
+                        mainViewModel = viewModel,
                         onNavigateBack = { navController.popBackStack() }
                     )
                 }
@@ -232,7 +235,11 @@ fun LeeConNosApp(
 
             composable(SecondaryRoutes.ListaDeseados.route) {
                 ListaDeseadosScreen(
-                    onNavigateBack = { navController.popBackStack() }
+                    mainViewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateTo = { ruta ->
+                        navController.navigate(ruta)
+                    }
                 )
             }
 
