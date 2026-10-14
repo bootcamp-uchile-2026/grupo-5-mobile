@@ -11,7 +11,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CarruselLibros(
-    titulo: String
+    titulo: String,
+    estaEnListaDeseados: Boolean,
+    onAddClick: () -> Unit
     //lista de libros
 ){
     Text(
@@ -26,7 +28,10 @@ fun CarruselLibros(
 
         items(count = 10) {
 
-            TarjetaLibro()
+            TarjetaLibro(
+                estaEnListaDeseados = estaEnListaDeseados,
+                onAddClick = onAddClick
+            )
         }
     }
 }

@@ -7,26 +7,35 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cl.bootcamp.leeconnos.ui.components.AppTopBarSimpleNavigation
-import cl.bootcamp.leeconnos.ui.components.BottomBarDetalleCompra
+import cl.bootcamp.leeconnos.ui.components.AppTopBarSoloCarrito
 import cl.bootcamp.leeconnos.ui.components.CantidadItems
-import cl.bootcamp.leeconnos.ui.components.ItemCarrito
 import cl.bootcamp.leeconnos.ui.components.ItemListaDeseados
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
 @Composable
 fun ListaDeseadosScreen(
+    mainViewModel: MainViewModel,
+    onNavigateTo: (String) -> Unit,
     onNavigateBack: () -> Unit
 ){
+    val cantidadItemsCarrito by mainViewModel.cantidadItemsCarrito.collectAsState()
+    val cantidad by mainViewModel.cantidadItemsListaDeseados.collectAsState()
 
     Scaffold(
         topBar = {
-            AppTopBarSimpleNavigation(
+            AppTopBarSoloCarrito(
                 titulo = SecondaryRoutes.ListaDeseados.title,
-                onNavigateBack = { onNavigateBack() }
+                cantidadItems = {
+                    cantidadItemsCarrito
+                },
+                onNavigateTo = onNavigateTo,
+                onNavigateBack = onNavigateBack
             )
         }
 
@@ -43,16 +52,21 @@ fun ListaDeseadosScreen(
             item {
 
                 CantidadItems(
-                    cantidad = 3
+                    cantidadItems = { cantidad }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            items(count = 3) {
+            items(count = cantidad) {
 
                 ItemListaDeseados(
-                    onDeleteClick = {}
+                    onDeleteClick = {
+                        mainViewModel.eliminarItemListaDeseados()
+                    },
+                    onAddClick = {
+                        mainViewModel.agregarItemCarrito()
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))

@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBarDefault(
+    cantidadItems: () -> Int,
     onNavigateTo: (String) -> Unit
 ){
     //Búsqueda + Lista Deseados + Carrito
@@ -25,7 +26,10 @@ fun AppTopBarDefault(
 
         actions = {
             NavigationListaDeseados(onNavigateTo)
-            NavigationCarrito(onNavigateTo)
+            NavigationCarrito(
+                cantidadItems = cantidadItems,
+                onNavigateTo = onNavigateTo
+            )
         },
 
         colors = TopAppBarDefaults.topAppBarColors(

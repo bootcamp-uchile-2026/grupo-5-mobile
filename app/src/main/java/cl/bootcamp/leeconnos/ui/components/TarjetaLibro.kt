@@ -14,9 +14,10 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
 @Composable
-fun TarjetaLibro(){
-
-
+fun TarjetaLibro(
+    estaEnListaDeseados: Boolean,
+    onAddClick: () -> Unit
+){
 
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
@@ -35,9 +36,9 @@ fun TarjetaLibro(){
                     )
 
                     BotonFlotanteAgregarListaDeseados(
-                        estaEnListaDeseados = false,
+                        estaEnListaDeseados = estaEnListaDeseados,
                         modifier = Modifier.align(Alignment.BottomEnd),
-                        onIconButtonClick = {  }
+                        onIconButtonClick = onAddClick
                     )
                 }
 

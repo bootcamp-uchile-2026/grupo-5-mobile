@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
@@ -34,8 +35,9 @@ fun BotonFlotanteAgregarListaDeseados(
         }
     ) {
         Icon(
-            painterResource(id = R.drawable.ic_corazon_deseados),
-            contentDescription = "Agregar a lista deseados"
+            painterResource(id = if(estaEnListaDeseados) R.drawable.ic_corazon_deseados_filled else R.drawable.ic_corazon_deseados),
+            contentDescription = "Agregar a lista deseados",
+            tint = if(estaEnListaDeseados) Color(0xFFF86767) else Color.Black
         )
     }
 }

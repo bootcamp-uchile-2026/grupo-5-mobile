@@ -13,14 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import cl.bootcamp.leeconnos.ui.screens.LeeConNosApp
 import cl.bootcamp.leeconnos.ui.theme.LeeConNosTheme
+import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val mainViewModel = MainViewModel()
+
         setContent {
             LeeConNosTheme {
-                LeeConNosApp()
+                LeeConNosApp(
+                    viewModel = mainViewModel
+                )
             }
         }
     }

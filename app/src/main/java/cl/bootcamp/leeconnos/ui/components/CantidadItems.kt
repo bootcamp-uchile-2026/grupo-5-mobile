@@ -16,7 +16,7 @@ import cl.bootcamp.leeconnos.R
 
 @Composable
 fun CantidadItems(
-    cantidad: Int
+    cantidadItems: () -> Int
 ){
 
     Row(
@@ -33,7 +33,7 @@ fun CantidadItems(
         )
 
         Text(
-            text = "$cantidad Items",
+            text = "${cantidadItems()} Items",
             style = MaterialTheme.typography.labelMedium
         )
     }
