@@ -14,7 +14,8 @@ import cl.bootcamp.leeconnos.data.modelos.Libro
 @Composable
 fun CarruselLibrosRecomendados(
     titulo: String,
-    libros: List<Libro>
+    libros: List<Libro>,
+    onCardClick: (Libro) -> Unit
 ){
     Text(
         text = titulo,
@@ -29,7 +30,10 @@ fun CarruselLibrosRecomendados(
         items(libros) { libro ->
 
             TarjetaLibroRecomendado(
-                libro = libro
+                libro = libro,
+                onCardClick = {
+                    onCardClick(libro)
+                }
             )
         }
     }

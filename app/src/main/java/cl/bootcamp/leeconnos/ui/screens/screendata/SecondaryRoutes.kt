@@ -39,6 +39,7 @@ sealed class SecondaryRoutes(
         route = "ficha_libro",
         title = "Ficha del Libro",
         showGlobalTopBar = false,
+        showBottomBar = false
     )
 
     // RESEÑAS [Anidada de FichaLibro]

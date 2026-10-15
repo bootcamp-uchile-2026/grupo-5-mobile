@@ -16,6 +16,7 @@ fun CarruselLibros(
     titulo: String,
     libros: List<Libro>,
     itemsDeseados: List<Libro>,
+    onCardClick: (Libro) -> Unit,
     onDeseadosClick: (Libro, Boolean) -> Unit
 ){
     Text(
@@ -36,6 +37,9 @@ fun CarruselLibros(
 
             TarjetaLibro(
                 libro = libroActualizado,
+                onCardClick = {
+                    onCardClick(libro)
+                },
                 onDeseadosClick = {
 
                     onDeseadosClick(libro, esDeseado)
