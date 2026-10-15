@@ -15,7 +15,8 @@ import cl.bootcamp.leeconnos.data.modelos.Libro
 fun CarruselLibros(
     titulo: String,
     libros: List<Libro>,
-    onAddClick: (Libro) -> Unit
+    itemsDeseados: List<Libro>,
+    onDeseadosClick: (Libro, Boolean) -> Unit
 ){
     Text(
         text = titulo,
@@ -29,9 +30,16 @@ fun CarruselLibros(
 
         items(libros) { libro ->
 
+            val esDeseado = itemsDeseados.any { it.id == libro.id }
+
+            val libroActualizado = libro.copy(estaEnListaDeseados = esDeseado)
+
             TarjetaLibro(
-                libro = libro,
-                onAddClick = onAddClick
+                libro = libroActualizado,
+                onDeseadosClick = {
+
+                    onDeseadosClick(libro, esDeseado)
+                }
             )
         }
     }

@@ -35,6 +35,7 @@ fun HomeScreen(
     val estadoUi by viewModel.uiState.collectAsState()
 
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
+    val itemsListaDeseados by mainViewModel.itemsListaDeseados.collectAsState()
 
     Scaffold(
         topBar = {
@@ -102,9 +103,15 @@ fun HomeScreen(
                         CarruselLibros(
                             titulo = "Más vendidos",
                             libros = librosApi,
-                            onAddClick = { libro ->
+                            itemsDeseados = itemsListaDeseados,
+                            onDeseadosClick = { libro, esDeseado ->
 
-                                mainViewModel.agregarItemListaDeseados(libro = libro)
+                                if (esDeseado) {
+                                    mainViewModel.eliminarItemListaDeseados(libro.id)
+
+                                } else {
+                                    mainViewModel.agregarItemListaDeseados(libro)
+                                }
                             }
                         )
 
@@ -116,9 +123,15 @@ fun HomeScreen(
                         CarruselLibros(
                             titulo = "Más comentados por la comunidad",
                             libros = librosApi,
-                            onAddClick = { libro ->
+                            itemsDeseados = itemsListaDeseados,
+                            onDeseadosClick = { libro, esDeseado ->
 
-                                mainViewModel.agregarItemListaDeseados(libro = libro)
+                                if (esDeseado) {
+                                    mainViewModel.eliminarItemListaDeseados(libro.id)
+
+                                } else {
+                                    mainViewModel.agregarItemListaDeseados(libro)
+                                }
                             }
                         )
 
@@ -130,8 +143,15 @@ fun HomeScreen(
                         CarruselLibros(
                             titulo = "Nuevos lanzamientos",
                             libros = librosApi,
-                            onAddClick = { libro ->
-                                mainViewModel.agregarItemListaDeseados(libro = libro)
+                            itemsDeseados = itemsListaDeseados,
+                            onDeseadosClick = { libro, esDeseado ->
+
+                                if (esDeseado) {
+                                    mainViewModel.eliminarItemListaDeseados(libro.id)
+
+                                } else {
+                                    mainViewModel.agregarItemListaDeseados(libro)
+                                }
                             }
                         )
 

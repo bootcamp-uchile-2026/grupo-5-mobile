@@ -19,7 +19,7 @@ import cl.bootcamp.leeconnos.data.modelos.Libro
 fun BotonFlotanteAgregarListaDeseados(
     libro: Libro,
     modifier: Modifier,
-    onIconButtonClick: (Libro) -> Unit
+    onIconButtonClick: () -> Unit
 ){
 
     IconButton(
@@ -32,7 +32,7 @@ fun BotonFlotanteAgregarListaDeseados(
             )
             .background(color = MaterialTheme.colorScheme.surface),
         onClick = {
-            onIconButtonClick(libro)
+            onIconButtonClick()
         }
     ) {
         Icon(
