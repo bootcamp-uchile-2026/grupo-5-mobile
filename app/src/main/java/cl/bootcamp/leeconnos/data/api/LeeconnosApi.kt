@@ -10,6 +10,6 @@ interface LeeconnosApi {
     @GET("libros")
     suspend fun getLibros(
         @Query("page") page: Int = 1,
-        @Query("limit") limit: Int = 12
+        @Query("limit") limit: Int = 6
     ): Response<LibrosPaginadosDto>
 }

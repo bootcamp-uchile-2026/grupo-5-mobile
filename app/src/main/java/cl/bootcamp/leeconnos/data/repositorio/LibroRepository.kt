@@ -11,13 +11,13 @@ class LibroRepository(
     private val api: LeeconnosApi = ApiClient.apiService
 ) {
 
-    suspend fun obtenerLibrosHome(): Result<List<Libro>> {
+    suspend fun obtenerLibrosHome(page: Int = 1): Result<List<Libro>> {
 
         return withContext(Dispatchers.IO) {
 
             try {
 
-                val response = api.getLibros()
+                val response = api.getLibros(page = page)
 
                 if (response.isSuccessful && response.body() != null) {
 

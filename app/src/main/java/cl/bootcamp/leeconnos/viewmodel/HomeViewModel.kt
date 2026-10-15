@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +12,12 @@ import kotlinx.coroutines.launch
 
 sealed class HomeUiState {
     object Loading : HomeUiState()
-    data class Success(val libros: List<Libro>) : HomeUiState()
+    data class Success(
+        val recomendadosLibreros: List<Libro>,
+        val masVendidos: List<Libro>,
+        val masComentados: List<Libro>,
+        val nuevosLanzamientos: List<Libro>
+    ) : HomeUiState()
     data class Error(val mensaje: String) : HomeUiState()
 }
 
@@ -34,17 +40,31 @@ class HomeViewModel(
 
             val resultado = repository.obtenerLibrosHome()
 
-            resultado.fold(
-                onSuccess = { listaDeLibros ->
-                    _uiState.value = HomeUiState.Success(listaDeLibros)
-                },
+            try {
+                //Lógica solo para hito 2, muestra listas de items distintas en carruseles, no la misma duplicada
+                val peticionPage1 = async { repository.obtenerLibrosHome(page = 1) }
+                val peticionPage2 = async { repository.obtenerLibrosHome(page = 2) }
+                val peticionPage3 = async { repository.obtenerLibrosHome(page = 3) }
+                val peticionPage4 = async { repository.obtenerLibrosHome(page = 4) }
 
-                onFailure = { excepcion ->
-                    _uiState.value = HomeUiState.Error(
-                        excepcion.message ?: "Ocurrió un error inesperado"
+                val recomendados = peticionPage1.await().getOrDefault(emptyList())
+                val masVendidos = peticionPage2.await().getOrDefault(emptyList())
+                val masComentados = peticionPage3.await().getOrDefault(emptyList())
+                val nuevosLanzamientos = peticionPage4.await().getOrDefault(emptyList())
+
+                if (recomendados.isNotEmpty() || masVendidos.isNotEmpty()) {
+                    _uiState.value = HomeUiState.Success(
+                        recomendadosLibreros = recomendados,
+                        masVendidos = masVendidos,
+                        masComentados = masComentados,
+                        nuevosLanzamientos = nuevosLanzamientos
                     )
+                } else {
+                    _uiState.value = HomeUiState.Error("No se pudieron cargar los libros.")
                 }
-            )
+            } catch (e: Exception) {
+                _uiState.value = HomeUiState.Error("Ocurrió un error inesperado")
+            }
         }
     }
 }
