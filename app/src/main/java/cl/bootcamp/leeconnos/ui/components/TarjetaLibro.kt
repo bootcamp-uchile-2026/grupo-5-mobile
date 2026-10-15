@@ -30,7 +30,7 @@ fun TarjetaLibro(
 
                 Box {
                     ImagenTarjetaLibro(
-                        imagen = R.drawable.fondo_transparente,
+                        imagen = libro.portadaUrl,
                         contentDescription = "Titulo del libro",
                         aspectRatio = 1f
                     )

@@ -28,7 +28,7 @@ fun ItemListaDeseados(
     ) {
 
         ImagenItem(
-            imagen = "",
+            imagen = libro.portadaUrl,
             modifier = Modifier.weight(.3f)
         )
 

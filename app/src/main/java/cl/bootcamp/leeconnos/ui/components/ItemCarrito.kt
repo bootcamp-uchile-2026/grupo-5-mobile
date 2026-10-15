@@ -27,7 +27,7 @@ fun ItemCarrito(
     ) {
 
         ImagenItem(
-            imagen = "",
+            imagen = libro.portadaUrl,
             modifier = Modifier.weight(.3f)
         )
 
