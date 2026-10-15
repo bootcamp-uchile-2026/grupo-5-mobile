@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 fun DetalleItemLibro(
     titulo: String,
     autor: String,
-    precio: String,
+    precio: Int,
     tieneOferta: Boolean,
     precioAnterior: String?
 ){

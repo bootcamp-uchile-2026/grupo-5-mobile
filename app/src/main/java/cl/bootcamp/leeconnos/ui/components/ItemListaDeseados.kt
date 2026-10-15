@@ -12,9 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun ItemListaDeseados(
+    libro: Libro,
     onDeleteClick: () -> Unit,
     onAddClick: () -> Unit
 ){
@@ -31,8 +33,9 @@ fun ItemListaDeseados(
         )
 
         DetalleItemListaDeseados(
+            libro = libro,
             modifier = Modifier.weight(.6f),
-            onAddClick = onAddClick
+            onAddClick = onAddClick,
         )
 
         IconButton(

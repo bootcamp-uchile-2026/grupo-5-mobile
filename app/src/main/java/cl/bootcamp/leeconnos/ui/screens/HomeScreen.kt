@@ -34,13 +34,13 @@ fun HomeScreen(
 
     val estadoUi by viewModel.uiState.collectAsState()
 
-    val cantidadItemsCarrito by mainViewModel.cantidadItemsCarrito.collectAsState()
+    val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
 
     Scaffold(
         topBar = {
             AppTopBarDefault(
                 onNavigateTo = onNavigateTo,
-                cantidadItems = { cantidadItemsCarrito },
+                cantidadItems = { itemsCarrito.size },
             )
         }
     ) { paddingValues ->

@@ -1,25 +1,23 @@
 package cl.bootcamp.leeconnos.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun ItemCarrito(
-    //objeto libro
-    onDeleteClick: () -> Unit
+    libro: Libro,
+    onDeleteClick: () -> Unit,
+    onIncrease: () -> Unit,
+    onDecrease: () -> Unit
 ){
 
     Row(
@@ -34,7 +32,10 @@ fun ItemCarrito(
         )
 
         DetalleItemCarrito(
-            modifier = Modifier.weight(.6f)
+            libro = libro,
+            modifier = Modifier.weight(.6f),
+            onIncrease = onIncrease,
+            onDecrease = onDecrease
         )
 
         IconButton(

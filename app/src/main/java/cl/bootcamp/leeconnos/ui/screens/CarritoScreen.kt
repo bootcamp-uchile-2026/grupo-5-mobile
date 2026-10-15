@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.ui.components.AlertaConfirmacion
 import cl.bootcamp.leeconnos.ui.components.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.components.BottomBarDetalleCompra
@@ -35,8 +37,8 @@ fun CarritoScreen(
     mainViewModel: MainViewModel,
     onNavigateBack: () -> Unit
 ){
-    var mostrarDialogo by remember { mutableStateOf(false) }
-    val cantidad by mainViewModel.cantidadItemsCarrito.collectAsState()
+    var libroAEliminar by remember { mutableStateOf<Libro?>(null) }
+    val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
 
     Scaffold(
         topBar = {
@@ -64,18 +66,35 @@ fun CarritoScreen(
             item {
 
                 CantidadItems(
-                    cantidadItems = { cantidad }
+                    cantidadItems = { itemsCarrito.size }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
             //Reemplazar luego con lista de libros
-            items(count = cantidad) {
+            items(itemsCarrito) { item ->
 
                 ItemCarrito(
+                    libro = item,
                     onDeleteClick = {
-                        mostrarDialogo = true
+                        libroAEliminar = item
+                    },
+                    onIncrease = {
+
+                        if(item.cantidad < 99){
+                            mainViewModel.agregarItemCarrito(item)
+                        }
+                    },
+                    onDecrease = {
+
+                        if (item.cantidad > 1) {
+
+                            mainViewModel.disminuirCantidadItemCarrito(item)
+
+                        } else {
+                            libroAEliminar = item
+                        }
                     }
                 )
 
@@ -84,7 +103,8 @@ fun CarritoScreen(
         }
     }
 
-    if (mostrarDialogo) {
+    libroAEliminar?.let { libro ->
+
 
         AlertaConfirmacion(
             titulo = "",
@@ -92,12 +112,13 @@ fun CarritoScreen(
             textoBtnConfirmar = "Eliminar",
             textoBtnCancelar = "Cancelar",
             onCancelar = {
-                mostrarDialogo = false
+                libroAEliminar = null
             },
             onConfirmar = {
-                mainViewModel.eliminarItemCarrito()
 
-                mostrarDialogo = false
+                mainViewModel.eliminarItemCarrito(libroId = libro.id)
+
+                libroAEliminar = null
             }
         )
     }

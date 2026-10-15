@@ -3,11 +3,14 @@ package cl.bootcamp.leeconnos.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun DetalleItemCarrito(
-    //objeto libro
-    modifier: Modifier
+    libro: Libro,
+    modifier: Modifier,
+    onIncrease: () -> Unit,
+    onDecrease: () -> Unit
 ) {
 
     Column(
@@ -15,16 +18,17 @@ fun DetalleItemCarrito(
     ) {
 
         DetalleItemLibro(
-            titulo = "El Perfume",
-            autor = "Patrick Süskind",
-            precio = "18.830",
+            titulo = libro.titulo,
+            autor = libro.autor,
+            precio = libro.precio,
             tieneOferta = true,
-            precioAnterior = "26.900"
+            precioAnterior = "10000"
         )
 
         SelectorCantidad(
-            onDecrease = {},
-            onIncrease = {}
+            cantidad = libro.cantidad,
+            onIncrease = { onIncrease() },
+            onDecrease = { onDecrease() }
         )
     }
 }

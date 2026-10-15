@@ -25,7 +25,7 @@ fun ListaDeseadosScreen(
     onNavigateTo: (String) -> Unit,
     onNavigateBack: () -> Unit
 ){
-    val cantidadItemsCarrito by mainViewModel.cantidadItemsCarrito.collectAsState()
+    val listaCarrito by mainViewModel.itemsCarrito.collectAsState()
     val listaItems by mainViewModel.itemsListaDeseados.collectAsState()
 
     Scaffold(
@@ -33,7 +33,7 @@ fun ListaDeseadosScreen(
             AppTopBarSoloCarrito(
                 titulo = SecondaryRoutes.ListaDeseados.title,
                 cantidadItems = {
-                    cantidadItemsCarrito
+                    listaCarrito.size
                 },
                 onNavigateTo = onNavigateTo,
                 onNavigateBack = onNavigateBack
@@ -62,11 +62,14 @@ fun ListaDeseadosScreen(
             items(listaItems) { item ->
 
                 ItemListaDeseados(
+                    libro = item,
                     onDeleteClick = {
                         mainViewModel.eliminarItemListaDeseados(libroId = item.id)
                     },
                     onAddClick = {
-                        mainViewModel.agregarItemCarrito()
+                        mainViewModel.agregarItemCarrito(
+                            libro = item
+                        )
                     }
                 )
 

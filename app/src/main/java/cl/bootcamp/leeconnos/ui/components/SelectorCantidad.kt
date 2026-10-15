@@ -22,11 +22,10 @@ import cl.bootcamp.leeconnos.R
 
 @Composable
 fun SelectorCantidad(
+    cantidad: Int,
     onDecrease: () -> Unit,
     onIncrease: () -> Unit
 ) {
-    //Variable recordable solo para simulación
-    var cantidad by remember { mutableIntStateOf(1) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -41,11 +40,6 @@ fun SelectorCantidad(
 
         IconButton(
             onClick = {
-
-                if (cantidad > 1) {
-                    cantidad--
-                }
-
                 onDecrease()
             }
         ) {
@@ -63,11 +57,6 @@ fun SelectorCantidad(
 
         IconButton(
             onClick = {
-
-                if (cantidad < 99) {
-                    cantidad++
-                }
-
                 onIncrease()
             }
         ) {
