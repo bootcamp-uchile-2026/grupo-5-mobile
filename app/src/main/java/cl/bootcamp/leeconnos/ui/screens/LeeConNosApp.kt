@@ -168,7 +168,7 @@ fun LeeConNosApp(
                 }
 
                 composable(SecondaryRoutes.FichaLibrero.route) {
-                    //FichaLibreroScreen
+                    //Ficha librero
                 }
             }
 
@@ -244,7 +244,13 @@ fun LeeConNosApp(
             }
 
             composable(SecondaryRoutes.FichaLibro.route) {
-                //FichaLibroScreen
+                FichaLibroScreen(
+                    mainViewModel = viewModel,
+                    onNavigateTo = { ruta ->
+                        navController.navigate(ruta)
+                    },
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
         }
     }

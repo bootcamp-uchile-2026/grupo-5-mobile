@@ -16,7 +16,8 @@ import cl.bootcamp.leeconnos.data.modelos.Libro
 
 @Composable
 fun TarjetaLibroRecomendado(
-    libro: Libro
+    libro: Libro,
+    onCardClick: () -> Unit
 ){
 
     Box(
@@ -26,7 +27,8 @@ fun TarjetaLibroRecomendado(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
             shape = MaterialTheme.shapes.large,
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-            modifier = Modifier.width(180.dp)
+            modifier = Modifier.width(180.dp),
+            onClick = { onCardClick() }
         ) {
             Column {
 

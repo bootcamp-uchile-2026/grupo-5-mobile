@@ -21,6 +21,7 @@ import cl.bootcamp.leeconnos.ui.components.BannerComunidad
 import cl.bootcamp.leeconnos.ui.components.CarruselLibros
 import cl.bootcamp.leeconnos.ui.components.CarruselLibrosRecomendados
 import cl.bootcamp.leeconnos.ui.components.SeccionBienvenida
+import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.HomeUiState
 import cl.bootcamp.leeconnos.viewmodel.HomeViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
@@ -88,7 +89,11 @@ fun HomeScreen(
 
                         CarruselLibrosRecomendados(
                             titulo = "Recomendados de nuestros libreros",
-                            libros = recomendadosLibreros
+                            libros = recomendadosLibreros,
+                            onCardClick = { libro ->
+                                mainViewModel.seleccionarLibro(libro = libro)
+                                onNavigateTo(SecondaryRoutes.FichaLibro.route)
+                            }
                         )
 
                         Spacer(modifier = Modifier.height(64.dp))
@@ -107,6 +112,10 @@ fun HomeScreen(
                             titulo = "Más vendidos",
                             libros = masVendidos,
                             itemsDeseados = itemsListaDeseados,
+                            onCardClick = { libro ->
+                                mainViewModel.seleccionarLibro(libro)
+                                onNavigateTo(SecondaryRoutes.FichaLibro.route)
+                            },
                             onDeseadosClick = { libro, esDeseado ->
 
                                 if (esDeseado) {
@@ -127,6 +136,10 @@ fun HomeScreen(
                             titulo = "Más comentados por la comunidad",
                             libros = masComentados,
                             itemsDeseados = itemsListaDeseados,
+                            onCardClick = { libro ->
+                                mainViewModel.seleccionarLibro(libro)
+                                onNavigateTo(SecondaryRoutes.FichaLibro.route)
+                            },
                             onDeseadosClick = { libro, esDeseado ->
 
                                 if (esDeseado) {
@@ -147,6 +160,10 @@ fun HomeScreen(
                             titulo = "Nuevos lanzamientos",
                             libros = nuevosLanzamientos,
                             itemsDeseados = itemsListaDeseados,
+                            onCardClick = { libro ->
+                                mainViewModel.seleccionarLibro(libro)
+                                onNavigateTo(SecondaryRoutes.FichaLibro.route)
+                            },
                             onDeseadosClick = { libro, esDeseado ->
 
                                 if (esDeseado) {

@@ -15,6 +15,9 @@ class MainViewModel: ViewModel() {
     private val _itemsListaDeseados = MutableStateFlow<List<Libro>>(emptyList())
     val itemsListaDeseados = _itemsListaDeseados.asStateFlow()
 
+    private val _libroSeleccionado = MutableStateFlow<Libro?>(null)
+    val libroSeleccionado = _libroSeleccionado.asStateFlow()
+
     //Carrito
     fun agregarItemCarrito(libro: Libro) {
 
@@ -71,6 +74,7 @@ class MainViewModel: ViewModel() {
         }
     }
 
+
     //Lista de deseados
     fun agregarItemListaDeseados(libro: Libro) {
         _itemsListaDeseados.update { listaActual ->
@@ -88,13 +92,18 @@ class MainViewModel: ViewModel() {
         }
     }
 
-
     fun eliminarItemListaDeseados(libroId: String) {
 
         _itemsListaDeseados.update { listaActual ->
 
             listaActual.filter { it.id != libroId }
         }
+    }
+
+
+    //Seleccionar Libro
+    fun seleccionarLibro(libro: Libro) {
+        _libroSeleccionado.value = libro
     }
 
 }

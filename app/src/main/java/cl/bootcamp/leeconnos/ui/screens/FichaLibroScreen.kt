@@ -1,0 +1,83 @@
+package cl.bootcamp.leeconnos.ui.screens
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import cl.bootcamp.leeconnos.data.modelos.Libro
+import cl.bootcamp.leeconnos.ui.components.AppTopBarSoloDeseados
+import cl.bootcamp.leeconnos.ui.components.ImagenFichaLibro
+import cl.bootcamp.leeconnos.ui.components.ItemListaDeseados
+import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+
+@Composable
+fun FichaLibroScreen(
+    mainViewModel: MainViewModel,
+    onNavigateTo: (String) -> Unit,
+    onNavigateBack: () -> Unit
+){
+
+    val libro by mainViewModel.libroSeleccionado.collectAsState()
+
+    val listaItems by mainViewModel.itemsListaDeseados.collectAsState()
+
+    Scaffold { paddingValues ->
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = paddingValues.calculateBottomPadding())
+        ) {
+
+            libro?.let { libroSeguro ->
+
+                val esDeseado = listaItems.any { it.id == libroSeguro.id }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    item {
+
+                        ImagenFichaLibro(
+                            imagen = libroSeguro.portadaUrl,
+                            contentDescription = libroSeguro.titulo
+                        )
+                    }
+                }
+
+                AppTopBarSoloDeseados(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .statusBarsPadding(),
+                    estaEnListaDeseados = esDeseado,
+                    onNavigateBack = onNavigateBack,
+                    onDeseadosClick = {
+
+                        if (esDeseado) {
+                            mainViewModel.eliminarItemListaDeseados(libroSeguro.id)
+
+                        } else {
+                            mainViewModel.agregarItemListaDeseados(libroSeguro)
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
