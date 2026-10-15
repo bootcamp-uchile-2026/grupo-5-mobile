@@ -31,7 +31,7 @@ fun TarjetaLibroRecomendado(
             Column {
 
                 ImagenTarjetaLibro(
-                    imagen = R.drawable.fondo_transparente,
+                    imagen = libro.portadaUrl,
                     contentDescription = libro.titulo
                 )
 
