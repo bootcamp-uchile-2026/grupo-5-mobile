@@ -17,7 +17,7 @@ import cl.bootcamp.leeconnos.data.modelos.Libro
 @Composable
 fun TarjetaLibro(
     libro: Libro,
-    onAddClick: (Libro) -> Unit
+    onDeseadosClick: () -> Unit
 ){
 
         Card(
@@ -28,8 +28,7 @@ fun TarjetaLibro(
         ) {
             Column {
 
-                Box(
-                ) {
+                Box {
                     ImagenTarjetaLibro(
                         imagen = R.drawable.fondo_transparente,
                         contentDescription = "Titulo del libro",
@@ -40,7 +39,7 @@ fun TarjetaLibro(
 
                         libro = libro,
                         modifier = Modifier.align(Alignment.BottomEnd),
-                        onIconButtonClick = onAddClick
+                        onIconButtonClick = onDeseadosClick
                     )
                 }
 
