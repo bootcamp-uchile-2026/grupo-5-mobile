@@ -9,23 +9,69 @@ import kotlinx.coroutines.flow.update
 
 class MainViewModel: ViewModel() {
 
-    private val _cantidadItemsCarrito = MutableStateFlow(0)
-    val cantidadItemsCarrito: StateFlow<Int> = _cantidadItemsCarrito.asStateFlow()
+    private val _itemsCarrito = MutableStateFlow<List<Libro>>(emptyList())
+    val itemsCarrito = _itemsCarrito.asStateFlow()
 
     private val _itemsListaDeseados = MutableStateFlow<List<Libro>>(emptyList())
     val itemsListaDeseados = _itemsListaDeseados.asStateFlow()
 
     //Carrito
-    fun agregarItemCarrito() {
-        _cantidadItemsCarrito.value += 1
+    fun agregarItemCarrito(libro: Libro) {
+
+        _itemsCarrito.update { listaActual ->
+
+            val existe = listaActual.any { it.id == libro.id }
+
+            if (existe) {
+
+                listaActual.map { item ->
+
+                    if (item.id == libro.id) {
+
+                        val nuevaCantidad = if (item.cantidad < 99) item.cantidad + 1 else 99
+
+                        item.copy(cantidad = nuevaCantidad)
+
+                    } else {
+                        item
+                    }
+                }
+
+            } else {
+
+                listaActual + libro.copy(cantidad = 1)
+            }
+        }
     }
 
-    fun eliminarItemCarrito() {
-        _cantidadItemsCarrito.value -= 1
+    fun eliminarItemCarrito(libroId: String) {
+
+        _itemsCarrito.update { listaActual ->
+
+            listaActual.filter { it.id != libroId }
+        }
+    }
+
+    fun disminuirCantidadItemCarrito(libro: Libro) {
+
+        _itemsCarrito.update { listaActual ->
+
+            listaActual.map { item ->
+
+                if (item.id == libro.id) {
+
+                    val nuevaCantidad = if (item.cantidad > 1) item.cantidad -1 else 1
+
+                    item.copy(cantidad = nuevaCantidad)
+
+                } else {
+                    item
+                }
+            }
+        }
     }
 
     //Lista de deseados
-
     fun agregarItemListaDeseados(libro: Libro) {
         _itemsListaDeseados.update { listaActual ->
 

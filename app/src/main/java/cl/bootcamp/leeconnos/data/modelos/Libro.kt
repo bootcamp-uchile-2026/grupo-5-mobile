@@ -6,5 +6,6 @@ data class Libro(
     val autor: String,
     val precio: Int,
     val portadaUrl: String,
-    val estaEnListaDeseados: Boolean = false
+    val estaEnListaDeseados: Boolean = false,
+    val cantidad: Int = 0
 )
