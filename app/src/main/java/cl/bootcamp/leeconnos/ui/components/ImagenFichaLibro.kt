@@ -23,7 +23,7 @@ fun ImagenFichaLibro(
             .crossfade(true)
             .build(),
         contentDescription = contentDescription,
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Fit,
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f),
