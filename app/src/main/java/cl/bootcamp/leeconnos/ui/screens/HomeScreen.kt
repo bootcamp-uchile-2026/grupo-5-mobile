@@ -79,13 +79,16 @@ fun HomeScreen(
 
                 is HomeUiState.Success -> {
 
-                    val librosApi = estadoActual.libros
+                    val recomendadosLibreros = estadoActual.recomendadosLibreros
+                    val masVendidos = estadoActual.masVendidos
+                    val masComentados = estadoActual.masComentados
+                    val nuevosLanzamientos = estadoActual.nuevosLanzamientos
 
                     item {
 
                         CarruselLibrosRecomendados(
                             titulo = "Recomendados de nuestros libreros",
-                            libros = librosApi
+                            libros = recomendadosLibreros
                         )
 
                         Spacer(modifier = Modifier.height(64.dp))
@@ -102,7 +105,7 @@ fun HomeScreen(
 
                         CarruselLibros(
                             titulo = "Más vendidos",
-                            libros = librosApi,
+                            libros = masVendidos,
                             itemsDeseados = itemsListaDeseados,
                             onDeseadosClick = { libro, esDeseado ->
 
@@ -122,7 +125,7 @@ fun HomeScreen(
 
                         CarruselLibros(
                             titulo = "Más comentados por la comunidad",
-                            libros = librosApi,
+                            libros = masComentados,
                             itemsDeseados = itemsListaDeseados,
                             onDeseadosClick = { libro, esDeseado ->
 
@@ -142,7 +145,7 @@ fun HomeScreen(
 
                         CarruselLibros(
                             titulo = "Nuevos lanzamientos",
-                            libros = librosApi,
+                            libros = nuevosLanzamientos,
                             itemsDeseados = itemsListaDeseados,
                             onDeseadosClick = { libro, esDeseado ->
 
