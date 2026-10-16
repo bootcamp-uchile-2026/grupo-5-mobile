@@ -233,7 +233,9 @@ fun LeeconnosApp(
             ) {
 
                 composable(ScreenRoutes.MI_CUENTA.route) {
-                    MiCuentaScreen()
+                    MiCuentaScreen(
+                        mainViewModel = viewModel
+                    )
                 }
 
                 composable(SecondaryRoutes.MiPerfil.route) {
