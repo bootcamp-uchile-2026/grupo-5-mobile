@@ -2,14 +2,19 @@ package cl.bootcamp.leeconnos.ui.screens
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,6 +25,8 @@ import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun LeeConNosApp(
@@ -34,11 +41,27 @@ fun LeeConNosApp(
             ?: SecondaryRoutes.values.find { it.route == currentRoute }
     }
 
+    //Lógica para no romper animación de navegación para hito 2. Luego refactorizar
+    var showBottomBar by remember { mutableStateOf(pantallaActual?.showBottomBar ?: true) }
+
+    LaunchedEffect(pantallaActual) {
+
+        val debeMostrar = pantallaActual?.showBottomBar ?: false
+
+        if (debeMostrar && !showBottomBar) {
+            delay(300.milliseconds)
+            showBottomBar = true
+
+        } else {
+            showBottomBar = debeMostrar
+        }
+    }
+
     Scaffold(
 
         bottomBar = {
 
-            if (pantallaActual?.showBottomBar ?: false) {
+            if (showBottomBar) {
                 AppBottomBar(
                     rutaActual = currentRoute,
                     onNavigateTo = { ruta ->
@@ -56,7 +79,7 @@ fun LeeConNosApp(
         },
 
         snackbarHost = { },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
 
     ) { innerPadding ->
 

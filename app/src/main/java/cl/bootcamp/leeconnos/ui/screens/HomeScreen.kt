@@ -1,5 +1,6 @@
 package cl.bootcamp.leeconnos.ui.screens
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -45,6 +46,7 @@ fun HomeScreen(
     ) { paddingValues ->
 
         LazyColumn(
+            contentPadding = PaddingValues(bottom = 80.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues)
