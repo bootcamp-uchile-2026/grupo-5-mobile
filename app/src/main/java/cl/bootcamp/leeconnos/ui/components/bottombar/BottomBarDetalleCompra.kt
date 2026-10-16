@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cl.bootcamp.leeconnos.ui.components.botones.BotonComprarCarrito
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoAhorro
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoTotal
 
 @Composable
-fun BottomBarDetalleCompra(){
+fun BottomBarDetalleCompra(
+    textoBtn: String
+){
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -32,7 +34,8 @@ fun BottomBarDetalleCompra(){
             total = "32.830"
         )
 
-        BotonComprarCarrito(
+        BotonPrincipalBottomBar(
+            textoBtn = textoBtn,
             onComprarClick = {}
         )
     }

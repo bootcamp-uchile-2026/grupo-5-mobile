@@ -18,36 +18,37 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
 @Composable
-fun BotonComprarCarrito(
+fun BotonPrincipalBottomBar(
+    textoBtn: String,
     onComprarClick: () -> Unit
 ) {
 
-    Button(
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
-        onClick = {
-            onComprarClick()
-        },
-        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
-    ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_carrito),
-                contentDescription = "",
-                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 8.dp)
-            )
-
-            Text(
-                text = "Comprar",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
+//    Button(
+//        colors = ButtonDefaults.buttonColors(
+//            containerColor = MaterialTheme.colorScheme.primary
+//        ),
+//        onClick = {
+//            onComprarClick()
+//        },
+//        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+//    ) {
+//
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.Center,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.ic_carrito),
+//                contentDescription = "",
+//                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 8.dp)
+//            )
+//
+//            Text(
+//                text = textoBtn,
+//                style = MaterialTheme.typography.bodyMedium,
+//                fontWeight = FontWeight.SemiBold
+//            )
+//        }
+//    }
 }
