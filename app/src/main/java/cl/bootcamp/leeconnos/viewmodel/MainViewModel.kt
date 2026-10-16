@@ -1,16 +1,30 @@
 package cl.bootcamp.leeconnos.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cl.bootcamp.leeconnos.data.local.datastore.ThemePreferences
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class MainViewModel: ViewModel() {
+class MainViewModel(application: Application): AndroidViewModel(application) {
+
+    private val themePreferences = ThemePreferences(context = application.applicationContext)
+
+    val isDarkMode: StateFlow<Boolean> = themePreferences.isDarkMode
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
 
     //Carrito
     private val _itemsCarrito = MutableStateFlow<List<Libro>>(emptyList())
@@ -150,6 +164,13 @@ class MainViewModel: ViewModel() {
 
     fun limpiarMensajeSnackbar() {
         _mensajeSnackbar.value = null
+    }
+
+    //Cambiar modo oscuro
+    fun toggleDarkMode(currentValue: Boolean) {
+        viewModelScope.launch {
+            themePreferences.saveDarkMode(!currentValue)
+        }
     }
 
 }
