@@ -13,9 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cl.bootcamp.leeconnos.ui.components.AppTopBarSoloCarrito
-import cl.bootcamp.leeconnos.ui.components.CantidadItems
-import cl.bootcamp.leeconnos.ui.components.ItemListaDeseados
+import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSoloCarrito
+import cl.bootcamp.leeconnos.ui.components.carruseles.CantidadItems
+import cl.bootcamp.leeconnos.ui.components.carruseles.ItemListaDeseados
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 

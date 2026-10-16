@@ -10,16 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import cl.bootcamp.leeconnos.ui.components.AppBottomBar
-import cl.bootcamp.leeconnos.ui.components.AppTopBarDefault
-import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenData
+import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel

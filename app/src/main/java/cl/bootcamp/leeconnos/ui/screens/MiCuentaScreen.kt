@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cl.bootcamp.leeconnos.ui.components.AppTopBarSimple
+import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimple
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 
 @Composable
