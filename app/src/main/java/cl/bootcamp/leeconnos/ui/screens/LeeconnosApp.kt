@@ -1,0 +1,305 @@
+package cl.bootcamp.leeconnos.ui.screens
+
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
+import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
+import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
+import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+
+@Composable
+fun LeeconnosApp(
+    viewModel: MainViewModel
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val mensajeSnackbar by viewModel.mensajeSnackbar.collectAsStateWithLifecycle()
+
+    LaunchedEffect(mensajeSnackbar) {
+
+        mensajeSnackbar?.let { texto ->
+
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = texto,
+                duration = SnackbarDuration.Short,
+                withDismissAction = true
+            )
+
+            viewModel.limpiarMensajeSnackbar()
+        }
+    }
+
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: ScreenRoutes.HOME.route
+
+    val pantallaActual = remember(currentRoute) {
+        ScreenRoutes.entries.find { it.route == currentRoute }
+            ?: SecondaryRoutes.values.find { it.route == currentRoute }
+    }
+
+
+
+
+    //Lógica para no romper animación de navegación para hito 2. Luego refactorizar
+    var showBottomBar by remember { mutableStateOf(pantallaActual?.showBottomBar ?: true) }
+
+    LaunchedEffect(pantallaActual) {
+
+        val debeMostrar = pantallaActual?.showBottomBar ?: false
+
+        if (debeMostrar && !showBottomBar) {
+            delay(300.milliseconds)
+            showBottomBar = true
+
+        } else {
+            showBottomBar = debeMostrar
+        }
+    }
+
+    Scaffold(
+
+        bottomBar = {
+
+            if (showBottomBar) {
+                AppBottomBar(
+                    rutaActual = currentRoute,
+                    onNavigateTo = { ruta ->
+
+                        navController.navigate(ruta) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+        },
+
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+        modifier = Modifier.fillMaxSize(),
+
+    ) { innerPadding ->
+
+        NavHost(
+            navController = navController,
+            startDestination = "graph_home",
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding),
+
+            enterTransition = {
+
+                val rutaOrigen = initialState.destination.route ?: ""
+                val rutaDestino = targetState.destination.route ?: ""
+
+                val indiceOrigen = ScreenRoutes.entries.indexOfFirst { it.route == rutaOrigen }
+                val indiceDestino = ScreenRoutes.entries.indexOfFirst { it.route == rutaDestino }
+
+                if (indiceOrigen != -1 && indiceDestino != -1) {
+
+                    if (indiceDestino > indiceOrigen) {
+                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
+
+                    } else {
+                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))
+                    }
+
+                } else {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
+                }
+
+            },
+
+            exitTransition = {
+
+                val rutaOrigen = initialState.destination.route ?: ""
+                val rutaDestino = targetState.destination.route ?: ""
+
+                val indiceOrigen = ScreenRoutes.entries.indexOfFirst { it.route == rutaOrigen }
+                val indiceDestino = ScreenRoutes.entries.indexOfFirst { it.route == rutaDestino }
+
+                if (indiceOrigen != -1 && indiceDestino != -1) {
+                    if (indiceDestino > indiceOrigen) {
+                        slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
+
+                    } else {
+                        slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))
+                    }
+
+                } else {
+                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
+                }
+            },
+
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(300)
+                )
+            },
+
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(300)
+                )
+            }
+        ) {
+
+            navigation(
+                startDestination = ScreenRoutes.HOME.route,
+                route = "graph_home"
+            ) {
+
+                composable(ScreenRoutes.HOME.route) {
+                    HomeScreen(
+                        mainViewModel = viewModel,
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        }
+                    )
+                }
+            }
+
+            navigation(
+                startDestination = ScreenRoutes.CATALOGO.route,
+                route = "graph_catalogo"
+            ) {
+                composable(ScreenRoutes.CATALOGO.route) {
+                    CatalogoScreen(
+                        mainViewModel = viewModel,
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        }
+                    )
+                }
+            }
+
+            navigation(
+                startDestination = ScreenRoutes.DESCUBRE.route,
+                route = "graph_descubre"
+            ) {
+                composable(ScreenRoutes.DESCUBRE.route) {
+                    DescubreScreen()
+                }
+
+                composable(SecondaryRoutes.FichaLibrero.route) {
+                    //Ficha librero
+                }
+            }
+
+            navigation(
+                startDestination = ScreenRoutes.COMUNIDAD.route,
+                route = "graph_comunidad"
+            ) {
+                composable(ScreenRoutes.COMUNIDAD.route) {
+                    ComunidadScreen()
+                }
+            }
+
+            navigation(
+                startDestination = ScreenRoutes.MI_CUENTA.route,
+                route = "graph_mi_cuenta"
+            ) {
+
+                composable(ScreenRoutes.MI_CUENTA.route) {
+                    MiCuentaScreen(
+                        mainViewModel = viewModel
+                    )
+                }
+
+                composable(SecondaryRoutes.MiPerfil.route) {
+                    //MiPerfilScreen
+                }
+                composable(SecondaryRoutes.HistorialCompras.route) {
+                    //HistorialComprasScreen
+                }
+                composable(SecondaryRoutes.MiBiblioteca.route) {
+                    //MiBibliotecaScreen
+                }
+                composable(SecondaryRoutes.MisResenas.route) {
+                    //MisResenasScreen
+                }
+                composable(SecondaryRoutes.MisConsultas.route) {
+                    //MisConsultasScreen
+                }
+                composable(SecondaryRoutes.Configuracion.route) {
+                    //ConfiguracionScreen
+                }
+                composable(SecondaryRoutes.Ayuda.route) {
+                    //AyudaScreen
+                }
+            }
+
+
+            navigation(
+                startDestination = SecondaryRoutes.Carrito.route,
+                route = "graph_carrito"
+            ){
+
+                composable(SecondaryRoutes.Carrito.route) {
+                    CarritoScreen(
+                        mainViewModel = viewModel,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable(SecondaryRoutes.ConfirmacionCompra.route) {
+//                    CarritoScreen(
+//                        onNavigateBack = { navController.popBackStack() }
+//                    )
+                }
+            }
+
+            composable(SecondaryRoutes.ListaDeseados.route) {
+                ListaDeseadosScreen(
+                    mainViewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateTo = { ruta ->
+                        navController.navigate(ruta)
+                    }
+                )
+            }
+
+            composable(SecondaryRoutes.FichaLibro.route) {
+                FichaLibroScreen(
+                    mainViewModel = viewModel,
+                    onNavigateTo = { ruta ->
+                        navController.navigate(ruta)
+                    },
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+        }
+    }
+}
