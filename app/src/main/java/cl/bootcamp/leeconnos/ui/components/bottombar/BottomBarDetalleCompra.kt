@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +24,7 @@ fun BottomBarDetalleCompra(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.LightGray)
+            .background(color = MaterialTheme.colorScheme.surface)
             .navigationBarsPadding()
             .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {

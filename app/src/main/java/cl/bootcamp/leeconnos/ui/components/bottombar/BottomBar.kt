@@ -17,7 +17,7 @@ fun AppBottomBar(
 ) {
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
 
@@ -31,7 +31,7 @@ fun AppBottomBar(
                 colors = NavigationBarItemColors(
                     selectedIconColor = MaterialTheme.colorScheme.surface,
                     selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                    selectedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+                    selectedIndicatorColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurface,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                     disabledIconColor = MaterialTheme.colorScheme.onSurface,

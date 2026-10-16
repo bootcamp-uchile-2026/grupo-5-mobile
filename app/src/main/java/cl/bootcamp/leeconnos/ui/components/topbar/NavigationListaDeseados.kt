@@ -16,7 +16,7 @@ fun NavigationListaDeseados(
     onNavigateTo: (String) -> Unit,
     modifier: Modifier = Modifier,
     containerColor: Color = Color.Transparent,
-    tint: Color = MaterialTheme.colorScheme.onPrimaryContainer
+    tint: Color = MaterialTheme.colorScheme.onBackground
 ) {
 
     IconButton(

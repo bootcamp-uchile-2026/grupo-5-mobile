@@ -50,7 +50,7 @@ fun NavigationCarrito(
             Icon(
                 painter = painterResource(R.drawable.ic_carrito),
                 contentDescription = "Ver carrito",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }

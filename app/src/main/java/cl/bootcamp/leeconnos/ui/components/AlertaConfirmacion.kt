@@ -18,6 +18,12 @@ fun AlertaConfirmacion(
 ) {
 
     AlertDialog(
+
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        iconContentColor = MaterialTheme.colorScheme.secondary,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        textContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+
         onDismissRequest = {
             onCancelar()
         },
@@ -42,8 +48,7 @@ fun AlertaConfirmacion(
             ) {
                 Text(
                     text = textoBtnConfirmar,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         },
@@ -56,7 +61,7 @@ fun AlertaConfirmacion(
                 Text(
                     text = textoBtnCancelar,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
