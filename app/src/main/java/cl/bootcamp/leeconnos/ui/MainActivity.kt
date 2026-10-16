@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
 
             val isDark by viewModel.isDarkMode.collectAsStateWithLifecycle()
 
-            LeeConNosTheme(darkTheme = isDark) {
+            LeeConNosTheme(darkTheme = isDark ?: false) {
                 LeeconnosApp(
                     viewModel = viewModel
                 )

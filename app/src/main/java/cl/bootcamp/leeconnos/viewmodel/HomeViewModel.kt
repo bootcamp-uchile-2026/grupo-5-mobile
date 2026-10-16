@@ -1,7 +1,10 @@
 package cl.bootcamp.leeconnos.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cl.bootcamp.leeconnos.data.local.database.AppDatabase
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import kotlinx.coroutines.async
@@ -9,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import cl.bootcamp.leeconnos.data.api.ApiClient.apiService
+import retrofit2.Retrofit
 
 sealed class HomeUiState {
     object Loading : HomeUiState()
@@ -22,8 +27,20 @@ sealed class HomeUiState {
 }
 
 class HomeViewModel(
-    private val repository: LibroRepository = LibroRepository()
-) : ViewModel() {
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val repository: LibroRepository
+
+    init {
+
+        val database = AppDatabase.getInstance(application)
+
+        repository = LibroRepository(
+            api = apiService,
+            libroDao = database.libroDao()
+        )
+    }
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()

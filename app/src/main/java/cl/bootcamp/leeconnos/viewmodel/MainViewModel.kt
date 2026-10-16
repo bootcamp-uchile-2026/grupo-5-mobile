@@ -4,8 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cl.bootcamp.leeconnos.data.local.database.AppDatabase
 import cl.bootcamp.leeconnos.data.local.datastore.ThemePreferences
 import cl.bootcamp.leeconnos.data.modelos.Libro
+import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
+import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,9 +20,18 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
-    private val themePreferences = ThemePreferences(context = application.applicationContext)
+    private val libroRepository: LibroRepository
+    private val themeRepository: ThemeRepository
 
-    val isDarkMode: StateFlow<Boolean> = themePreferences.isDarkMode
+    init {
+        val database = AppDatabase.getInstance(application)
+        libroRepository = LibroRepository(
+            libroDao = database.libroDao()
+        )
+        themeRepository = ThemeRepository(ThemePreferences(application.applicationContext))
+    }
+
+    val isDarkMode: StateFlow<Boolean?> = themeRepository.isDarkMode
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -27,10 +39,14 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         )
 
     //Carrito
-    private val _itemsCarrito = MutableStateFlow<List<Libro>>(emptyList())
-    val itemsCarrito = _itemsCarrito.asStateFlow()
+    val itemsCarrito: StateFlow<List<Libro>> = libroRepository.carrito
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
-    val ahorroCompra = _itemsCarrito.map { listaLibros ->
+    val ahorroCompra = itemsCarrito.map { listaLibros ->
         listaLibros.sumOf { libro ->
             (libro.precioAnterior - libro.precio) * libro.cantidad
         }
@@ -40,7 +56,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         initialValue = 0
     )
 
-    val totalCompra = _itemsCarrito.map { listaLibros ->
+    val totalCompra = itemsCarrito.map { listaLibros ->
         listaLibros.sumOf { libro ->
             libro.precio * libro.cantidad
         }
@@ -51,8 +67,12 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     )
 
     //Lista Deseados
-    private val _itemsListaDeseados = MutableStateFlow<List<Libro>>(emptyList())
-    val itemsListaDeseados = _itemsListaDeseados.asStateFlow()
+    val itemsListaDeseados: StateFlow<List<Libro>> = libroRepository.deseados
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     //Ficha Libro
     private val _libroSeleccionado = MutableStateFlow<Libro?>(null)
@@ -66,89 +86,46 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     //Carrito
     fun agregarItemCarrito(libro: Libro) {
 
-        _itemsCarrito.update { listaActual ->
-
-            val existe = listaActual.any { it.id == libro.id }
-
-            if (existe) {
-
-                listaActual.map { item ->
-
-                    if (item.id == libro.id) {
-
-                        val nuevaCantidad = if (item.cantidad < 99) item.cantidad + 1 else 99
-
-                        item.copy(cantidad = nuevaCantidad)
-
-                    } else {
-                        item
-                    }
-                }
-
-            } else {
-
-                listaActual + libro.copy(cantidad = 1)
-            }
-        }
-
-        _mensajeSnackbar.value = "Libro agregado al carrito"
-    }
-
-    fun eliminarItemCarrito(libroId: String) {
-
-        _itemsCarrito.update { listaActual ->
-
-            listaActual.filter { it.id != libroId }
+        viewModelScope.launch {
+            libroRepository.agregarAlCarrito(libro, cantidad = 1)
+            _mensajeSnackbar.value = "Libro agregado al carrito"
         }
     }
 
     fun disminuirCantidadItemCarrito(libro: Libro) {
-
-        _itemsCarrito.update { listaActual ->
-
-            listaActual.map { item ->
-
-                if (item.id == libro.id) {
-
-                    val nuevaCantidad = if (item.cantidad > 1) item.cantidad -1 else 1
-
-                    item.copy(cantidad = nuevaCantidad)
-
-                } else {
-                    item
-                }
+        viewModelScope.launch {
+            if (libro.cantidad > 1) {
+                libroRepository.modificarCantidadCarrito(libro.id, delta = -1)
+            } else {
+                eliminarItemCarrito(libro.id)
             }
+        }
+    }
+
+    fun eliminarItemCarrito(libroId: String) {
+        viewModelScope.launch {
+            libroRepository.eliminarDelCarrito(libroId)
+            mostrarMensajeSnackbar("Libro eliminado del carrito")
         }
     }
 
 
     //Lista de deseados
     fun agregarItemListaDeseados(libro: Libro) {
-        _itemsListaDeseados.update { listaActual ->
-
-            val existe = listaActual.any { it.id == libro.id }
-
-            if (!existe) {
-                val libroActualizado = libro.copy(estaEnListaDeseados = true)
-
-                listaActual + libroActualizado
-
-            } else {
-                listaActual
-            }
+        viewModelScope.launch {
+            libroRepository.toggleDeseado(libro)
+            mostrarMensajeSnackbar("Libro agregado a lista de deseados")
         }
-
-        _mensajeSnackbar.value = "Libro agregado a lista de deseados"
     }
 
     fun eliminarItemListaDeseados(libroId: String) {
-
-        _itemsListaDeseados.update { listaActual ->
-
-            listaActual.filter { it.id != libroId }
+        viewModelScope.launch {
+            val libroAEliminar = itemsListaDeseados.value.find { it.id == libroId }
+            if (libroAEliminar != null) {
+                libroRepository.toggleDeseado(libroAEliminar)
+            }
+            mostrarMensajeSnackbar("Libro eliminado de lista de deseados")
         }
-
-        _mensajeSnackbar.value = "Libro eliminado de lista deseados"
     }
 
 
@@ -169,7 +146,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     //Cambiar modo oscuro
     fun toggleDarkMode(currentValue: Boolean) {
         viewModelScope.launch {
-            themePreferences.saveDarkMode(!currentValue)
+            themeRepository.setDarkMode(!currentValue)
         }
     }
 

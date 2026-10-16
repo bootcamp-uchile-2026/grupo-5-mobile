@@ -54,10 +54,10 @@ fun MiCuentaScreen(
                         .fillMaxWidth()
                 ) {
                     IconButton(
-                        onClick = { mainViewModel.toggleDarkMode(isDark) }
+                        onClick = { mainViewModel.toggleDarkMode(isDark ?: false) }
                     ) {
                         Icon(
-                            imageVector = if (isDark) Icons.Default.LightMode else Icons.Default.DarkMode,
+                            imageVector = if (isDark ?: false) Icons.Default.LightMode else Icons.Default.DarkMode,
                             contentDescription = "Cambiar tema"
                         )
                     }
