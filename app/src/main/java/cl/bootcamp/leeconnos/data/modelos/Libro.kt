@@ -5,7 +5,16 @@ data class Libro(
     val titulo: String,
     val autor: String,
     val precio: Int,
+    val precioAnterior: Int,
+    val enOferta: Boolean,
     val portadaUrl: String,
-    val estaEnListaDeseados: Boolean = false,
-    val cantidad: Int = 0
+    val categorias: List<String>,
+    val sinopsis: String,
+    val calificacion: Double,
+    val cantidadOpiniones: Int,
+    val encuadernacion: String,
+    val paginas: Int,
+    val videoUrl: String,
+    var estaEnListaDeseados: Boolean = false,
+    var cantidad: Int = 1
 )

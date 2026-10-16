@@ -10,7 +10,18 @@ fun LibroDto.toDataClass(): Libro {
         titulo = this.titulo,
         autor = this.autor,
         precio = this.precio,
-        portadaUrl = this.portadaUrl
+        precioAnterior = this.precioAnterior ?: this.precio,
+        enOferta = this.enOferta ?: false,
+        portadaUrl = this.portadaUrl,
+        categorias = this.categorias ?: emptyList(),
+        sinopsis = this.sinopsis ?: this.descripcion ?: "Sin descripción disponible.",
+        calificacion = this.calificacion ?: 0.0,
+        cantidadOpiniones = this.opiniones ?: 0,
+        encuadernacion = this.encuadernacion ?: "No especificada",
+        paginas = this.paginas ?: 0,
+        videoUrl = this.videoUrl ?: "",
+        estaEnListaDeseados = false,
+        cantidad = 1
     )
 }
 
