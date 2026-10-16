@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleFichaProducto
+import cl.bootcamp.leeconnos.ui.components.detalles.RecomendacionVideo
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSoloDeseados
 import cl.bootcamp.leeconnos.ui.components.imagenes.ImagenFichaLibro
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
@@ -31,7 +34,22 @@ fun FichaLibroScreen(
 
     val listaItems by mainViewModel.itemsListaDeseados.collectAsState()
 
-    Scaffold { paddingValues ->
+    Scaffold(
+
+        bottomBar = {
+
+            BotonPrincipalBottomBar(
+                textoBtn = "Agregar al carrito",
+                onComprarClick = {
+
+                    if (libro != null ){
+                        mainViewModel.agregarItemCarrito(libro!!)
+                    }
+                }
+            )
+        }
+
+    ) { paddingValues ->
 
         Box(
             modifier = Modifier
@@ -64,6 +82,23 @@ fun FichaLibroScreen(
                         DetalleFichaProducto(
                             libro = libroSeguro
                         )
+
+                        Spacer(modifier = Modifier.height(32.dp))
+                    }
+
+                    item {
+
+                        RecomendacionVideo(
+                            mood = "oscuro, sensorial e inquietante",
+                            descripcion = "El perfume te mete en la mente de un personaje tan fascinante como perturbador. Una historia de obsesión, crimen y deseo, donde los olores tienen tanto peso como los propios personajes"
+                        )
+
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                    }
+
+                    item {
+
+                        //TODO: Sección Reseñas
                     }
                 }
 

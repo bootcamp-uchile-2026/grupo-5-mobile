@@ -45,7 +45,9 @@ fun CarritoScreen(
 
         bottomBar = {
 
-            BottomBarDetalleCompra()
+            BottomBarDetalleCompra(
+                textoBtn = "Comprar"
+            )
         }
 
     ) { paddingValues ->
