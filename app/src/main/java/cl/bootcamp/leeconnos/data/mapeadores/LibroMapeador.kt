@@ -1,7 +1,52 @@
 package cl.bootcamp.leeconnos.data.mapeadores
 
 import cl.bootcamp.leeconnos.data.api.dto.LibroDto
+import cl.bootcamp.leeconnos.data.local.database.LibroEntity
 import cl.bootcamp.leeconnos.data.modelos.Libro
+
+fun LibroEntity.toDataClass(): Libro {
+
+    return Libro(
+        id = id,
+        titulo = titulo,
+        autor = autor,
+        precio = precio,
+        precioAnterior = precioAnterior,
+        enOferta = enOferta,
+        descuentoPorcentaje = descuentoPorcentaje,
+        portadaUrl = portadaUrl,
+        calificacion = calificacion,
+        cantidadOpiniones = cantidadOpiniones,
+        encuadernacion = encuadernacion,
+        estaEnListaDeseados = enDeseados,
+        cantidad = cantidadCarrito,
+        descripcion = "",
+        categorias = emptyList(),
+        sinopsis = "",
+        paginas = 0,
+        videoUrl = ""
+    )
+}
+
+fun Libro.toEntity(enDeseados: Boolean = this.estaEnListaDeseados, enCarrito: Boolean = false): LibroEntity {
+
+    return LibroEntity(
+        id = id,
+        titulo = titulo,
+        autor = autor,
+        precio = precio,
+        precioAnterior = precioAnterior,
+        enOferta = enOferta,
+        descuentoPorcentaje = descuentoPorcentaje,
+        portadaUrl = portadaUrl,
+        calificacion = calificacion,
+        cantidadOpiniones = cantidadOpiniones,
+        encuadernacion = encuadernacion,
+        enDeseados = enDeseados,
+        enCarrito = enCarrito,
+        cantidadCarrito = cantidad
+    )
+}
 
 fun LibroDto.toDataClass(): Libro {
 
