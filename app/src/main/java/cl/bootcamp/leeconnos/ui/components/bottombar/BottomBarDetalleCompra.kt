@@ -17,7 +17,9 @@ import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoTotal
 
 @Composable
 fun BottomBarDetalleCompra(
-    textoBtn: String
+    textoBtn: String,
+    ahorro: Int,
+    total: Int
 ){
 
     Column(
@@ -30,11 +32,11 @@ fun BottomBarDetalleCompra(
     ) {
 
         DetalleCarritoAhorro(
-            ahorro = "5.000"
+            ahorro = ahorro
         )
 
         DetalleCarritoTotal(
-            total = "32.830"
+            total = total
         )
 
         BotonPrincipalBottomBar(

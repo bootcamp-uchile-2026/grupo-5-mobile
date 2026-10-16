@@ -16,7 +16,7 @@ import cl.bootcamp.leeconnos.R
 
 @Composable
 fun DetalleValoracionTarjetaLibro(
-    valoracion: String,
+    valoracion: Double,
     cantidadOpiniones: Int
 ) {
 
@@ -24,7 +24,7 @@ fun DetalleValoracionTarjetaLibro(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_star_filled), // TODO: Icono según valoración
+            painter = painterResource(id = R.drawable.ic_star_filled),
             contentDescription = null,
             modifier = Modifier.size(16.dp)
         )

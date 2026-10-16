@@ -53,30 +53,34 @@ fun DetalleTarjetaLibro(
                 style = MaterialTheme.typography.bodyMedium,
             )
 
-            Text(
-                text = "30% dcto.",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.error,
-                        shape = MaterialTheme.shapes.extraSmall
-                    )
-                    .padding(horizontal = 6.dp, vertical = 2.dp)
-            )
+            if (libro.enOferta) {
+
+                Text(
+                    text = "${libro.descuentoPorcentaje}% dcto.",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.error,
+                            shape = MaterialTheme.shapes.extraSmall
+                        )
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+            }
         }
 
         Text(
-            text = "$ 10000",
+            text = if (libro.enOferta) "$ ${libro.precioAnterior}" else "",
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Light,
             textDecoration = TextDecoration.LineThrough
         )
 
+
         DetalleValoracionTarjetaLibro(
-            valoracion = "",
-            cantidadOpiniones = 12
+            valoracion = libro.calificacion,
+            cantidadOpiniones = libro.cantidadOpiniones
         )
     }
 }

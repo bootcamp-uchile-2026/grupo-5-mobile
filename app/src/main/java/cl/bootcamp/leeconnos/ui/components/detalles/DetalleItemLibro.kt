@@ -20,7 +20,7 @@ fun DetalleItemLibro(
     autor: String,
     precio: Int,
     tieneOferta: Boolean,
-    precioAnterior: String?
+    precioAnterior: Int
 ){
 
     Text(
@@ -50,11 +50,14 @@ fun DetalleItemLibro(
             style = MaterialTheme.typography.bodyMedium,
         )
 
-        Text(
-            text = "$ $precioAnterior",
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Light,
-            textDecoration = TextDecoration.LineThrough
-        )
+        if(tieneOferta) {
+
+            Text(
+                text = "$ $precioAnterior",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Light,
+                textDecoration = TextDecoration.LineThrough
+            )
+        }
     }
 }

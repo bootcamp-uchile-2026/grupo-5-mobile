@@ -20,8 +20,8 @@ fun DetalleItemListaDeseados(
             titulo = libro.titulo,
             autor = libro.autor,
             precio = libro.precio,
-            tieneOferta = true,
-            precioAnterior = "10000"
+            tieneOferta = libro.enOferta,
+            precioAnterior = libro.precioAnterior
         )
 
         BotonAgregarAlCarrito(

@@ -13,6 +13,7 @@ fun LibroDto.toDataClass(): Libro {
         precio = this.precio,
         precioAnterior = this.precioAnterior ?: this.precio,
         enOferta = this.enOferta ?: false,
+        descuentoPorcentaje = this.descuentoPorcentaje ?: 0,
         portadaUrl = this.portadaUrl,
         categorias = this.categorias ?: emptyList(),
         sinopsis = this.sinopsis ?: this.descripcion ?: "Sin descripción disponible.",

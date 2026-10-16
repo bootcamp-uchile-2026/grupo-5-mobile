@@ -45,8 +45,8 @@ fun TarjetaLibroRecomendado(
                 DetalleTarjetaLibroRecomendado(
                     titulo = libro.titulo,
                     autor = libro.autor,
-                    valoracion = "",
-                    cantidadOpiniones = "12"
+                    valoracion = libro.calificacion,
+                    cantidadOpiniones = libro.cantidadOpiniones
                 )
             }
         }

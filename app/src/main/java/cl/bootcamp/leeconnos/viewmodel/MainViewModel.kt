@@ -1,16 +1,40 @@
 package cl.bootcamp.leeconnos.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 class MainViewModel: ViewModel() {
 
     private val _itemsCarrito = MutableStateFlow<List<Libro>>(emptyList())
     val itemsCarrito = _itemsCarrito.asStateFlow()
+
+    val ahorroCompra = _itemsCarrito.map { listaLibros ->
+        listaLibros.sumOf { libro ->
+            (libro.precioAnterior - libro.precio) * libro.cantidad
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = 0
+    )
+
+    val totalCompra = _itemsCarrito.map { listaLibros ->
+        listaLibros.sumOf { libro ->
+            libro.precio * libro.cantidad
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = 0
+    )
 
     private val _itemsListaDeseados = MutableStateFlow<List<Libro>>(emptyList())
     val itemsListaDeseados = _itemsListaDeseados.asStateFlow()
