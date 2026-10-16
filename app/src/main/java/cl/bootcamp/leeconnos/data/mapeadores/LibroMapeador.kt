@@ -9,6 +9,7 @@ fun LibroDto.toDataClass(): Libro {
         id = this.id,
         titulo = this.titulo,
         autor = this.autor,
+        descripcion = this.descripcion ?: "",
         precio = this.precio,
         precioAnterior = this.precioAnterior ?: this.precio,
         enOferta = this.enOferta ?: false,

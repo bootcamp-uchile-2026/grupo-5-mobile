@@ -4,6 +4,7 @@ data class Libro(
     val id: String,
     val titulo: String,
     val autor: String,
+    val descripcion: String,
     val precio: Int,
     val precioAnterior: Int,
     val enOferta: Boolean,
