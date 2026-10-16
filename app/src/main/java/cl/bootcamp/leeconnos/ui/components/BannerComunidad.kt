@@ -27,7 +27,7 @@ fun BannerComunidad() {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color(0xFFF6F6F6))
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
 
         Column(

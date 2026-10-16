@@ -3,6 +3,7 @@ package cl.bootcamp.leeconnos.ui.components.detalles
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +29,7 @@ fun SelectorCantidad(
         modifier = Modifier
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSecondary,
+                color = MaterialTheme.colorScheme.onBackground,
                 shape = MaterialTheme.shapes.extraSmall
             )
     ) {
@@ -40,7 +41,8 @@ fun SelectorCantidad(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_minus),
-                contentDescription = "Disminuir cantidad"
+                contentDescription = "Disminuir cantidad",
+                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -57,7 +59,8 @@ fun SelectorCantidad(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_plus),
-                contentDescription = "Aumentar cantidad"
+                contentDescription = "Aumentar cantidad",
+                modifier = Modifier.size(20.dp)
             )
         }
     }

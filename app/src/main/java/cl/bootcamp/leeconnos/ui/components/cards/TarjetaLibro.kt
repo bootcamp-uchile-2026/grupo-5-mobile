@@ -23,7 +23,10 @@ fun TarjetaLibro(
 ){
 
         Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            ),
             shape = MaterialTheme.shapes.large,
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             modifier = Modifier.width(180.dp),

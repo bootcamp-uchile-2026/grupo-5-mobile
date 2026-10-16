@@ -38,7 +38,7 @@ fun BotonFlotanteAgregarListaDeseados(
         Icon(
             painterResource(id = if(libro.estaEnListaDeseados) R.drawable.ic_corazon_deseados_filled else R.drawable.ic_corazon_deseados),
             contentDescription = "Agregar a lista deseados",
-            tint = if(libro.estaEnListaDeseados) Color(0xFFF86767) else Color.Black
+            tint = if(libro.estaEnListaDeseados) Color(0xFFF86767) else MaterialTheme.colorScheme.onSurface
         )
     }
 }
