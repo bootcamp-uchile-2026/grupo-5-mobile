@@ -2,19 +2,22 @@ package cl.bootcamp.leeconnos.ui.screens
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,9 +32,27 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun LeeConNosApp(
+fun LeeconnosApp(
     viewModel: MainViewModel
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val mensajeSnackbar by viewModel.mensajeSnackbar.collectAsStateWithLifecycle()
+
+    LaunchedEffect(mensajeSnackbar) {
+
+        mensajeSnackbar?.let { texto ->
+
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = texto,
+                duration = SnackbarDuration.Short,
+                withDismissAction = true
+            )
+
+            viewModel.limpiarMensajeSnackbar()
+        }
+    }
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: ScreenRoutes.HOME.route
@@ -40,6 +61,9 @@ fun LeeConNosApp(
         ScreenRoutes.entries.find { it.route == currentRoute }
             ?: SecondaryRoutes.values.find { it.route == currentRoute }
     }
+
+
+
 
     //Lógica para no romper animación de navegación para hito 2. Luego refactorizar
     var showBottomBar by remember { mutableStateOf(pantallaActual?.showBottomBar ?: true) }
@@ -78,7 +102,9 @@ fun LeeConNosApp(
             }
         },
 
-        snackbarHost = { },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         modifier = Modifier.fillMaxSize(),
 
     ) { innerPadding ->

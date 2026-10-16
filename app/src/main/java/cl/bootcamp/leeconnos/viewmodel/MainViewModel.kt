@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.update
 
 class MainViewModel: ViewModel() {
 
+    //Carrito
     private val _itemsCarrito = MutableStateFlow<List<Libro>>(emptyList())
     val itemsCarrito = _itemsCarrito.asStateFlow()
 
@@ -36,11 +36,18 @@ class MainViewModel: ViewModel() {
         initialValue = 0
     )
 
+    //Lista Deseados
     private val _itemsListaDeseados = MutableStateFlow<List<Libro>>(emptyList())
     val itemsListaDeseados = _itemsListaDeseados.asStateFlow()
 
+    //Ficha Libro
     private val _libroSeleccionado = MutableStateFlow<Libro?>(null)
     val libroSeleccionado = _libroSeleccionado.asStateFlow()
+
+    //Snackbar
+    private val _mensajeSnackbar = MutableStateFlow<String?>(null)
+    val mensajeSnackbar = _mensajeSnackbar.asStateFlow()
+
 
     //Carrito
     fun agregarItemCarrito(libro: Libro) {
@@ -69,6 +76,8 @@ class MainViewModel: ViewModel() {
                 listaActual + libro.copy(cantidad = 1)
             }
         }
+
+        _mensajeSnackbar.value = "Libro agregado al carrito"
     }
 
     fun eliminarItemCarrito(libroId: String) {
@@ -114,6 +123,8 @@ class MainViewModel: ViewModel() {
                 listaActual
             }
         }
+
+        _mensajeSnackbar.value = "Libro agregado a lista de deseados"
     }
 
     fun eliminarItemListaDeseados(libroId: String) {
@@ -122,12 +133,23 @@ class MainViewModel: ViewModel() {
 
             listaActual.filter { it.id != libroId }
         }
+
+        _mensajeSnackbar.value = "Libro eliminado de lista deseados"
     }
 
 
     //Seleccionar Libro
     fun seleccionarLibro(libro: Libro) {
         _libroSeleccionado.value = libro
+    }
+
+    //Snackbar
+    fun mostrarMensajeSnackbar(mensaje: String) {
+        _mensajeSnackbar.value = mensaje
+    }
+
+    fun limpiarMensajeSnackbar() {
+        _mensajeSnackbar.value = null
     }
 
 }
