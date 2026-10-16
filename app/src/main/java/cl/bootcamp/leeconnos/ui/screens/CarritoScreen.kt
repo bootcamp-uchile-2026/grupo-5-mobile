@@ -35,6 +35,9 @@ fun CarritoScreen(
     var libroAEliminar by remember { mutableStateOf<Libro?>(null) }
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
 
+    val ahorroCompra by mainViewModel.ahorroCompra.collectAsState()
+    val totalCompra by mainViewModel.totalCompra.collectAsState()
+
     Scaffold(
         topBar = {
             AppTopBarSimpleNavigation(
@@ -46,7 +49,9 @@ fun CarritoScreen(
         bottomBar = {
 
             BottomBarDetalleCompra(
-                textoBtn = "Comprar"
+                textoBtn = "Comprar",
+                ahorro = ahorroCompra,
+                total = totalCompra
             )
         }
 

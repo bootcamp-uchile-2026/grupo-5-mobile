@@ -8,6 +8,7 @@ data class Libro(
     val precio: Int,
     val precioAnterior: Int,
     val enOferta: Boolean,
+    val descuentoPorcentaje: Int,
     val portadaUrl: String,
     val categorias: List<String>,
     val sinopsis: String,

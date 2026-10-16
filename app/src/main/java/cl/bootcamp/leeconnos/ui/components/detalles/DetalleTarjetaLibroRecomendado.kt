@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 fun DetalleTarjetaLibroRecomendado(
     titulo: String,
     autor: String,
-    valoracion: String,
-    cantidadOpiniones: String
+    valoracion: Double,
+    cantidadOpiniones: Int
 ) {
 
     Column(
@@ -41,8 +41,8 @@ fun DetalleTarjetaLibroRecomendado(
         )
 
         DetalleValoracionTarjetaLibro(
-            valoracion = "",
-            cantidadOpiniones = 12
+            valoracion = valoracion,
+            cantidadOpiniones = cantidadOpiniones
         )
     }
 }

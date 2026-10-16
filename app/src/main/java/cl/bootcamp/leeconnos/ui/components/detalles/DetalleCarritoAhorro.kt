@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun DetalleCarritoAhorro(
-    ahorro: String
+    ahorro: Int
 ){
 
     Row(
@@ -26,7 +26,7 @@ fun DetalleCarritoAhorro(
         )
 
         Text(
-            text = "-$$ahorro",
+            text = if (ahorro > 0) "-$$ahorro" else "$0",
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Light
         )

@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun DetalleCarritoTotal(
-    total: String
+    total: Int
 ){
 
     Row(
