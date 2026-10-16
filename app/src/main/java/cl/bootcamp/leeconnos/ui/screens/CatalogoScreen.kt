@@ -7,9 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import cl.bootcamp.leeconnos.ui.components.AppTopBarDefault
+import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarDefault
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
-import kotlinx.coroutines.flow.scan
 
 @Composable
 fun CatalogoScreen(
