@@ -118,7 +118,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     fun agregarItemListaDeseados(libro: Libro) {
         viewModelScope.launch {
             libroRepository.toggleDeseado(libro)
-            mostrarMensajeSnackbar("Libro agregado a lista de deseados")
         }
     }
 
@@ -128,7 +127,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             if (libroAEliminar != null) {
                 libroRepository.toggleDeseado(libroAEliminar)
             }
-            mostrarMensajeSnackbar("Libro eliminado de lista de deseados")
         }
     }
 

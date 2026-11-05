@@ -5,6 +5,8 @@ data class Libro(
     val titulo: String,
     val autor: String,
     val descripcion: String,
+    val editorial: String,
+    val dimensiones: String,
     val precio: Int,
     val precioAnterior: Int,
     val enOferta: Boolean,

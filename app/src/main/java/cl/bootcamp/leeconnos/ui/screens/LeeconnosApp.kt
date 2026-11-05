@@ -63,8 +63,6 @@ fun LeeconnosApp(
     }
 
 
-
-
     //Lógica para no romper animación de navegación para hito 2. Luego refactorizar
     var showBottomBar by remember { mutableStateOf(pantallaActual?.showBottomBar ?: true) }
 
@@ -291,14 +289,24 @@ fun LeeconnosApp(
                 )
             }
 
-            composable(SecondaryRoutes.FichaLibro.route) {
-                FichaLibroScreen(
-                    mainViewModel = viewModel,
-                    onNavigateTo = { ruta ->
-                        navController.navigate(ruta)
-                    },
-                    onNavigateBack = { navController.popBackStack() }
-                )
+            navigation(
+                startDestination = SecondaryRoutes.FichaLibro.route,
+                route = "graph_route"
+            ) {
+
+                composable(SecondaryRoutes.FichaLibro.route) {
+                    FichaLibroScreen(
+                        mainViewModel = viewModel,
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        },
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable(SecondaryRoutes.Resenas.route) {
+                    
+                }
             }
         }
     }
