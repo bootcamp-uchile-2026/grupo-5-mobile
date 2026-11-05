@@ -16,12 +16,10 @@ fun CatalogoScreen(
     onNavigateTo: (String) -> Unit
 ){
 
-    val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
-
     Scaffold(
         topBar = {
             AppTopBarDefault(
-                cantidadItems = { itemsCarrito.size },
+                cantidadItems = { mainViewModel.obtenerCantidadCarrito() },
                 onNavigateTo = onNavigateTo
             )
         }

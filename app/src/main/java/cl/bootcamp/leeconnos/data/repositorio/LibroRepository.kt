@@ -50,9 +50,9 @@ class LibroRepository(
         }
     }
 
-    suspend fun modificarCantidadCarrito(libroId: String, delta: Int) {
+    suspend fun modificarCantidadCarrito(libroId: String) {
         val existente = libroDao.obtenerPorId(libroId) ?: return
-        val nuevaCantidad = existente.cantidadCarrito + delta
+        val nuevaCantidad = existente.cantidadCarrito - 1
         if (nuevaCantidad > 0) {
             libroDao.actualizarCantidadCarrito(libroId, nuevaCantidad)
         } else {

@@ -84,18 +84,23 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
 
     //Carrito
+
+    fun obtenerCantidadCarrito(): Int {
+
+        return itemsCarrito.value.sumOf { it.cantidad }
+    }
+
     fun agregarItemCarrito(libro: Libro) {
 
         viewModelScope.launch {
             libroRepository.agregarAlCarrito(libro, cantidad = 1)
-            _mensajeSnackbar.value = "Libro agregado al carrito"
         }
     }
 
     fun disminuirCantidadItemCarrito(libro: Libro) {
         viewModelScope.launch {
             if (libro.cantidad > 1) {
-                libroRepository.modificarCantidadCarrito(libro.id, delta = -1)
+                libroRepository.modificarCantidadCarrito(libro.id)
             } else {
                 eliminarItemCarrito(libro.id)
             }
@@ -105,7 +110,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     fun eliminarItemCarrito(libroId: String) {
         viewModelScope.launch {
             libroRepository.eliminarDelCarrito(libroId)
-            mostrarMensajeSnackbar("Libro eliminado del carrito")
         }
     }
 
@@ -114,7 +118,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     fun agregarItemListaDeseados(libro: Libro) {
         viewModelScope.launch {
             libroRepository.toggleDeseado(libro)
-            mostrarMensajeSnackbar("Libro agregado a lista de deseados")
         }
     }
 
@@ -124,7 +127,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             if (libroAEliminar != null) {
                 libroRepository.toggleDeseado(libroAEliminar)
             }
-            mostrarMensajeSnackbar("Libro eliminado de lista de deseados")
         }
     }
 
