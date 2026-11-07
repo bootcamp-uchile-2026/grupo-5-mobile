@@ -14,12 +14,14 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoAhorro
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoTotal
+import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 
 @Composable
 fun BottomBarDetalleCompra(
     textoBtn: String,
     ahorro: Int,
-    total: Int
+    total: Int,
+    onNavigateToCheckout: (String) -> Unit
 ){
 
     Column(
@@ -41,7 +43,9 @@ fun BottomBarDetalleCompra(
 
         BotonPrincipalBottomBar(
             textoBtn = textoBtn,
-            onComprarClick = {}
+            onClick = {
+                onNavigateToCheckout(SecondaryRoutes.ConfirmacionCompra.route)
+            }
         )
     }
 }

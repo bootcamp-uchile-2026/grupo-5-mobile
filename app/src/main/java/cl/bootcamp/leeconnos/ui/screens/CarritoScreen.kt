@@ -30,7 +30,8 @@ import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 @Composable
 fun CarritoScreen(
     mainViewModel: MainViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateTo: (String) -> Unit
 ){
     var libroAEliminar by remember { mutableStateOf<Libro?>(null) }
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
@@ -51,7 +52,8 @@ fun CarritoScreen(
             BottomBarDetalleCompra(
                 textoBtn = "Comprar",
                 ahorro = ahorroCompra,
-                total = totalCompra
+                total = totalCompra,
+                onNavigateToCheckout = onNavigateTo
             )
         }
 

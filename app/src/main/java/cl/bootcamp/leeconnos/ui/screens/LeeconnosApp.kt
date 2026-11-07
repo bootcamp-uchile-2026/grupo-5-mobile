@@ -263,19 +263,27 @@ fun LeeconnosApp(
             navigation(
                 startDestination = SecondaryRoutes.Carrito.route,
                 route = "graph_carrito"
-            ){
+            ) {
 
                 composable(SecondaryRoutes.Carrito.route) {
                     CarritoScreen(
                         mainViewModel = viewModel,
-                        onNavigateBack = { navController.popBackStack() }
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        }
                     )
                 }
 
                 composable(SecondaryRoutes.ConfirmacionCompra.route) {
-//                    CarritoScreen(
-//                        onNavigateBack = { navController.popBackStack() }
-//                    )
+                    ConfirmacionCompraScreen(
+                        mainViewModel = viewModel,
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        },
+                        onPagarClick = {}
+                    )
                 }
             }
 

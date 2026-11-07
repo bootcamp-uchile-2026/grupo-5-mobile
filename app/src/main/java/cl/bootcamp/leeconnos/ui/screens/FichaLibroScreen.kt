@@ -42,7 +42,7 @@ fun FichaLibroScreen(
 
             BotonPrincipalBottomBar(
                 textoBtn = "Agregar al carrito",
-                onComprarClick = {
+                onClick = {
 
                     if (libro != null ){
                         mainViewModel.agregarItemCarrito(libro!!)
