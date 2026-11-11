@@ -17,10 +17,11 @@ import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoTotal
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 
 @Composable
-fun BottomBarDetalleCompra(
+fun BottomBarDetalleCarrito(
     textoBtn: String,
     ahorro: Int,
     total: Int,
+    puedeNavegar: Boolean,
     onNavigateToCheckout: (String) -> Unit
 ){
 
@@ -43,6 +44,7 @@ fun BottomBarDetalleCompra(
 
         BotonPrincipalBottomBar(
             textoBtn = textoBtn,
+            enabled = puedeNavegar,
             onClick = {
                 onNavigateToCheckout(SecondaryRoutes.ConfirmacionCompra.route)
             }

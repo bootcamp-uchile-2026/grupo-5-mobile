@@ -20,6 +20,7 @@ import cl.bootcamp.leeconnos.R
 @Composable
 fun BotonPrincipalBottomBar(
     textoBtn: String,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
 
@@ -33,6 +34,7 @@ fun BotonPrincipalBottomBar(
         onClick = {
             onClick()
         },
+        enabled = enabled,
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
 
