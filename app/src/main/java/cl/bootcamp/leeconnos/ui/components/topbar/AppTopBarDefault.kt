@@ -3,6 +3,8 @@ package cl.bootcamp.leeconnos.ui.components.topbar
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.ui.components.Buscador
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,28 +37,16 @@ fun AppTopBarDefault(
     CenterAlignedTopAppBar(
 
         title = {
-            OutlinedTextField(
-                value = textoBusqueda,
+
+            Buscador(
+                valor = textoBusqueda,
+                placeholder = "Ingresa una dirección",
                 onValueChange = onTextoBusquedaChange,
-                placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
-                trailingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_busqueda),
-                        contentDescription = "Buscar",
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                singleLine = true,
-                shape = CircleShape,
+                onBuscarClick = {},//onNavigateTo,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-                )
+                    .heightIn(max = 50.dp)
+                    .padding(horizontal = 16.dp)
             )
         },
 

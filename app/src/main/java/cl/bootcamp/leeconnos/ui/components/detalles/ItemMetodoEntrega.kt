@@ -1,6 +1,7 @@
 package cl.bootcamp.leeconnos.ui.components.detalles
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,9 @@ fun ItemMetodoEntrega(
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.large)
             .padding(horizontal = 16.dp)
+            .clickable {
+                onClick()
+            }
     ) {
 
         Row(

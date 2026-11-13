@@ -26,7 +26,6 @@ import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarritoScreen(
     mainViewModel: MainViewModel,
