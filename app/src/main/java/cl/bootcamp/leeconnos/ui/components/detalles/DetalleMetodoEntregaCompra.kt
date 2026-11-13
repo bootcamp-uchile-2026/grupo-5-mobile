@@ -10,11 +10,15 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
 @Composable
-fun DetalleMetodoEntregaCompra(
-    deliverySelected: Boolean,
-    retiroSelected: Boolean,
-    deliveryOnClick: () -> Unit,
-    retiroOnClick: () -> Unit
+fun DetalleConfirmacionCompra(
+    textoPrimerItem: String,
+    textoSegundoItem: String,
+    iconoPrimerItem: Int,
+    iconoSegundoItem: Int,
+    primerItemSelected: Boolean,
+    segundoItemSelected: Boolean,
+    primerItemOnClick: () -> Unit,
+    segundoItemOnClick: () -> Unit
 ) {
 
     Column(
@@ -25,17 +29,17 @@ fun DetalleMetodoEntregaCompra(
     ) {
 
         ItemMetodoEntrega(
-            icono = R.drawable.ic_truck,
-            texto = "Delivery",
-            selected = deliverySelected,
-            onClick = deliveryOnClick
+            icono = iconoPrimerItem,
+            texto = textoPrimerItem,
+            selected = primerItemSelected,
+            onClick = primerItemOnClick
         )
 
         ItemMetodoEntrega(
-            icono = R.drawable.ic_shopping_bag,
-            texto = "Retiro en tienda",
-            selected = retiroSelected,
-            onClick = retiroOnClick
+            icono = iconoSegundoItem,
+            texto = textoSegundoItem,
+            selected = segundoItemSelected,
+            onClick = segundoItemOnClick
         )
     }
 }

@@ -1,16 +1,9 @@
 package cl.bootcamp.leeconnos.ui.screens
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,17 +12,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
 import cl.bootcamp.leeconnos.ui.components.desplegables.DesplegableCompra
-import cl.bootcamp.leeconnos.ui.components.detalles.DetalleMetodoEntregaCompra
+import cl.bootcamp.leeconnos.ui.components.detalles.DetalleConfirmacionCompra
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleResumenCompra
-import cl.bootcamp.leeconnos.ui.components.imagenes.ImagenResumenCompra
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
@@ -105,14 +95,18 @@ fun ConfirmacionCompraScreen(
                     var deliverySelected by rememberSaveable { mutableStateOf(false) }
                     var retiroSelected by rememberSaveable { mutableStateOf(false) }
 
-                    DetalleMetodoEntregaCompra(
-                        deliverySelected = deliverySelected,
-                        retiroSelected = retiroSelected,
-                        deliveryOnClick = {
+                    DetalleConfirmacionCompra(
+                        textoPrimerItem = "Delivery",
+                        textoSegundoItem = "Retiro en tienda",
+                        iconoPrimerItem = R.drawable.ic_truck,
+                        iconoSegundoItem = R.drawable.ic_shopping_bag,
+                        primerItemSelected = deliverySelected,
+                        segundoItemSelected = retiroSelected,
+                        primerItemOnClick = {
                             retiroSelected = false
                             deliverySelected = true
                         },
-                        retiroOnClick = {
+                        segundoItemOnClick = {
                             deliverySelected = false
                             retiroSelected = true
                         }
@@ -126,6 +120,25 @@ fun ConfirmacionCompraScreen(
                 resultado = {},
                 contenidoDesplegable = {
 
+                    var tarjetaSelected by rememberSaveable { mutableStateOf(false) }
+                    var transferenciaSelected by rememberSaveable { mutableStateOf(false) }
+
+                    DetalleConfirmacionCompra(
+                        textoPrimerItem = "Agregar Tarjeta Crédito / Débito",
+                        textoSegundoItem = "Transferencia",
+                        iconoPrimerItem = R.drawable.ic_credit_card,
+                        iconoSegundoItem = R.drawable.ic_shopping_bag,
+                        primerItemSelected = tarjetaSelected,
+                        segundoItemSelected = transferenciaSelected,
+                        primerItemOnClick = {
+                            tarjetaSelected = false
+                            transferenciaSelected = true
+                        },
+                        segundoItemOnClick = {
+                            tarjetaSelected = false
+                            transferenciaSelected = true
+                        }
+                    )
                 }
             )
         }

@@ -85,10 +85,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     //Carrito
 
-    fun obtenerCantidadCarrito(): Int {
-
-        return itemsCarrito.value.sumOf { it.cantidad }
-    }
+//    fun obtenerCantidadCarrito(): Int {
+//
+//        return itemsCarrito.value.sumOf { it.cantidad }
+//    }
 
     fun agregarItemCarrito(libro: Libro) {
 
