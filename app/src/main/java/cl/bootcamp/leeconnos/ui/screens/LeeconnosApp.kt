@@ -59,7 +59,7 @@ fun LeeconnosApp(
 
     val pantallaActual = remember(currentRoute) {
         ScreenRoutes.entries.find { it.route == currentRoute }
-            ?: SecondaryRoutes.values.find { it.route == currentRoute }
+            ?: SecondaryRoutes.getValues().find { it.route == currentRoute }
     }
 
 
@@ -203,6 +203,74 @@ fun LeeconnosApp(
                 }
             }
 
+
+            navigation(
+                startDestination = SecondaryRoutes.Carrito.route,
+                route = "graph_carrito"
+            ) {
+
+                composable(SecondaryRoutes.Carrito.route) {
+                    CarritoScreen(
+                        mainViewModel = viewModel,
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        }
+                    )
+                }
+
+                composable(SecondaryRoutes.ConfirmacionCompra.route) {
+                    ConfirmacionCompraScreen(
+                        mainViewModel = viewModel,
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        },
+                        onPagarClick = {}
+                    )
+                }
+
+
+            }
+
+            composable(SecondaryRoutes.ListaDeseados.route) {
+                ListaDeseadosScreen(
+                    mainViewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateTo = { ruta ->
+                        navController.navigate(ruta)
+                    }
+                )
+            }
+
+            navigation(
+                startDestination = SecondaryRoutes.FichaLibro.route,
+                route = "graph_route"
+            ) {
+
+                composable(SecondaryRoutes.FichaLibro.route) {
+                    FichaLibroScreen(
+                        mainViewModel = viewModel,
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        },
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable(SecondaryRoutes.Resenas.route) {
+
+                }
+            }
+
+            composable(SecondaryRoutes.AgregarDireccion.route) {
+                AgregarDireccionScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onContinuarClick = {}
+                )
+            }
+
+            //Pendientes sin Wireframe
             navigation(
                 startDestination = ScreenRoutes.DESCUBRE.route,
                 route = "graph_descubre"
@@ -256,64 +324,6 @@ fun LeeconnosApp(
                 }
                 composable(SecondaryRoutes.Ayuda.route) {
                     //AyudaScreen
-                }
-            }
-
-
-            navigation(
-                startDestination = SecondaryRoutes.Carrito.route,
-                route = "graph_carrito"
-            ) {
-
-                composable(SecondaryRoutes.Carrito.route) {
-                    CarritoScreen(
-                        mainViewModel = viewModel,
-                        onNavigateBack = { navController.popBackStack() },
-                        onNavigateTo = { ruta ->
-                            navController.navigate(ruta)
-                        }
-                    )
-                }
-
-                composable(SecondaryRoutes.ConfirmacionCompra.route) {
-                    ConfirmacionCompraScreen(
-                        mainViewModel = viewModel,
-                        onNavigateBack = { navController.popBackStack() },
-                        onNavigateTo = { ruta ->
-                            navController.navigate(ruta)
-                        },
-                        onPagarClick = {}
-                    )
-                }
-            }
-
-            composable(SecondaryRoutes.ListaDeseados.route) {
-                ListaDeseadosScreen(
-                    mainViewModel = viewModel,
-                    onNavigateBack = { navController.popBackStack() },
-                    onNavigateTo = { ruta ->
-                        navController.navigate(ruta)
-                    }
-                )
-            }
-
-            navigation(
-                startDestination = SecondaryRoutes.FichaLibro.route,
-                route = "graph_route"
-            ) {
-
-                composable(SecondaryRoutes.FichaLibro.route) {
-                    FichaLibroScreen(
-                        mainViewModel = viewModel,
-                        onNavigateTo = { ruta ->
-                            navController.navigate(ruta)
-                        },
-                        onNavigateBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(SecondaryRoutes.Resenas.route) {
-                    
                 }
             }
         }

@@ -29,7 +29,7 @@ fun Buscador(
         onValueChange = { nuevoValor ->
             onValueChange(nuevoValor)
         },
-        placeholder = { Text(placeholder, style = MaterialTheme.typography.bodyMedium) },
+        placeholder = { Text(placeholder, style = MaterialTheme.typography.bodySmall) },
         trailingIcon = {
 
             IconButton(
@@ -46,6 +46,7 @@ fun Buscador(
         },
         singleLine = true,
         shape = MaterialTheme.shapes.large,
+        textStyle = MaterialTheme.typography.bodySmall,
         modifier = modifier,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,

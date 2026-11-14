@@ -51,7 +51,14 @@ sealed class SecondaryRoutes(
         showBottomBar = false
     )
 
-    // PENDIENTES
+    object AgregarDireccion : SecondaryRoutes(
+        route = "agregar_direccion",
+        title = "Elige la dirección de entrega",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
+    // PENDIENTES (sin Wireframes)
 
     object FichaLibrero : SecondaryRoutes(
         route = "ficha_librero",
@@ -95,9 +102,10 @@ sealed class SecondaryRoutes(
     )
 
     companion object {
-        val values = listOf(
+        fun getValues(): List<SecondaryRoutes> = listOf(
             Carrito,
             ConfirmacionCompra,
+            AgregarDireccion,
             ListaDeseados,
             FichaLibro,
             Resenas,

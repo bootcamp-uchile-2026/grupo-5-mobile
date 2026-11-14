@@ -18,8 +18,11 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
 @Composable
-fun BotonAgregarAlCarrito(
-    onBtnClick: () -> Unit
+fun BotonPrincipalConIcono(
+    textoBtn: String,
+    icono: Int,
+    onBtnClick: () -> Unit,
+    modifier: Modifier
 ){
 
     Button(
@@ -32,7 +35,7 @@ fun BotonAgregarAlCarrito(
         onClick = {
             onBtnClick()
         },
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = modifier
     ) {
 
         Row(
@@ -41,14 +44,14 @@ fun BotonAgregarAlCarrito(
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_carrito),
+                painter = painterResource(id = icono),
                 contentDescription = "",
                 modifier = Modifier.padding(end = 8.dp)
             )
 
             Text(
-                text = "Agregar al carrito",
-                style = MaterialTheme.typography.labelSmall,
+                text = textoBtn,
+                style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold
             )
         }

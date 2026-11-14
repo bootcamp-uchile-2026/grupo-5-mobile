@@ -1,10 +1,13 @@
 package cl.bootcamp.leeconnos.ui.components.detalles
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Libro
-import cl.bootcamp.leeconnos.ui.components.botones.BotonAgregarAlCarrito
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalConIcono
 
 @Composable
 fun DetalleItemListaDeseados(
@@ -24,10 +27,13 @@ fun DetalleItemListaDeseados(
             precioAnterior = libro.precioAnterior
         )
 
-        BotonAgregarAlCarrito(
+        BotonPrincipalConIcono(
+            textoBtn = "Agregar al carrito",
+            icono = R.drawable.ic_carrito,
             onBtnClick = {
                 onAddClick()
-            }
+            },
+            modifier = Modifier.padding(vertical = 8.dp)
         )
     }
 }

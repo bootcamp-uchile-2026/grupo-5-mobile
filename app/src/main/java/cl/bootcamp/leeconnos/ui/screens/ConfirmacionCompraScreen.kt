@@ -1,47 +1,36 @@
 package cl.bootcamp.leeconnos.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
+import android.Manifest
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import cl.bootcamp.leeconnos.R
-import cl.bootcamp.leeconnos.ui.components.Buscador
+import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
 import cl.bootcamp.leeconnos.ui.components.desplegables.DesplegableCompra
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleConfirmacionCompra
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleResumenCompra
+import cl.bootcamp.leeconnos.ui.components.dialogos.DialogoDirecciones
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
+import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ConfirmacionCompraScreen(
     mainViewModel: MainViewModel,
@@ -55,11 +44,18 @@ fun ConfirmacionCompraScreen(
 
     var mostrarDialogoDirecciones by rememberSaveable { mutableStateOf(false) }
 
+    val locationPermissionsState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+
     Scaffold(
         topBar = {
 
             AppTopBarSimpleNavigation(
-                titulo = "Confirmación de compra",
+                titulo = SecondaryRoutes.ConfirmacionCompra.title,
                 onNavigateBack = onNavigateBack
             )
         },
@@ -124,6 +120,7 @@ fun ConfirmacionCompraScreen(
                         primerItemSelected = deliverySelected,
                         segundoItemSelected = retiroSelected,
                         primerItemOnClick = {
+
                             retiroSelected = false
                             deliverySelected = true
 
@@ -176,62 +173,42 @@ fun ConfirmacionCompraScreen(
 
             var textoBusqueda by rememberSaveable { mutableStateOf("") }
 
-            Card(
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
+            DialogoDirecciones(
+                textoBusqueda = textoBusqueda,
+                tienePermisoUbicacion = locationPermissionsState.allPermissionsGranted,
+                debeMostrarRationale = locationPermissionsState.shouldShowRationale,
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                ) {
+                onTextoBusquedaChange = { nuevoValor ->
+                    textoBusqueda = nuevoValor
+                },
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    ) {
+                onNuevaDireccion = { destino ->
+                    onNavigateTo(destino)
+                    mostrarDialogoDirecciones = false
+                },
 
-                        Spacer(modifier = Modifier.weight(.2f))
+                onDireccionGuardada = {},
 
-                        Text(
-                            text = "Direcciones",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.weight(.6f)
-                        )
+                onPedirPermiso = { locationPermissionsState.launchMultiplePermissionRequest() },
 
-                        Text(
-                            text = "X",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Light,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.weight(.2f)
-                        )
-                    }
+                onDismiss = { mostrarDialogoDirecciones = false },
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                listaDirecciones = listOf(
+                    Direccion(
+                        calle = "Calle 1444",
+                        comuna = "Copiapó",
+                        region = "Atacama",
+                        telefono = "+56911223344"
+                    ),
 
-                    Buscador(
-                        valor = textoBusqueda,
-                        placeholder = "Ingresa una dirección",
-                        onValueChange = {},
-                        onBuscarClick = {},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 50.dp)
-                            .padding(horizontal = 16.dp)
+                    Direccion(
+                        calle = "Calle 1444",
+                        comuna = "Copiapó",
+                        region = "Atacama",
+                        telefono = "+56911223344"
                     )
-
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
-
-
-                }
-            }
+                )
+            )
         }
     }
 }
