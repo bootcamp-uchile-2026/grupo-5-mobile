@@ -1,7 +1,6 @@
-package cl.bootcamp.leeconnos.ui.components
+package cl.bootcamp.leeconnos.ui.components.campostexto
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,38 +15,34 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
 @Composable
-fun Buscador(
-    valor: String,
+fun CampoTextoCupon(
+    texto: String,
     placeholder: String,
+    enabled: Boolean,
     onValueChange: (String) -> Unit,
-    onBuscarClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
 
     OutlinedTextField(
-        value = valor,
+        value = texto,
         onValueChange = { nuevoValor ->
             onValueChange(nuevoValor)
         },
         placeholder = { Text(placeholder, style = MaterialTheme.typography.bodySmall) },
-        trailingIcon = {
+        leadingIcon = {
 
-            IconButton(
-                onClick = {
-                    onBuscarClick()
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_busqueda),
-                    contentDescription = "Buscar",
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_descuento),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+
         },
+        enabled = enabled,
         singleLine = true,
         shape = MaterialTheme.shapes.large,
         textStyle = MaterialTheme.typography.bodySmall,
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,

@@ -58,6 +58,13 @@ sealed class SecondaryRoutes(
         showBottomBar = false
     )
 
+    object AgregarTarjeta : SecondaryRoutes(
+        route = "agregar_tarjeta",
+        title = "Ingresar método de pago",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
     // PENDIENTES (sin Wireframes)
 
     object FichaLibrero : SecondaryRoutes(
@@ -106,6 +113,7 @@ sealed class SecondaryRoutes(
             Carrito,
             ConfirmacionCompra,
             AgregarDireccion,
+            AgregarTarjeta,
             ListaDeseados,
             FichaLibro,
             Resenas,

@@ -263,10 +263,18 @@ fun LeeconnosApp(
                 }
             }
 
+            //Separados del grafo de carrito por si se reutilizan en mi cuenta, si no es así agregar en grafo carrito después
             composable(SecondaryRoutes.AgregarDireccion.route) {
                 AgregarDireccionScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onContinuarClick = {}
+                )
+            }
+
+            composable(SecondaryRoutes.AgregarTarjeta.route) {
+                AgregarTarjetaScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onAgregarClick = {}
                 )
             }
 

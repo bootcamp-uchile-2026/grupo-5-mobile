@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
-import cl.bootcamp.leeconnos.ui.components.Buscador
+import cl.bootcamp.leeconnos.ui.components.campostexto.Buscador
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalConIcono
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 
