@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.Buscador
-import cl.bootcamp.leeconnos.ui.components.ItemDirecciones
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalConIcono
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 
@@ -81,7 +80,7 @@ fun DialogoDirecciones(
             item {
 
                 if (tienePermisoUbicacion) {
-                    ItemDirecciones(
+                    ItemDialogoDirecciones(
                         titulo = "Usar mi ubicación actual",
                         subtitulo = "Av. Siempre viva 1666, Santiago, Región Metropolitana Chile", //Cambiar por ubicación basada en longitud y latitud
                         onClick = {
@@ -114,8 +113,6 @@ fun DialogoDirecciones(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
                 } else {
 
                     BotonPrincipalConIcono(
@@ -135,7 +132,7 @@ fun DialogoDirecciones(
             items(listaDirecciones) { direccion ->
 
                 //item de lista
-                ItemDirecciones(
+                ItemDialogoDirecciones(
                     titulo = "${direccion.calle}, ${direccion.comuna}, ${direccion.region}",
                     subtitulo = "[NOMBRE(CAMBIAR)] \n${direccion.telefono}",
                     onClick = onDireccionGuardada

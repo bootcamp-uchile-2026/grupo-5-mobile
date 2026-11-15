@@ -1,4 +1,4 @@
-package cl.bootcamp.leeconnos.ui.components
+package cl.bootcamp.leeconnos.ui.components.dialogos
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,42 +20,34 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
 @Composable
-fun ItemDirecciones(
+fun ItemDialogoTarjeta(
     titulo: String,
-    subtitulo: String,
     onClick: () -> Unit
 ) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .padding(start = 24.dp, end = 8.dp)
             .clickable { onClick() }
     ) {
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .weight(.8f)
-                .padding(start = 8.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.weight(.8f)
         ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_credit_card_2),
+                contentDescription = null
+            )
 
             Text(
                 text = titulo,
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Text(
-                text = subtitulo,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Light,
-                minLines = 2,
-                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -66,7 +58,7 @@ fun ItemDirecciones(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = "Usar mi ubicación actual"
+                contentDescription = null
             )
         }
     }

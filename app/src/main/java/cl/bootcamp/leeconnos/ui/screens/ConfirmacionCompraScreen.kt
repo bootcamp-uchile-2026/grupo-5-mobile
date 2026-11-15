@@ -1,9 +1,18 @@
 package cl.bootcamp.leeconnos.ui.screens
 
 import android.Manifest
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -14,16 +23,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
+import cl.bootcamp.leeconnos.ui.components.cards.TarjetaMetodoEntrega
 import cl.bootcamp.leeconnos.ui.components.desplegables.DesplegableCompra
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleConfirmacionCompra
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleResumenCompra
 import cl.bootcamp.leeconnos.ui.components.dialogos.DialogoDirecciones
+import cl.bootcamp.leeconnos.ui.components.dialogos.DialogoTarjeta
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
@@ -42,7 +55,10 @@ fun ConfirmacionCompraScreen(
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
     val totalCompra by mainViewModel.totalCompra.collectAsState()
 
-    var mostrarDialogoDirecciones by rememberSaveable { mutableStateOf(false) }
+    var mostrarDialogoDelivery by rememberSaveable { mutableStateOf(false) }
+    var metodoEntregaElegido by rememberSaveable { mutableStateOf(false) }
+
+    var mostrarDialogoTarjeta by rememberSaveable { mutableStateOf(false) }
 
     val locationPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -53,7 +69,6 @@ fun ConfirmacionCompraScreen(
 
     Scaffold(
         topBar = {
-
             AppTopBarSimpleNavigation(
                 titulo = SecondaryRoutes.ConfirmacionCompra.title,
                 onNavigateBack = onNavigateBack
@@ -77,6 +92,7 @@ fun ConfirmacionCompraScreen(
                 .padding(vertical = 24.dp, horizontal = 16.dp)
         ) {
 
+            //Resumen
             DesplegableCompra(
                 icono = R.drawable.ic_shopping_bag,
                 nombre = "Resumen",
@@ -96,12 +112,16 @@ fun ConfirmacionCompraScreen(
                 }
             )
 
+            //Métodos de entrega
             DesplegableCompra(
                 icono = R.drawable.ic_truck,
                 nombre = "Método de entrega",
                 resultado = {
+
+                    val subtitulo = if (!metodoEntregaElegido) "*Obligatorio" else "Delivery"
+
                     Text(
-                        text = "*Obligatorio",
+                        text = subtitulo,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Light,
                         modifier = Modifier.padding(end = 8.dp)
@@ -109,31 +129,44 @@ fun ConfirmacionCompraScreen(
                 },
                 contenidoDesplegable = {
 
-                    var deliverySelected by rememberSaveable { mutableStateOf(false) }
-                    var retiroSelected by rememberSaveable { mutableStateOf(false) }
+                    if (!metodoEntregaElegido) {
 
-                    DetalleConfirmacionCompra(
-                        textoPrimerItem = "Delivery",
-                        textoSegundoItem = "Retiro en tienda",
-                        iconoPrimerItem = R.drawable.ic_truck,
-                        iconoSegundoItem = R.drawable.ic_shopping_bag,
-                        primerItemSelected = deliverySelected,
-                        segundoItemSelected = retiroSelected,
-                        primerItemOnClick = {
+                        var deliverySelected by rememberSaveable { mutableStateOf(false) }
+                        var retiroSelected by rememberSaveable { mutableStateOf(false) }
 
-                            retiroSelected = false
-                            deliverySelected = true
+                        DetalleConfirmacionCompra(
+                            textoPrimerItem = "Delivery",
+                            textoSegundoItem = "Retiro en tienda",
+                            iconoPrimerItem = R.drawable.ic_truck,
+                            iconoSegundoItem = R.drawable.ic_shopping_bag,
+                            primerItemSelected = deliverySelected,
+                            segundoItemSelected = retiroSelected,
+                            primerItemOnClick = {
 
-                            mostrarDialogoDirecciones = true
-                        },
-                        segundoItemOnClick = {
-                            deliverySelected = false
-                            retiroSelected = true
-                        }
-                    )
+                                retiroSelected = false
+                                deliverySelected = true
+
+                                mostrarDialogoDelivery = true
+                            },
+                            segundoItemOnClick = {
+                                deliverySelected = false
+                                retiroSelected = true
+                            }
+                        )
+
+                    } else {
+
+                        TarjetaMetodoEntrega(
+                            onCambiarDireccionClick = {
+                                metodoEntregaElegido = false
+                                mostrarDialogoDelivery = true
+                            }
+                        )
+                    }
                 }
             )
 
+            //Métodos de pago
             DesplegableCompra(
                 icono = R.drawable.ic_credit_card,
                 nombre = "Métodos de pago",
@@ -144,19 +177,21 @@ fun ConfirmacionCompraScreen(
                     var transferenciaSelected by rememberSaveable { mutableStateOf(false) }
 
                     DetalleConfirmacionCompra(
-                        textoPrimerItem = "Agregar Tarjeta Crédito / Débito",
+                        textoPrimerItem = "Agregar tarjeta crédito / débito",
                         textoSegundoItem = "Transferencia",
                         iconoPrimerItem = R.drawable.ic_credit_card,
                         iconoSegundoItem = R.drawable.ic_shopping_bag,
                         primerItemSelected = tarjetaSelected,
                         segundoItemSelected = transferenciaSelected,
                         primerItemOnClick = {
-                            tarjetaSelected = false
-                            transferenciaSelected = true
+                            tarjetaSelected = true
+                            transferenciaSelected = false
+
+                            mostrarDialogoTarjeta = true
                         },
                         segundoItemOnClick = {
-                            tarjetaSelected = false
                             transferenciaSelected = true
+                            tarjetaSelected = false
                         }
                     )
                 }
@@ -164,11 +199,11 @@ fun ConfirmacionCompraScreen(
         }
     }
 
-    //PopUp para elegir dirección
-    if (mostrarDialogoDirecciones) {
+    //PopUp para elegir dirección para Delivery
+    if (mostrarDialogoDelivery) {
 
         Dialog(
-            onDismissRequest = { mostrarDialogoDirecciones = false }
+            onDismissRequest = { mostrarDialogoDelivery = false }
         ) {
 
             var textoBusqueda by rememberSaveable { mutableStateOf("") }
@@ -179,19 +214,23 @@ fun ConfirmacionCompraScreen(
                 debeMostrarRationale = locationPermissionsState.shouldShowRationale,
 
                 onTextoBusquedaChange = { nuevoValor ->
+                    mostrarDialogoDelivery = false
                     textoBusqueda = nuevoValor
                 },
 
                 onNuevaDireccion = { destino ->
+                    mostrarDialogoDelivery = false
                     onNavigateTo(destino)
-                    mostrarDialogoDirecciones = false
                 },
 
-                onDireccionGuardada = {},
+                onDireccionGuardada = {
+                    mostrarDialogoDelivery = false
+                    metodoEntregaElegido = true
+                },
 
                 onPedirPermiso = { locationPermissionsState.launchMultiplePermissionRequest() },
 
-                onDismiss = { mostrarDialogoDirecciones = false },
+                onDismiss = { mostrarDialogoDelivery = false },
 
                 listaDirecciones = listOf(
                     Direccion(
@@ -208,6 +247,25 @@ fun ConfirmacionCompraScreen(
                         telefono = "+56911223344"
                     )
                 )
+            )
+        }
+    }
+
+    //PopUp para elegir tarjeta
+    if (mostrarDialogoTarjeta) {
+
+        Dialog(
+            onDismissRequest = { mostrarDialogoTarjeta = false }
+        ) {
+
+            DialogoTarjeta(
+                onTarjetaCreditoClick = {
+
+                },
+                onTarjetaDebitoPrepagoClick = {
+                    
+                },
+                onDismiss = { mostrarDialogoTarjeta = false }
             )
         }
     }
