@@ -10,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun DetalleCarritoTotal(
-    total: Int
+fun DetalleTotalCompra(
+    concepto: String,
+    valor: String,
+    colorPrincipal: Boolean = true
 ){
 
     Row(
@@ -20,17 +22,17 @@ fun DetalleCarritoTotal(
             .fillMaxWidth()
     ) {
         Text(
-            text = "Total a pagar:",
+            text = concepto,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary
+            color = if (colorPrincipal) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
         )
 
         Text(
-            text = "$$total",
+            text = valor,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary
+            color = if (colorPrincipal) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
         )
     }
 }

@@ -19,13 +19,6 @@ sealed class SecondaryRoutes(
         showBottomBar = false
     )
 
-    object ConfirmacionCompra : SecondaryRoutes(
-        route = "confirmacion_compra",
-        title = "Confirmación compra",
-        showGlobalTopBar = false,
-        showBottomBar = false
-    )
-
     object ListaDeseados : SecondaryRoutes(
         route = "lista_deseados",
         title = "Lista de deseados",
@@ -34,7 +27,7 @@ sealed class SecondaryRoutes(
         showBottomBar = false
     )
 
-    // CATALOGO [Flotantes]
+    // CATALOGO [Flotante]
     object FichaLibro : SecondaryRoutes(
         route = "ficha_libro",
         title = "Ficha del Libro",
@@ -50,13 +43,35 @@ sealed class SecondaryRoutes(
         showBottomBar = false
     )
 
-    // DESCUBRE [Anidadas]
+    // CHECKOUT [Anidada de Carrito]
+    object ConfirmacionCompra : SecondaryRoutes(
+        route = "confirmacion_compra",
+        title = "Confirmación compra",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
+    object AgregarDireccion : SecondaryRoutes(
+        route = "agregar_direccion",
+        title = "Elige la dirección de entrega",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
+    object AgregarTarjeta : SecondaryRoutes(
+        route = "agregar_tarjeta",
+        title = "Ingresar método de pago",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
+    // PENDIENTES (sin Wireframes)
+
     object FichaLibrero : SecondaryRoutes(
         route = "ficha_librero",
         title = "Perfil del Librero"
     )
 
-    // MI CUENTA [Anidadas]
     object MiPerfil : SecondaryRoutes(
         route = "mi_perfil",
         title = "Mi Perfil",
@@ -94,8 +109,11 @@ sealed class SecondaryRoutes(
     )
 
     companion object {
-        val values = listOf(
+        fun getValues(): List<SecondaryRoutes> = listOf(
             Carrito,
+            ConfirmacionCompra,
+            AgregarDireccion,
+            AgregarTarjeta,
             ListaDeseados,
             FichaLibro,
             Resenas,

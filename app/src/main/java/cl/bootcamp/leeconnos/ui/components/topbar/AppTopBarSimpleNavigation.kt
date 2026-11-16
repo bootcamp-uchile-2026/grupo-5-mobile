@@ -16,7 +16,7 @@ fun AppTopBarSimpleNavigation(
     titulo: String,
     onNavigateBack: () -> Unit
 ) {
-
+    // Titulo + Navigation Back
 
     CenterAlignedTopAppBar(
 

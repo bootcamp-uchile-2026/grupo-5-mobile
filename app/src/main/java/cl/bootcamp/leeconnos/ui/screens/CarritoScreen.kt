@@ -19,18 +19,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.ui.components.AlertaConfirmacion
-import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
-import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarDetalleCompra
+import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarDetalleCarrito
 import cl.bootcamp.leeconnos.ui.components.carruseles.CantidadItems
 import cl.bootcamp.leeconnos.ui.components.carruseles.ItemCarrito
+import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarritoScreen(
     mainViewModel: MainViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateTo: (String) -> Unit
 ){
     var libroAEliminar by remember { mutableStateOf<Libro?>(null) }
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
@@ -48,10 +48,12 @@ fun CarritoScreen(
 
         bottomBar = {
 
-            BottomBarDetalleCompra(
+            BottomBarDetalleCarrito(
                 textoBtn = "Comprar",
                 ahorro = ahorroCompra,
-                total = totalCompra
+                total = totalCompra,
+                puedeNavegar = itemsCarrito.isNotEmpty(),
+                onNavigateToCheckout = onNavigateTo
             )
         }
 

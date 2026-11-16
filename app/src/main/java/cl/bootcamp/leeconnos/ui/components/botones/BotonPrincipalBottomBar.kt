@@ -20,7 +20,8 @@ import cl.bootcamp.leeconnos.R
 @Composable
 fun BotonPrincipalBottomBar(
     textoBtn: String,
-    onComprarClick: () -> Unit
+    enabled: Boolean = true,
+    onClick: () -> Unit
 ) {
 
     Button(
@@ -31,8 +32,9 @@ fun BotonPrincipalBottomBar(
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
         ),
         onClick = {
-            onComprarClick()
+            onClick()
         },
+        enabled = enabled,
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
 

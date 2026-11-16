@@ -12,14 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
-import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoAhorro
-import cl.bootcamp.leeconnos.ui.components.detalles.DetalleCarritoTotal
+import cl.bootcamp.leeconnos.ui.components.detalles.DetalleSubtotalCompra
+import cl.bootcamp.leeconnos.ui.components.detalles.DetalleTotalCompra
+import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 
 @Composable
-fun BottomBarDetalleCompra(
+fun BottomBarDetalleCarrito(
     textoBtn: String,
     ahorro: Int,
-    total: Int
+    total: Int,
+    puedeNavegar: Boolean,
+    onNavigateToCheckout: (String) -> Unit
 ){
 
     Column(
@@ -31,17 +34,22 @@ fun BottomBarDetalleCompra(
             .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
 
-        DetalleCarritoAhorro(
-            ahorro = ahorro
+        DetalleSubtotalCompra(
+            concepto = "Ahorro",
+            valor = "$$ahorro"
         )
 
-        DetalleCarritoTotal(
-            total = total
+        DetalleTotalCompra(
+            concepto = "Total a pagar",
+            valor = "$$total"
         )
 
         BotonPrincipalBottomBar(
             textoBtn = textoBtn,
-            onComprarClick = {}
+            enabled = puedeNavegar,
+            onClick = {
+                onNavigateToCheckout(SecondaryRoutes.ConfirmacionCompra.route)
+            }
         )
     }
 }

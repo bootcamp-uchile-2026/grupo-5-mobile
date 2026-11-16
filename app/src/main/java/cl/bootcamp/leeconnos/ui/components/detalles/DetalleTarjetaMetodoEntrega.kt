@@ -7,28 +7,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun DetalleCarritoAhorro(
-    ahorro: Int
-){
+fun DetalleTarjetaMetodoEntrega(
+    concepto: String,
+    valor: String
+) {
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Ahorro:",
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Light
+            text = concepto,
+            style = MaterialTheme.typography.labelMedium
         )
 
         Text(
-            text = if (ahorro > 0) "-$$ahorro" else "$0",
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Light
+            text = valor,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

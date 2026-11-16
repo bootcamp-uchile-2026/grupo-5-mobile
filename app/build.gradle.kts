@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.maps.secrets)
 }
 
 android {
@@ -73,10 +74,14 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
-//    ksp(libs.androidx.room.compiler) {
-//        exclude(group = "com.intellij", module = "annotations")
-//    }
+    //Google Maps API
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
+    implementation(libs.kotlinx.coroutines.play.services)
 
+    //Permisos
+    implementation(libs.accompanist.permissions)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
