@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -45,7 +48,10 @@ import cl.bootcamp.leeconnos.ui.components.dialogos.DialogoDirecciones
 import cl.bootcamp.leeconnos.ui.components.dialogos.DialogoTarjeta
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import cl.bootcamp.leeconnos.viewmodel.MetodoEntrega
+import cl.bootcamp.leeconnos.viewmodel.MetodoPago
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
@@ -53,6 +59,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 @Composable
 fun ConfirmacionCompraScreen(
     mainViewModel: MainViewModel,
+    checkoutViewModel: CheckoutViewModel,
     onNavigateBack: () -> Unit,
     onNavigateTo: (String) -> Unit,
     onPagarClick: () -> Unit
@@ -61,14 +68,9 @@ fun ConfirmacionCompraScreen(
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
     val totalCompra by mainViewModel.totalCompra.collectAsState()
 
-    //Ver si manejar estos estados y variables en un ConfirmacionCompraViewModel
-    var mostrarDialogoDelivery by rememberSaveable { mutableStateOf(false) }
-    var metodoEntregaElegido by rememberSaveable { mutableStateOf(false) }
+    checkoutViewModel.calcularTotalCompra(totalCompra)
 
-    var mostrarDialogoTarjeta by rememberSaveable { mutableStateOf(false) }
-    var metodoPagoElegido by rememberSaveable { mutableStateOf(false) }
-
-    var textoCupon by rememberSaveable { mutableStateOf("") }
+    val uiState by checkoutViewModel.uiState.collectAsState()
 
     val locationPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -89,7 +91,7 @@ fun ConfirmacionCompraScreen(
 
             BotonPrincipalBottomBar(
                 textoBtn = "Pagar",
-                enabled = metodoPagoElegido,
+                enabled = uiState.puedePagar,
                 onClick = onPagarClick
             )
         }
@@ -101,6 +103,8 @@ fun ConfirmacionCompraScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues)
+                .imePadding()
+                .verticalScroll(rememberScrollState())
                 .padding(vertical = 24.dp, horizontal = 16.dp)
         ) {
 
@@ -131,7 +135,12 @@ fun ConfirmacionCompraScreen(
                     nombre = "Método de entrega",
                     resultado = {
 
-                        val subtitulo = if (!metodoEntregaElegido) "*Obligatorio" else "Delivery"
+                        val subtitulo = when (uiState.metodoEntrega) {
+
+                            MetodoEntrega.NINGUNO -> "*Obligatorio"
+                            MetodoEntrega.DELIVERY -> "Delivery"
+                            MetodoEntrega.RETIRO_TIENDA -> "Retiro en tienda"
+                        }
 
                         Text(
                             text = subtitulo,
@@ -142,28 +151,20 @@ fun ConfirmacionCompraScreen(
                     },
                     contenidoDesplegable = {
 
-                        if (!metodoEntregaElegido) {
-
-                            var deliverySelected by rememberSaveable { mutableStateOf(false) }
-                            var retiroSelected by rememberSaveable { mutableStateOf(false) }
+                        if (uiState.metodoEntrega == MetodoEntrega.NINGUNO) {
 
                             DetalleConfirmacionCompra(
                                 textoPrimerItem = "Delivery",
                                 textoSegundoItem = "Retiro en tienda",
                                 iconoPrimerItem = R.drawable.ic_truck,
                                 iconoSegundoItem = R.drawable.ic_shopping_bag,
-                                primerItemSelected = deliverySelected,
-                                segundoItemSelected = retiroSelected,
+                                primerItemSelected = false,
+                                segundoItemSelected = false,
                                 primerItemOnClick = {
-
-                                    retiroSelected = false
-                                    deliverySelected = true
-
-                                    mostrarDialogoDelivery = true
+                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                 },
                                 segundoItemOnClick = {
-                                    deliverySelected = false
-                                    retiroSelected = true
+                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                 }
                             )
 
@@ -171,8 +172,9 @@ fun ConfirmacionCompraScreen(
 
                             TarjetaMetodoEntrega(
                                 onCambiarDireccionClick = {
-                                    metodoEntregaElegido = false
-                                    mostrarDialogoDelivery = true
+
+                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
+                                    checkoutViewModel.seleccionarMetodoEntrega(MetodoEntrega.NINGUNO)
                                 }
                             )
                         }
@@ -186,28 +188,18 @@ fun ConfirmacionCompraScreen(
                     resultado = {},
                     contenidoDesplegable = {
 
-                        var tarjetaSelected by rememberSaveable { mutableStateOf(false) }
-                        var transferenciaSelected by rememberSaveable { mutableStateOf(false) }
-
                         DetalleConfirmacionCompra(
                             textoPrimerItem = "Agregar tarjeta crédito / débito",
                             textoSegundoItem = "Transferencia",
                             iconoPrimerItem = R.drawable.ic_credit_card,
                             iconoSegundoItem = R.drawable.ic_shopping_bag,
-                            primerItemSelected = tarjetaSelected,
-                            segundoItemSelected = transferenciaSelected,
+                            primerItemSelected = uiState.metodoPago == MetodoPago.TARJETA,
+                            segundoItemSelected = uiState.metodoPago == MetodoPago.TRANSFERENCIA,
                             primerItemOnClick = {
-                                tarjetaSelected = true
-                                transferenciaSelected = false
-
-                                //Por ahora para pruebas
-                                metodoPagoElegido = true
-
-                                mostrarDialogoTarjeta = true
+                                checkoutViewModel.cambiarMostrarDialogoTarjeta(true)
                             },
                             segundoItemOnClick = {
-                                transferenciaSelected = true
-                                tarjetaSelected = false
+                                checkoutViewModel.cambiarMostrarDialogoTarjeta(true)
                             }
                         )
                     }
@@ -222,38 +214,45 @@ fun ConfirmacionCompraScreen(
             ) {
 
                 CampoTextoCupon(
-                    texto = textoCupon,
+                    texto = uiState.textoCupon,
                     placeholder = "Agregar cupón o gift card",
-                    enabled = metodoPagoElegido,
+                    enabled = uiState.metodoPago != MetodoPago.NINGUNO,
                     onValueChange = { nuevoValor ->
-                        textoCupon = nuevoValor
+                        checkoutViewModel.actualizarTextoCupon(nuevoValor)
                     },
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 DetalleSubtotalCompra(
                     concepto = "Costo de productos",
-                    valor = "$totalCompra"
+                    valor = "$$totalCompra"
                 )
+
+                if (uiState.descuentoCupon > 0) {
+                    DetalleSubtotalCompra(
+                        concepto = "Descuento",
+                        valor = "$${uiState.descuentoCupon}"
+                    )
+                }
 
                 DetalleSubtotalCompra(
                     concepto = "Despacho",
-                    valor = "$4000"
+                    valor = "$${uiState.costoDespacho}"
                 )
 
                 DetalleTotalCompra(
                     concepto = "Total de la compra",
-                    valor = "$25000"
+                    valor = "$${uiState.totalCompra}"
                 )
             }
         }
     }
 
     //PopUp para elegir dirección para Delivery
-    if (mostrarDialogoDelivery) {
+    if (uiState.mostrarDialogoEntrega) {
 
         Dialog(
-            onDismissRequest = { mostrarDialogoDelivery = false }
+            onDismissRequest = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) }
         ) {
 
             var textoBusqueda by rememberSaveable { mutableStateOf("") }
@@ -264,23 +263,23 @@ fun ConfirmacionCompraScreen(
                 debeMostrarRationale = locationPermissionsState.shouldShowRationale,
 
                 onTextoBusquedaChange = { nuevoValor ->
-                    mostrarDialogoDelivery = false
-                    textoBusqueda = nuevoValor
+
                 },
 
                 onNuevaDireccion = { destino ->
-                    mostrarDialogoDelivery = false
+                    checkoutViewModel.cambiarMostrarDialogoEntrega(false)
                     onNavigateTo(destino)
                 },
 
-                onDireccionGuardada = {
-                    mostrarDialogoDelivery = false
-                    metodoEntregaElegido = true
+                onDireccionGuardada = { direccion ->
+                    checkoutViewModel.seleccionarMetodoEntrega(MetodoEntrega.DELIVERY)
+                    checkoutViewModel.cambiarMostrarDialogoEntrega(false)
+                    checkoutViewModel.confirmarDireccion(direccion)
                 },
 
                 onPedirPermiso = { locationPermissionsState.launchMultiplePermissionRequest() },
 
-                onDismiss = { mostrarDialogoDelivery = false },
+                onDismiss = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) },
 
                 listaDirecciones = listOf(
                     Direccion(
@@ -302,20 +301,24 @@ fun ConfirmacionCompraScreen(
     }
 
     //PopUp para elegir tarjeta
-    if (mostrarDialogoTarjeta) {
+    if (uiState.mostrarDialogoTarjeta) {
 
         Dialog(
-            onDismissRequest = { mostrarDialogoTarjeta = false }
+            onDismissRequest = { checkoutViewModel.cambiarMostrarDialogoTarjeta(false) }
         ) {
 
             DialogoTarjeta(
                 onTarjetaCreditoClick = {
-                    onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)
+
+                    //Por ahora para confirmar funcionamiento de interfaz
+                    checkoutViewModel.seleccionarMetodoPago(MetodoPago.TARJETA)
+                    checkoutViewModel.cambiarMostrarDialogoTarjeta(false)
+                    //onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)
                 },
                 onTarjetaDebitoPrepagoClick = {
                     onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)
                 },
-                onDismiss = { mostrarDialogoTarjeta = false }
+                onDismiss = { checkoutViewModel.cambiarMostrarDialogoTarjeta(false) }
             )
         }
     }

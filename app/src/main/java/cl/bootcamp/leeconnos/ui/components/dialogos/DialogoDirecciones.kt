@@ -32,7 +32,7 @@ fun DialogoDirecciones(
     listaDirecciones: List<Direccion>,
     onTextoBusquedaChange: (String) -> Unit,
     onNuevaDireccion: (String) -> Unit,
-    onDireccionGuardada: () -> Unit,
+    onDireccionGuardada: (Direccion) -> Unit,
     onPedirPermiso: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -135,7 +135,7 @@ fun DialogoDirecciones(
                 ItemDialogoDirecciones(
                     titulo = "${direccion.calle}, ${direccion.comuna}, ${direccion.region}",
                     subtitulo = "[NOMBRE(CAMBIAR)] \n${direccion.telefono}",
-                    onClick = onDireccionGuardada
+                    onClick = { onDireccionGuardada(direccion) }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

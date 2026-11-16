@@ -14,10 +14,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -218,19 +219,6 @@ fun LeeconnosApp(
                         }
                     )
                 }
-
-                composable(SecondaryRoutes.ConfirmacionCompra.route) {
-                    ConfirmacionCompraScreen(
-                        mainViewModel = viewModel,
-                        onNavigateBack = { navController.popBackStack() },
-                        onNavigateTo = { ruta ->
-                            navController.navigate(ruta)
-                        },
-                        onPagarClick = {}
-                    )
-                }
-
-
             }
 
             composable(SecondaryRoutes.ListaDeseados.route) {
@@ -263,20 +251,43 @@ fun LeeconnosApp(
                 }
             }
 
-            //Separados del grafo de carrito por si se reutilizan en mi cuenta, si no es así agregar en grafo carrito después
-            composable(SecondaryRoutes.AgregarDireccion.route) {
-                AgregarDireccionScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onContinuarClick = {}
-                )
+
+            navigation(
+                startDestination = SecondaryRoutes.ConfirmacionCompra.route,
+                route = "graph_checkout"
+            ) {
+
+                composable(SecondaryRoutes.ConfirmacionCompra.route) { backStackEntry ->
+
+                    val checkoutViewModel: CheckoutViewModel = viewModel(backStackEntry)
+
+                    ConfirmacionCompraScreen(
+                        mainViewModel = viewModel,
+                        checkoutViewModel = checkoutViewModel,
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateTo = { ruta ->
+                            navController.navigate(ruta)
+                        },
+                        onPagarClick = {}
+                    )
+                }
+
+                composable(SecondaryRoutes.AgregarDireccion.route) {
+                    AgregarDireccionScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onContinuarClick = {}
+                    )
+                }
+
+                composable(SecondaryRoutes.AgregarTarjeta.route) {
+                    AgregarTarjetaScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onAgregarClick = {}
+                    )
+                }
             }
 
-            composable(SecondaryRoutes.AgregarTarjeta.route) {
-                AgregarTarjetaScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onAgregarClick = {}
-                )
-            }
+
 
             //Pendientes sin Wireframe
             navigation(
