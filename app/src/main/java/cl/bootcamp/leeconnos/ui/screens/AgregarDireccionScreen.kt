@@ -6,12 +6,10 @@ import android.location.Location
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -19,11 +17,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.campostexto.CampoTexto
 import cl.bootcamp.leeconnos.ui.components.cards.TarjetaOpcionesEntrega
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
@@ -33,21 +33,24 @@ import kotlinx.coroutines.launch
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AgregarDireccionScreen(
+    checkoutViewModel: CheckoutViewModel,
     onNavigateBack: () -> Unit,
     onContinuarClick: () -> Unit
 ) {
+
+    val uiState by checkoutViewModel.uiState.collectAsState()
 
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
@@ -60,30 +63,64 @@ fun AgregarDireccionScreen(
     )
 
     //Santiago
-    val ubicacionPorDefecto = LatLng(-33.4489, -70.6693)
+    val ubicacionPorDefecto = remember(uiState.direccionSugeridaGeocoding) {
+
+        val direccion = uiState.direccionSugeridaGeocoding
+
+        if (direccion != null && direccion.latitud != 0.0) {
+            LatLng(direccion.latitud, direccion.longitud)
+
+        } else {
+            LatLng(-33.4489, -70.6693)
+        }
+    }
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(ubicacionPorDefecto, 15f)
+        position = CameraPosition.fromLatLngZoom(ubicacionPorDefecto, 16f)
+    }
+
+    val markerState = rememberUpdatedMarkerState(position = ubicacionPorDefecto)
+
+    LaunchedEffect(ubicacionPorDefecto) {
+        markerState.position = ubicacionPorDefecto
+    }
+
+    LaunchedEffect(uiState.direccionSugeridaGeocoding){
+
+        val direccion = uiState.direccionSugeridaGeocoding
+
+        if(direccion != null && direccion.latitud != 0.0) {
+
+            val nuevaUbicacion = LatLng(direccion.latitud, direccion.longitud)
+            cameraPositionState.animate(
+                update = CameraUpdateFactory.newLatLngZoom(nuevaUbicacion, 16f),
+                durationMs = 1000
+            )
+        }
     }
 
     LaunchedEffect(locationPermissionState.allPermissionsGranted) {
         if (locationPermissionState.allPermissionsGranted) {
+
             @SuppressLint("MissingPermission")
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) {
-                    val nuevaUbicacion = LatLng(location.latitude, location.longitude)
 
-                    launch {
-                        cameraPositionState.animate(
-                            update = CameraUpdateFactory.newLatLngZoom(nuevaUbicacion, 16f),
-                            durationMs = 1000
-                        )
+                    if (uiState.direccionSugeridaGeocoding == null) {
+
+                        val nuevaUbicacion = LatLng(location.latitude, location.longitude)
+
+                        launch {
+                            cameraPositionState.animate(
+                                update = CameraUpdateFactory.newLatLngZoom(nuevaUbicacion, 16f),
+                                durationMs = 1000
+                            )
+                        }
                     }
                 }
             }
         }
     }
-
 
 
     Scaffold(
@@ -97,10 +134,13 @@ fun AgregarDireccionScreen(
 
         bottomBar = {
 
-            BotonPrincipalBottomBar(
+            BotonPrincipal(
                 textoBtn = "Continuar",
                 enabled = true,
-                onClick = {}
+                onClick = {},
+                modifier = Modifier.padding(horizontal = 16.dp),
+                estiloTexto = MaterialTheme.typography.bodyMedium,
+                contentPadding = PaddingValues(vertical = 12.dp)
             )
         }
 
@@ -115,17 +155,38 @@ fun AgregarDireccionScreen(
             GoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(bottom = 16.dp),
+                    .height(220.dp)
+                    .padding(bottom = 24.dp),
                 cameraPositionState = cameraPositionState,
-                properties = MapProperties(isMyLocationEnabled = locationPermissionState.allPermissionsGranted)
-            )
+                properties = MapProperties(isMyLocationEnabled = locationPermissionState.allPermissionsGranted),
+                onMapClick = { latLng ->
+
+                    markerState.position = latLng
+
+                    val location = Location("").apply {
+                        latitude = latLng.latitude
+                        longitude = latLng.longitude
+                    }
+
+                    checkoutViewModel.convertirCoordenadasADireccion(
+                        location = location,
+                        onExito = {
+
+                        }
+                    )
+                }
+            ) {
+                Marker(
+                    state = markerState,
+                    title = "Dirección de entrega"
+                )
+            }
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 24.dp)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
 
@@ -135,28 +196,32 @@ fun AgregarDireccionScreen(
                         .fillMaxWidth()
                 ) {
                     CampoTexto(
-                        texto = "",
+                        texto = uiState.direccionSugeridaGeocoding?.calle ?: "",
                         label = "Ingresa una dirección",
-                        onValueChange = {}
+                        onValueChange = { nuevaDireccion ->
+                            checkoutViewModel.actualizarTextoIngresarDireccion(nuevaDireccion)
+                        }
                     )
 
                     CampoTexto(
-                        texto = "",
+                        texto = uiState.direccionSugeridaGeocoding?.detalle ?: "",
                         label = "Detalle: casa, piso, torre",
-                        onValueChange = {}
+                        onValueChange = { nuevoDetalle ->
+                            checkoutViewModel.actualizarTextoDetalleDireccion(nuevoDetalle)
+                        }
                     )
                 }
 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = 8.dp)
                 ) {
 
                     Text(
                         text = "Opciones de entrega",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        //modifier = Modifier.padding(bottom = 8.dp)
                     )
 
                     //Posiblemente incluir esto dentro de un lazycolumn para varias opciones de entrega, por ahora por wireframe solo una opción
@@ -166,10 +231,11 @@ fun AgregarDireccionScreen(
                     )
 
                     CampoTexto(
-                        texto = "",
+                        texto = uiState.direccionSugeridaGeocoding?.informacionAdicional ?: "",
                         label = "Información adicional",
-                        onValueChange = {},
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        onValueChange = { nuevaInformacionAdicional ->
+                            checkoutViewModel.actualizarTextoInformacionAdicional(nuevaInformacionAdicional)
+                        }
                     )
                 }
 
@@ -185,15 +251,19 @@ fun AgregarDireccionScreen(
                     )
 
                     CampoTexto(
-                        texto = "",
+                        texto = uiState.direccionSugeridaGeocoding?.nombreReceptor ?: "",
                         label = "Nombre de quien recibe",
-                        onValueChange = {}
+                        onValueChange = { nuevoNombreReceptor ->
+                            checkoutViewModel.actualizarTextoNombreReceptor(nuevoNombreReceptor)
+                        }
                     )
 
                     CampoTexto(
-                        texto = "",
+                        texto = uiState.direccionSugeridaGeocoding?.telefono ?: "",
                         label = "Teléfono",
-                        onValueChange = {}
+                        onValueChange = { nuevoTelefono ->
+                            checkoutViewModel.actualizarTextoTelefonoDireccion(nuevoTelefono)
+                        }
                     )
                 }
             }

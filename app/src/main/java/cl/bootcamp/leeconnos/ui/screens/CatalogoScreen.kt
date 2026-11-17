@@ -13,9 +13,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CatalogoScreen(
+    mainViewModel: MainViewModel,
     onNavigateTo: (String) -> Unit
 ){
-    val mainViewModel: MainViewModel = koinViewModel()
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
 
     Scaffold(

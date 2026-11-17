@@ -22,10 +22,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ListaDeseadosScreen(
+    mainViewModel: MainViewModel,
     onNavigateTo: (String) -> Unit,
     onNavigateBack: () -> Unit
 ){
-    val mainViewModel: MainViewModel = koinViewModel()
 
     val listaCarrito by mainViewModel.itemsCarrito.collectAsState()
     val listaItems by mainViewModel.itemsListaDeseados.collectAsState()

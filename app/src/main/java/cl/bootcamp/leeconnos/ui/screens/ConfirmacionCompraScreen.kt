@@ -6,6 +6,7 @@ import android.location.Location
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
-import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.campostexto.CampoTextoCupon
 import cl.bootcamp.leeconnos.ui.components.cards.TarjetaMetodoEntrega
 import cl.bootcamp.leeconnos.ui.components.desplegables.DesplegableCompra
@@ -65,17 +66,17 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ConfirmacionCompraScreen(
+    checkoutViewModel: CheckoutViewModel,
     onNavigateBack: () -> Unit,
     onNavigateTo: (String) -> Unit,
     onPagarClick: () -> Unit
 ) {
-    val checkoutViewModel: CheckoutViewModel = koinViewModel()
+
     val itemsCarrito by checkoutViewModel.itemsCarrito.collectAsState()
     val subtotalCompra by checkoutViewModel.subtotalCompra.collectAsState()
 
     val uiState by checkoutViewModel.uiState.collectAsState()
 
-    var ubicacionActualTexto by remember { mutableStateOf("Buscando tu ubicación...") }
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
@@ -93,43 +94,12 @@ fun ConfirmacionCompraScreen(
             @SuppressLint("MissingPermission")
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) {
-
-                    val latitud = location.latitude
-                    val longitud = location.longitude
-
-                    val geocoder = android.location.Geocoder(context, java.util.Locale.getDefault())
-
-                    try {
-
-                        val direcciones = geocoder.getFromLocation(latitud, longitud, 1)
-                        if (!direcciones.isNullOrEmpty()) {
-                            val direccion = direcciones[0]
-
-                            val calle = direccion.thoroughfare ?: ""
-                            val numero = direccion.subThoroughfare ?: ""
-                            val ciudad = direccion.locality ?: ""
-                            val region = direccion.adminArea ?: ""
-
-                            ubicacionActualTexto = "$calle $numero, $ciudad, $region"
-
-
-                            val direccionParaFormulario = Direccion(
-                                calle = "$calle $numero",
-                                comuna = ciudad,
-                                region = region,
-                                telefono = ""
-                            )
-
-                            checkoutViewModel.cambiarDireccionSugerida(direccionParaFormulario)
-
-                        } else {
-                            ubicacionActualTexto = "No se pudo encontrar el nombre de la calle."
-                        }
-                    } catch (e: Exception) {
-                        ubicacionActualTexto = "Error buscando la dirección."
-                    }
+                    checkoutViewModel.convertirCoordenadasADireccion(
+                        location = location,
+                        onExito = {}
+                    )
                 } else {
-                    ubicacionActualTexto = "No se pudo obtener la ubicación GPS."
+                    //
                 }
             }
         }
@@ -145,10 +115,13 @@ fun ConfirmacionCompraScreen(
 
         bottomBar = {
 
-            BotonPrincipalBottomBar(
+            BotonPrincipal(
                 textoBtn = "Pagar",
                 enabled = uiState.puedePagar,
-                onClick = onPagarClick
+                onClick = onPagarClick,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                estiloTexto = MaterialTheme.typography.bodyMedium,
+                contentPadding = PaddingValues(vertical = 12.dp)
             )
         }
 
@@ -314,7 +287,7 @@ fun ConfirmacionCompraScreen(
             DialogoDirecciones(
                 textoBusqueda = uiState.textoBusqueda,
                 sugerenciasPlaces = uiState.sugerenciasDirecciones,
-                textoUbicacionActual = ubicacionActualTexto,
+                textoUbicacionActual = uiState.textoUbicacionGps,
                 tienePermisoUbicacion = locationPermissionsState.allPermissionsGranted,
                 debeMostrarRationale = locationPermissionsState.shouldShowRationale,
 
@@ -322,9 +295,18 @@ fun ConfirmacionCompraScreen(
                     checkoutViewModel.actualizarTextoBusqueda(nuevoValor)
                 },
 
+                onPrediccionSeleccionada = { prediccion ->
+
+                    checkoutViewModel.seleccionarDireccionDesdePrediccion(
+                        prediccion = prediccion,
+                        onExito = {
+                            onNavigateTo(SecondaryRoutes.AgregarDireccion.route)
+                        }
+                    )
+                },
+
                 onNuevaDireccion = { destino ->
                     checkoutViewModel.cambiarMostrarDialogoEntrega(false)
-                    checkoutViewModel.limpiarTokenDeBusqueda()
                     onNavigateTo(destino)
                 },
 
@@ -338,6 +320,7 @@ fun ConfirmacionCompraScreen(
 
                 onDismiss = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) },
 
+                //Lista de direcciones "guardadas" por defecto para hito 3, cambiar cuando haya endpoint
                 listaDirecciones = listOf(
                     Direccion(
                         calle = "Calle 1444",

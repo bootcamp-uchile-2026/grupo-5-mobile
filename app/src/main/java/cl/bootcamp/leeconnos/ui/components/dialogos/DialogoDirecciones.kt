@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.campostexto.Buscador
-import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalConIcono
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 
@@ -34,6 +34,7 @@ fun DialogoDirecciones(
     debeMostrarRationale: Boolean,
     listaDirecciones: List<Direccion>,
     onTextoBusquedaChange: (String) -> Unit,
+    onPrediccionSeleccionada: (AutocompletePrediction) -> Unit,
     onNuevaDireccion: (String) -> Unit,
     onDireccionGuardada: (Direccion) -> Unit,
     onPedirPermiso: () -> Unit,
@@ -85,7 +86,7 @@ fun DialogoDirecciones(
                     titulo = prediccion.getPrimaryText(null).toString(),
                     subtitulo = prediccion.getSecondaryText(null).toString(),
                     onClick = {
-                        onNuevaDireccion(SecondaryRoutes.AgregarDireccion.route)
+                        onPrediccionSeleccionada(prediccion)
                     }
                 )
 
@@ -131,10 +132,9 @@ fun DialogoDirecciones(
 
                 } else {
 
-                    BotonPrincipalConIcono(
+                    BotonPrincipal(
                         textoBtn = "Usar mi ubicación",
-                        icono = R.drawable.ic_plus, //Placeholder mientras se obtiene el icono de ubicación
-                        onBtnClick = {
+                        onClick = {
                             onPedirPermiso()
                         },
                         modifier = Modifier.padding(horizontal = 16.dp)

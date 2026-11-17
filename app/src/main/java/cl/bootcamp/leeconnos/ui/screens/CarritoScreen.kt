@@ -29,10 +29,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CarritoScreen(
+    mainViewModel: MainViewModel,
     onNavigateBack: () -> Unit,
     onNavigateTo: (String) -> Unit
 ){
-    val mainViewModel: MainViewModel = koinViewModel()
 
     var libroAEliminar by remember { mutableStateOf<Libro?>(null) }
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()

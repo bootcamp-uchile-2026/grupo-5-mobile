@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Libro
-import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalConIcono
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 
 @Composable
 fun DetalleItemListaDeseados(
@@ -27,10 +27,10 @@ fun DetalleItemListaDeseados(
             precioAnterior = libro.precioAnterior
         )
 
-        BotonPrincipalConIcono(
+        BotonPrincipal(
             textoBtn = "Agregar al carrito",
             icono = R.drawable.ic_carrito,
-            onBtnClick = {
+            onClick = {
                 onAddClick()
             },
             modifier = Modifier.padding(vertical = 8.dp)

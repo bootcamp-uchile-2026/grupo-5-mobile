@@ -1,5 +1,6 @@
 package cl.bootcamp.leeconnos.di
 
+import android.location.Geocoder
 import cl.bootcamp.leeconnos.data.api.ApiClient
 import cl.bootcamp.leeconnos.data.local.database.AppDatabase
 import cl.bootcamp.leeconnos.data.local.datastore.ThemePreferences
@@ -12,6 +13,7 @@ import com.google.android.libraries.places.api.Places
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import java.util.Locale
 
 
 val appModule = module {
@@ -47,6 +49,10 @@ val appModule = module {
         Places.createClient(androidContext())
     }
 
+    factory {
+        Geocoder(androidContext(), Locale.getDefault())
+    }
+
 
     viewModel {
 
@@ -65,7 +71,8 @@ val appModule = module {
     viewModel {
         CheckoutViewModel(
             libroRepository = get(),
-            placesClient = get()
+            placesClient = get(),
+            geocoder = get()
         )
     }
 }

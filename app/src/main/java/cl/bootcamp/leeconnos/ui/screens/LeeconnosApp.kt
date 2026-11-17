@@ -110,6 +110,10 @@ fun LeeconnosApp(
 
     ) { innerPadding ->
 
+        //Implementación necesaria aquí para poder usar el mismo viewmodel entre pantallas y no creen una por su cuenta
+        val mainViewModel: MainViewModel = koinViewModel()
+        val checkoutViewModel: CheckoutViewModel = koinViewModel()
+
         NavHost(
             navController = navController,
             startDestination = "graph_home",
@@ -184,6 +188,7 @@ fun LeeconnosApp(
 
                 composable(ScreenRoutes.HOME.route) {
                     HomeScreen(
+                        mainViewModel = mainViewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         }
@@ -197,6 +202,7 @@ fun LeeconnosApp(
             ) {
                 composable(ScreenRoutes.CATALOGO.route) {
                     CatalogoScreen(
+                        mainViewModel = mainViewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         }
@@ -212,6 +218,7 @@ fun LeeconnosApp(
 
                 composable(SecondaryRoutes.Carrito.route) {
                     CarritoScreen(
+                        mainViewModel = mainViewModel,
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
@@ -222,6 +229,7 @@ fun LeeconnosApp(
 
             composable(SecondaryRoutes.ListaDeseados.route) {
                 ListaDeseadosScreen(
+                    mainViewModel = mainViewModel,
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateTo = { ruta ->
                         navController.navigate(ruta)
@@ -236,6 +244,7 @@ fun LeeconnosApp(
 
                 composable(SecondaryRoutes.FichaLibro.route) {
                     FichaLibroScreen(
+                        mainViewModel = mainViewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         },
@@ -254,9 +263,11 @@ fun LeeconnosApp(
                 route = "graph_checkout"
             ) {
 
-                composable(SecondaryRoutes.ConfirmacionCompra.route) { backStackEntry ->
+
+                composable(SecondaryRoutes.ConfirmacionCompra.route) {
 
                     ConfirmacionCompraScreen(
+                        checkoutViewModel = checkoutViewModel,
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
@@ -267,6 +278,7 @@ fun LeeconnosApp(
 
                 composable(SecondaryRoutes.AgregarDireccion.route) {
                     AgregarDireccionScreen(
+                        checkoutViewModel = checkoutViewModel,
                         onNavigateBack = { navController.popBackStack() },
                         onContinuarClick = {}
                     )

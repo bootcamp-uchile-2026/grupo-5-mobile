@@ -27,10 +27,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
+    mainViewModel: MainViewModel,
     onNavigateTo: (String) -> Unit
 ){
 
-    val mainViewModel: MainViewModel = koinViewModel()
     val homeViewModel: HomeViewModel = koinViewModel()
 
     val estadoUi by homeViewModel.uiState.collectAsState()
