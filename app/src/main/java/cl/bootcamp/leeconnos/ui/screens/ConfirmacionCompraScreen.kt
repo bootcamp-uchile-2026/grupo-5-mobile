@@ -1,6 +1,8 @@
 package cl.bootcamp.leeconnos.ui.screens
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.location.Location
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,13 +24,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,23 +59,25 @@ import cl.bootcamp.leeconnos.viewmodel.MetodoEntrega
 import cl.bootcamp.leeconnos.viewmodel.MetodoPago
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ConfirmacionCompraScreen(
-    mainViewModel: MainViewModel,
-    checkoutViewModel: CheckoutViewModel,
     onNavigateBack: () -> Unit,
     onNavigateTo: (String) -> Unit,
     onPagarClick: () -> Unit
 ) {
-
-    val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
-    val totalCompra by mainViewModel.totalCompra.collectAsState()
-
-    checkoutViewModel.calcularTotalCompra(totalCompra)
+    val checkoutViewModel: CheckoutViewModel = koinViewModel()
+    val itemsCarrito by checkoutViewModel.itemsCarrito.collectAsState()
+    val subtotalCompra by checkoutViewModel.subtotalCompra.collectAsState()
 
     val uiState by checkoutViewModel.uiState.collectAsState()
+
+    var ubicacionActualTexto by remember { mutableStateOf("Buscando tu ubicación...") }
+    val context = LocalContext.current
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
     val locationPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -78,6 +85,55 @@ fun ConfirmacionCompraScreen(
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
     )
+
+    //Convertir longitud y latitud en una dirección real
+    LaunchedEffect(locationPermissionsState.allPermissionsGranted) {
+
+        if (locationPermissionsState.allPermissionsGranted) {
+            @SuppressLint("MissingPermission")
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+
+                    val latitud = location.latitude
+                    val longitud = location.longitude
+
+                    val geocoder = android.location.Geocoder(context, java.util.Locale.getDefault())
+
+                    try {
+
+                        val direcciones = geocoder.getFromLocation(latitud, longitud, 1)
+                        if (!direcciones.isNullOrEmpty()) {
+                            val direccion = direcciones[0]
+
+                            val calle = direccion.thoroughfare ?: ""
+                            val numero = direccion.subThoroughfare ?: ""
+                            val ciudad = direccion.locality ?: ""
+                            val region = direccion.adminArea ?: ""
+
+                            ubicacionActualTexto = "$calle $numero, $ciudad, $region"
+
+
+                            val direccionParaFormulario = Direccion(
+                                calle = "$calle $numero",
+                                comuna = ciudad,
+                                region = region,
+                                telefono = ""
+                            )
+
+                            checkoutViewModel.cambiarDireccionSugerida(direccionParaFormulario)
+
+                        } else {
+                            ubicacionActualTexto = "No se pudo encontrar el nombre de la calle."
+                        }
+                    } catch (e: Exception) {
+                        ubicacionActualTexto = "Error buscando la dirección."
+                    }
+                } else {
+                    ubicacionActualTexto = "No se pudo obtener la ubicación GPS."
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -115,7 +171,7 @@ fun ConfirmacionCompraScreen(
                     nombre = "Resumen",
                     resultado = {
                         Text(
-                            text = "(${itemsCarrito.size}) $${totalCompra}",
+                            text = "(${itemsCarrito.size}) $${uiState.totalCompra}",
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(end = 8.dp)
@@ -173,8 +229,8 @@ fun ConfirmacionCompraScreen(
                             TarjetaMetodoEntrega(
                                 onCambiarDireccionClick = {
 
-                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                     checkoutViewModel.seleccionarMetodoEntrega(MetodoEntrega.NINGUNO)
+                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                 }
                             )
                         }
@@ -225,7 +281,7 @@ fun ConfirmacionCompraScreen(
 
                 DetalleSubtotalCompra(
                     concepto = "Costo de productos",
-                    valor = "$$totalCompra"
+                    valor = "$subtotalCompra"
                 )
 
                 if (uiState.descuentoCupon > 0) {
@@ -255,19 +311,20 @@ fun ConfirmacionCompraScreen(
             onDismissRequest = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) }
         ) {
 
-            var textoBusqueda by rememberSaveable { mutableStateOf("") }
-
             DialogoDirecciones(
-                textoBusqueda = textoBusqueda,
+                textoBusqueda = uiState.textoBusqueda,
+                sugerenciasPlaces = uiState.sugerenciasDirecciones,
+                textoUbicacionActual = ubicacionActualTexto,
                 tienePermisoUbicacion = locationPermissionsState.allPermissionsGranted,
                 debeMostrarRationale = locationPermissionsState.shouldShowRationale,
 
                 onTextoBusquedaChange = { nuevoValor ->
-
+                    checkoutViewModel.actualizarTextoBusqueda(nuevoValor)
                 },
 
                 onNuevaDireccion = { destino ->
                     checkoutViewModel.cambiarMostrarDialogoEntrega(false)
+                    checkoutViewModel.limpiarTokenDeBusqueda()
                     onNavigateTo(destino)
                 },
 

@@ -30,14 +30,16 @@ import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun LeeconnosApp(
-    viewModel: MainViewModel
 ) {
+    val mainViewModel: MainViewModel = koinViewModel()
+
     val snackbarHostState = remember { SnackbarHostState() }
-    val mensajeSnackbar by viewModel.mensajeSnackbar.collectAsStateWithLifecycle()
+    val mensajeSnackbar by mainViewModel.mensajeSnackbar.collectAsStateWithLifecycle()
 
     LaunchedEffect(mensajeSnackbar) {
 
@@ -50,7 +52,7 @@ fun LeeconnosApp(
                 withDismissAction = true
             )
 
-            viewModel.limpiarMensajeSnackbar()
+            mainViewModel.limpiarMensajeSnackbar()
         }
     }
 
@@ -182,7 +184,6 @@ fun LeeconnosApp(
 
                 composable(ScreenRoutes.HOME.route) {
                     HomeScreen(
-                        mainViewModel = viewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         }
@@ -196,7 +197,6 @@ fun LeeconnosApp(
             ) {
                 composable(ScreenRoutes.CATALOGO.route) {
                     CatalogoScreen(
-                        mainViewModel = viewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         }
@@ -212,7 +212,6 @@ fun LeeconnosApp(
 
                 composable(SecondaryRoutes.Carrito.route) {
                     CarritoScreen(
-                        mainViewModel = viewModel,
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
@@ -223,7 +222,6 @@ fun LeeconnosApp(
 
             composable(SecondaryRoutes.ListaDeseados.route) {
                 ListaDeseadosScreen(
-                    mainViewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateTo = { ruta ->
                         navController.navigate(ruta)
@@ -238,7 +236,6 @@ fun LeeconnosApp(
 
                 composable(SecondaryRoutes.FichaLibro.route) {
                     FichaLibroScreen(
-                        mainViewModel = viewModel,
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
                         },
@@ -259,11 +256,7 @@ fun LeeconnosApp(
 
                 composable(SecondaryRoutes.ConfirmacionCompra.route) { backStackEntry ->
 
-                    val checkoutViewModel: CheckoutViewModel = viewModel(backStackEntry)
-
                     ConfirmacionCompraScreen(
-                        mainViewModel = viewModel,
-                        checkoutViewModel = checkoutViewModel,
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateTo = { ruta ->
                             navController.navigate(ruta)
@@ -318,9 +311,7 @@ fun LeeconnosApp(
             ) {
 
                 composable(ScreenRoutes.MI_CUENTA.route) {
-                    MiCuentaScreen(
-                        mainViewModel = viewModel
-                    )
+                    MiCuentaScreen()
                 }
 
                 composable(SecondaryRoutes.MiPerfil.route) {

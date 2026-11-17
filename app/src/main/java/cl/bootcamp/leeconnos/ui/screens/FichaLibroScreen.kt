@@ -24,13 +24,14 @@ import cl.bootcamp.leeconnos.ui.components.detalles.RecomendacionVideo
 import cl.bootcamp.leeconnos.ui.components.imagenes.ImagenFichaLibro
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSoloDeseados
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun FichaLibroScreen(
-    mainViewModel: MainViewModel,
     onNavigateTo: (String) -> Unit,
     onNavigateBack: () -> Unit
 ){
+    val mainViewModel: MainViewModel = koinViewModel()
 
     val libro by mainViewModel.libroSeleccionado.collectAsState()
 

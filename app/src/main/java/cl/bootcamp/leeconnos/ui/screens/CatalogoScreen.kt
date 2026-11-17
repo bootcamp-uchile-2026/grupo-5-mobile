@@ -9,13 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarDefault
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CatalogoScreen(
-    mainViewModel: MainViewModel,
     onNavigateTo: (String) -> Unit
 ){
-
+    val mainViewModel: MainViewModel = koinViewModel()
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
 
     Scaffold(

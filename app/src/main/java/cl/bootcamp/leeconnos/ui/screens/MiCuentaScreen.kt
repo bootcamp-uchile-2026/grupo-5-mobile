@@ -22,11 +22,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimple
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MiCuentaScreen(
-    mainViewModel: MainViewModel
 ){
+    val mainViewModel: MainViewModel = koinViewModel()
 
     val isDark by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
 

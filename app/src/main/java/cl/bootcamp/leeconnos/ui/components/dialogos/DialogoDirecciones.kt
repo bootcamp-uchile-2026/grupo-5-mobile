@@ -23,10 +23,13 @@ import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.campostexto.Buscador
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalConIcono
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 
 @Composable
 fun DialogoDirecciones(
     textoBusqueda: String,
+    sugerenciasPlaces: List<AutocompletePrediction>,
+    textoUbicacionActual: String,
     tienePermisoUbicacion: Boolean,
     debeMostrarRationale: Boolean,
     listaDirecciones: List<Direccion>,
@@ -76,13 +79,26 @@ fun DialogoDirecciones(
                 HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
             }
 
+            items(sugerenciasPlaces) { prediccion ->
+
+                ItemDialogoDirecciones(
+                    titulo = prediccion.getPrimaryText(null).toString(),
+                    subtitulo = prediccion.getSecondaryText(null).toString(),
+                    onClick = {
+                        onNuevaDireccion(SecondaryRoutes.AgregarDireccion.route)
+                    }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+            }
+
             //Controla el flujo completo del permiso para la ubicación
             item {
 
                 if (tienePermisoUbicacion) {
                     ItemDialogoDirecciones(
                         titulo = "Usar mi ubicación actual",
-                        subtitulo = "Av. Siempre viva 1666, Santiago, Región Metropolitana Chile", //Cambiar por ubicación basada en longitud y latitud
+                        subtitulo = textoUbicacionActual,
                         onClick = {
                             onNuevaDireccion(SecondaryRoutes.AgregarDireccion.route)
                         }
@@ -129,6 +145,7 @@ fun DialogoDirecciones(
             }
 
 
+            //Por ahora hardcodeadas por falta de endpoint para manejar direcciones guardadas
             items(listaDirecciones) { direccion ->
 
                 //item de lista
