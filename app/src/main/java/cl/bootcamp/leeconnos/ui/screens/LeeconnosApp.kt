@@ -2,6 +2,8 @@ package cl.bootcamp.leeconnos.ui.screens
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -75,23 +77,12 @@ fun LeeconnosApp(
 
             if (indiceOrigen != -1 && indiceDestino != -1) {
 
-                if (indiceDestino > indiceOrigen) {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        tween(300)
-                    )
-
-                } else {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        tween(300)
-                    )
-                }
+                fadeIn(animationSpec = tween(300))
 
             } else {
+
                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
             }
-
         },
 
         exitTransition = {
@@ -103,18 +94,7 @@ fun LeeconnosApp(
             val indiceDestino = ScreenRoutes.entries.indexOfFirst { it.route == rutaDestino }
 
             if (indiceOrigen != -1 && indiceDestino != -1) {
-                if (indiceDestino > indiceOrigen) {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        tween(300)
-                    )
-
-                } else {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        tween(300)
-                    )
-                }
+                fadeOut(animationSpec = tween(300))
 
             } else {
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
