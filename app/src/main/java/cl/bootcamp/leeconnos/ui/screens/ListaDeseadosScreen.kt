@@ -18,6 +18,7 @@ import cl.bootcamp.leeconnos.ui.components.carruseles.CantidadItems
 import cl.bootcamp.leeconnos.ui.components.carruseles.ItemListaDeseados
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ListaDeseadosScreen(
@@ -25,6 +26,7 @@ fun ListaDeseadosScreen(
     onNavigateTo: (String) -> Unit,
     onNavigateBack: () -> Unit
 ){
+
     val listaCarrito by mainViewModel.itemsCarrito.collectAsState()
     val listaItems by mainViewModel.itemsListaDeseados.collectAsState()
 

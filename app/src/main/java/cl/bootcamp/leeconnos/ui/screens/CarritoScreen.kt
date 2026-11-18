@@ -25,6 +25,7 @@ import cl.bootcamp.leeconnos.ui.components.carruseles.ItemCarrito
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CarritoScreen(
@@ -32,6 +33,7 @@ fun CarritoScreen(
     onNavigateBack: () -> Unit,
     onNavigateTo: (String) -> Unit
 ){
+
     var libroAEliminar by remember { mutableStateOf<Libro?>(null) }
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
 

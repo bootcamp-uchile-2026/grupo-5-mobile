@@ -1,17 +1,23 @@
 package cl.bootcamp.leeconnos.ui.screens
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.location.Location
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -19,13 +25,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
-import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.campostexto.CampoTextoCupon
 import cl.bootcamp.leeconnos.ui.components.cards.TarjetaMetodoEntrega
 import cl.bootcamp.leeconnos.ui.components.desplegables.DesplegableCompra
@@ -45,30 +54,31 @@ import cl.bootcamp.leeconnos.ui.components.dialogos.DialogoDirecciones
 import cl.bootcamp.leeconnos.ui.components.dialogos.DialogoTarjeta
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import cl.bootcamp.leeconnos.viewmodel.MetodoEntrega
+import cl.bootcamp.leeconnos.viewmodel.MetodoPago
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ConfirmacionCompraScreen(
-    mainViewModel: MainViewModel,
+    checkoutViewModel: CheckoutViewModel,
     onNavigateBack: () -> Unit,
     onNavigateTo: (String) -> Unit,
     onPagarClick: () -> Unit
 ) {
 
-    val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
-    val totalCompra by mainViewModel.totalCompra.collectAsState()
+    val itemsCarrito by checkoutViewModel.itemsCarrito.collectAsState()
+    val subtotalCompra by checkoutViewModel.subtotalCompra.collectAsState()
 
-    //Ver si manejar estos estados y variables en un ConfirmacionCompraViewModel
-    var mostrarDialogoDelivery by rememberSaveable { mutableStateOf(false) }
-    var metodoEntregaElegido by rememberSaveable { mutableStateOf(false) }
+    val uiState by checkoutViewModel.uiState.collectAsState()
 
-    var mostrarDialogoTarjeta by rememberSaveable { mutableStateOf(false) }
-    var metodoPagoElegido by rememberSaveable { mutableStateOf(false) }
-
-    var textoCupon by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
     val locationPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -76,6 +86,24 @@ fun ConfirmacionCompraScreen(
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
     )
+
+    //Convertir longitud y latitud en una dirección real
+    LaunchedEffect(locationPermissionsState.allPermissionsGranted) {
+
+        if (locationPermissionsState.allPermissionsGranted) {
+            @SuppressLint("MissingPermission")
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    checkoutViewModel.convertirCoordenadasADireccion(
+                        location = location,
+                        onExito = {}
+                    )
+                } else {
+                    //
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -87,10 +115,13 @@ fun ConfirmacionCompraScreen(
 
         bottomBar = {
 
-            BotonPrincipalBottomBar(
+            BotonPrincipal(
                 textoBtn = "Pagar",
-                enabled = metodoPagoElegido,
-                onClick = onPagarClick
+                enabled = uiState.puedePagar,
+                onClick = onPagarClick,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                estiloTexto = MaterialTheme.typography.bodyMedium,
+                contentPadding = PaddingValues(vertical = 12.dp)
             )
         }
 
@@ -101,6 +132,8 @@ fun ConfirmacionCompraScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues)
+                .imePadding()
+                .verticalScroll(rememberScrollState())
                 .padding(vertical = 24.dp, horizontal = 16.dp)
         ) {
 
@@ -111,7 +144,7 @@ fun ConfirmacionCompraScreen(
                     nombre = "Resumen",
                     resultado = {
                         Text(
-                            text = "(${itemsCarrito.size}) $${totalCompra}",
+                            text = "(${itemsCarrito.size}) $${uiState.totalCompra}",
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(end = 8.dp)
@@ -131,7 +164,12 @@ fun ConfirmacionCompraScreen(
                     nombre = "Método de entrega",
                     resultado = {
 
-                        val subtitulo = if (!metodoEntregaElegido) "*Obligatorio" else "Delivery"
+                        val subtitulo = when (uiState.metodoEntrega) {
+
+                            MetodoEntrega.NINGUNO -> "*Obligatorio"
+                            MetodoEntrega.DELIVERY -> "Delivery"
+                            MetodoEntrega.RETIRO_TIENDA -> "Retiro en tienda"
+                        }
 
                         Text(
                             text = subtitulo,
@@ -142,37 +180,31 @@ fun ConfirmacionCompraScreen(
                     },
                     contenidoDesplegable = {
 
-                        if (!metodoEntregaElegido) {
-
-                            var deliverySelected by rememberSaveable { mutableStateOf(false) }
-                            var retiroSelected by rememberSaveable { mutableStateOf(false) }
+                        if (uiState.metodoEntrega == MetodoEntrega.NINGUNO ||
+                            (uiState.metodoEntrega == MetodoEntrega.DELIVERY && uiState.direccionSeleccionada == null)) {
 
                             DetalleConfirmacionCompra(
                                 textoPrimerItem = "Delivery",
                                 textoSegundoItem = "Retiro en tienda",
                                 iconoPrimerItem = R.drawable.ic_truck,
                                 iconoSegundoItem = R.drawable.ic_shopping_bag,
-                                primerItemSelected = deliverySelected,
-                                segundoItemSelected = retiroSelected,
+                                primerItemSelected = false,
+                                segundoItemSelected = false,
                                 primerItemOnClick = {
-
-                                    retiroSelected = false
-                                    deliverySelected = true
-
-                                    mostrarDialogoDelivery = true
+                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                 },
                                 segundoItemOnClick = {
-                                    deliverySelected = false
-                                    retiroSelected = true
+                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                 }
                             )
 
-                        } else {
+                        } else if (uiState.metodoEntrega == MetodoEntrega.DELIVERY) {
 
                             TarjetaMetodoEntrega(
+                                direccion = uiState.direccionSeleccionada!!,
+                                costoEnvio = uiState.costoDespacho,
                                 onCambiarDireccionClick = {
-                                    metodoEntregaElegido = false
-                                    mostrarDialogoDelivery = true
+                                    checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                 }
                             )
                         }
@@ -186,28 +218,18 @@ fun ConfirmacionCompraScreen(
                     resultado = {},
                     contenidoDesplegable = {
 
-                        var tarjetaSelected by rememberSaveable { mutableStateOf(false) }
-                        var transferenciaSelected by rememberSaveable { mutableStateOf(false) }
-
                         DetalleConfirmacionCompra(
                             textoPrimerItem = "Agregar tarjeta crédito / débito",
                             textoSegundoItem = "Transferencia",
                             iconoPrimerItem = R.drawable.ic_credit_card,
                             iconoSegundoItem = R.drawable.ic_shopping_bag,
-                            primerItemSelected = tarjetaSelected,
-                            segundoItemSelected = transferenciaSelected,
+                            primerItemSelected = uiState.metodoPago == MetodoPago.TARJETA,
+                            segundoItemSelected = uiState.metodoPago == MetodoPago.TRANSFERENCIA,
                             primerItemOnClick = {
-                                tarjetaSelected = true
-                                transferenciaSelected = false
-
-                                //Por ahora para pruebas
-                                metodoPagoElegido = true
-
-                                mostrarDialogoTarjeta = true
+                                checkoutViewModel.cambiarMostrarDialogoTarjeta(true)
                             },
                             segundoItemOnClick = {
-                                transferenciaSelected = true
-                                tarjetaSelected = false
+                                checkoutViewModel.cambiarMostrarDialogoTarjeta(true)
                             }
                         )
                     }
@@ -222,66 +244,84 @@ fun ConfirmacionCompraScreen(
             ) {
 
                 CampoTextoCupon(
-                    texto = textoCupon,
+                    texto = uiState.textoCupon,
                     placeholder = "Agregar cupón o gift card",
-                    enabled = metodoPagoElegido,
+                    enabled = uiState.metodoPago != MetodoPago.NINGUNO,
                     onValueChange = { nuevoValor ->
-                        textoCupon = nuevoValor
+                        checkoutViewModel.actualizarTextoCupon(nuevoValor)
                     },
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 DetalleSubtotalCompra(
                     concepto = "Costo de productos",
-                    valor = "$totalCompra"
+                    valor = "$subtotalCompra"
                 )
+
+                if (uiState.descuentoCupon > 0) {
+                    DetalleSubtotalCompra(
+                        concepto = "Descuento",
+                        valor = "$${uiState.descuentoCupon}"
+                    )
+                }
 
                 DetalleSubtotalCompra(
                     concepto = "Despacho",
-                    valor = "$4000"
+                    valor = "$${uiState.costoDespacho}"
                 )
 
                 DetalleTotalCompra(
                     concepto = "Total de la compra",
-                    valor = "$25000"
+                    valor = "$${uiState.totalCompra}"
                 )
             }
         }
     }
 
     //PopUp para elegir dirección para Delivery
-    if (mostrarDialogoDelivery) {
+    if (uiState.mostrarDialogoEntrega) {
 
         Dialog(
-            onDismissRequest = { mostrarDialogoDelivery = false }
+            onDismissRequest = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) }
         ) {
 
-            var textoBusqueda by rememberSaveable { mutableStateOf("") }
-
             DialogoDirecciones(
-                textoBusqueda = textoBusqueda,
+                textoBusqueda = uiState.textoBusqueda,
+                sugerenciasPlaces = uiState.sugerenciasDirecciones,
+                textoUbicacionActual = uiState.textoUbicacionGps,
                 tienePermisoUbicacion = locationPermissionsState.allPermissionsGranted,
                 debeMostrarRationale = locationPermissionsState.shouldShowRationale,
 
                 onTextoBusquedaChange = { nuevoValor ->
-                    mostrarDialogoDelivery = false
-                    textoBusqueda = nuevoValor
+                    checkoutViewModel.actualizarTextoBusqueda(nuevoValor)
+                },
+
+                onPrediccionSeleccionada = { prediccion ->
+
+                    checkoutViewModel.seleccionarDireccionDesdePrediccion(
+                        prediccion = prediccion,
+                        onExito = {
+                            onNavigateTo(SecondaryRoutes.AgregarDireccion.route)
+                        }
+                    )
                 },
 
                 onNuevaDireccion = { destino ->
-                    mostrarDialogoDelivery = false
+                    checkoutViewModel.cambiarMostrarDialogoEntrega(false)
                     onNavigateTo(destino)
                 },
 
-                onDireccionGuardada = {
-                    mostrarDialogoDelivery = false
-                    metodoEntregaElegido = true
+                onDireccionGuardada = { direccion ->
+                    checkoutViewModel.seleccionarMetodoEntrega(MetodoEntrega.DELIVERY)
+                    checkoutViewModel.cambiarMostrarDialogoEntrega(false)
+                    checkoutViewModel.confirmarDireccion(direccion)
                 },
 
                 onPedirPermiso = { locationPermissionsState.launchMultiplePermissionRequest() },
 
-                onDismiss = { mostrarDialogoDelivery = false },
+                onDismiss = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) },
 
+                //Lista de direcciones "guardadas" por defecto para hito 3, cambiar cuando haya endpoint
                 listaDirecciones = listOf(
                     Direccion(
                         calle = "Calle 1444",
@@ -302,20 +342,24 @@ fun ConfirmacionCompraScreen(
     }
 
     //PopUp para elegir tarjeta
-    if (mostrarDialogoTarjeta) {
+    if (uiState.mostrarDialogoTarjeta) {
 
         Dialog(
-            onDismissRequest = { mostrarDialogoTarjeta = false }
+            onDismissRequest = { checkoutViewModel.cambiarMostrarDialogoTarjeta(false) }
         ) {
 
             DialogoTarjeta(
                 onTarjetaCreditoClick = {
-                    onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)
+
+                    //Por ahora para confirmar funcionamiento de interfaz
+                    checkoutViewModel.seleccionarMetodoPago(MetodoPago.TARJETA)
+                    checkoutViewModel.cambiarMostrarDialogoTarjeta(false)
+                    //onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)
                 },
                 onTarjetaDebitoPrepagoClick = {
                     onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)
                 },
-                onDismiss = { mostrarDialogoTarjeta = false }
+                onDismiss = { checkoutViewModel.cambiarMostrarDialogoTarjeta(false) }
             )
         }
     }

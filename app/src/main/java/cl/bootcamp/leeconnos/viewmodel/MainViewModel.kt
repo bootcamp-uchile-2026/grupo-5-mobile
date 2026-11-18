@@ -1,11 +1,7 @@
 package cl.bootcamp.leeconnos.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.bootcamp.leeconnos.data.local.database.AppDatabase
-import cl.bootcamp.leeconnos.data.local.datastore.ThemePreferences
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
@@ -15,21 +11,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel(application: Application): AndroidViewModel(application) {
-
-    private val libroRepository: LibroRepository
+class MainViewModel(
+    private val libroRepository: LibroRepository,
     private val themeRepository: ThemeRepository
-
-    init {
-        val database = AppDatabase.getInstance(application)
-        libroRepository = LibroRepository(
-            libroDao = database.libroDao()
-        )
-        themeRepository = ThemeRepository(ThemePreferences(application.applicationContext))
-    }
+): ViewModel() {
 
     val isDarkMode: StateFlow<Boolean?> = themeRepository.isDarkMode
         .stateIn(

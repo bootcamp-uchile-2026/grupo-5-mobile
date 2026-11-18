@@ -21,18 +21,22 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.campostexto.Buscador
-import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalConIcono
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 
 @Composable
 fun DialogoDirecciones(
     textoBusqueda: String,
+    sugerenciasPlaces: List<AutocompletePrediction>,
+    textoUbicacionActual: String,
     tienePermisoUbicacion: Boolean,
     debeMostrarRationale: Boolean,
     listaDirecciones: List<Direccion>,
     onTextoBusquedaChange: (String) -> Unit,
+    onPrediccionSeleccionada: (AutocompletePrediction) -> Unit,
     onNuevaDireccion: (String) -> Unit,
-    onDireccionGuardada: () -> Unit,
+    onDireccionGuardada: (Direccion) -> Unit,
     onPedirPermiso: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -76,13 +80,26 @@ fun DialogoDirecciones(
                 HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
             }
 
+            items(sugerenciasPlaces) { prediccion ->
+
+                ItemDialogoDirecciones(
+                    titulo = prediccion.getPrimaryText(null).toString(),
+                    subtitulo = prediccion.getSecondaryText(null).toString(),
+                    onClick = {
+                        onPrediccionSeleccionada(prediccion)
+                    }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+            }
+
             //Controla el flujo completo del permiso para la ubicación
             item {
 
                 if (tienePermisoUbicacion) {
                     ItemDialogoDirecciones(
                         titulo = "Usar mi ubicación actual",
-                        subtitulo = "Av. Siempre viva 1666, Santiago, Región Metropolitana Chile", //Cambiar por ubicación basada en longitud y latitud
+                        subtitulo = textoUbicacionActual,
                         onClick = {
                             onNuevaDireccion(SecondaryRoutes.AgregarDireccion.route)
                         }
@@ -115,10 +132,9 @@ fun DialogoDirecciones(
 
                 } else {
 
-                    BotonPrincipalConIcono(
+                    BotonPrincipal(
                         textoBtn = "Usar mi ubicación",
-                        icono = R.drawable.ic_plus, //Placeholder mientras se obtiene el icono de ubicación
-                        onBtnClick = {
+                        onClick = {
                             onPedirPermiso()
                         },
                         modifier = Modifier.padding(horizontal = 16.dp)
@@ -129,13 +145,14 @@ fun DialogoDirecciones(
             }
 
 
+            //Por ahora hardcodeadas por falta de endpoint para manejar direcciones guardadas
             items(listaDirecciones) { direccion ->
 
                 //item de lista
                 ItemDialogoDirecciones(
                     titulo = "${direccion.calle}, ${direccion.comuna}, ${direccion.region}",
                     subtitulo = "[NOMBRE(CAMBIAR)] \n${direccion.telefono}",
-                    onClick = onDireccionGuardada
+                    onClick = { onDireccionGuardada(direccion) }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

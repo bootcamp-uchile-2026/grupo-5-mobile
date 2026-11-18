@@ -19,11 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleTarjetaMetodoEntrega
 
 @Composable
 fun TarjetaMetodoEntrega(
-    //Por ver esperando la tarjeta del metodo de transferencia (sin wireframe)
+    direccion: Direccion,
+    costoEnvio: Int,
     onCambiarDireccionClick: () -> Unit
 ) {
 
@@ -74,7 +76,7 @@ fun TarjetaMetodoEntrega(
 
                     DetalleTarjetaMetodoEntrega(
                         concepto = "Costo de envío",
-                        valor = "$4000"
+                        valor = "$$costoEnvio"
                     )
 
                     DetalleTarjetaMetodoEntrega(
@@ -83,7 +85,7 @@ fun TarjetaMetodoEntrega(
                     )
 
                     Text(
-                        text = "Av. Villadorada 5666, Santiago,\nRegión Metropolitana, Chile",
+                        text = "${direccion.calle}, ${direccion.comuna}, ${direccion.region}",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Light,
                         maxLines = 2,

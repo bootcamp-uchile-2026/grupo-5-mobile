@@ -23,15 +23,17 @@ import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.HomeUiState
 import cl.bootcamp.leeconnos.viewmodel.HomeViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
     mainViewModel: MainViewModel,
-    viewModel: HomeViewModel = viewModel(),
     onNavigateTo: (String) -> Unit
 ){
 
-    val estadoUi by viewModel.uiState.collectAsState()
+    val homeViewModel: HomeViewModel = koinViewModel()
+
+    val estadoUi by homeViewModel.uiState.collectAsState()
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
     val itemsListaDeseados by mainViewModel.itemsListaDeseados.collectAsState()
 

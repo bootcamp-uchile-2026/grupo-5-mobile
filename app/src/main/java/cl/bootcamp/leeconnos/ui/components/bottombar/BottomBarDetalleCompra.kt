@@ -3,6 +3,7 @@ package cl.bootcamp.leeconnos.ui.components.bottombar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -11,7 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipalBottomBar
+import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleSubtotalCompra
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleTotalCompra
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
@@ -31,7 +33,7 @@ fun BottomBarDetalleCarrito(
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surface)
             .navigationBarsPadding()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding(horizontal = 16.dp)
     ) {
 
         DetalleSubtotalCompra(
@@ -44,12 +46,15 @@ fun BottomBarDetalleCarrito(
             valor = "$$total"
         )
 
-        BotonPrincipalBottomBar(
+        BotonPrincipal(
             textoBtn = textoBtn,
+            icono = R.drawable.ic_carrito,
             enabled = puedeNavegar,
             onClick = {
                 onNavigateToCheckout(SecondaryRoutes.ConfirmacionCompra.route)
-            }
+            },
+            estiloTexto = MaterialTheme.typography.bodyMedium,
+            contentPadding = PaddingValues(vertical = 12.dp)
         )
     }
 }
