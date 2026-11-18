@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +35,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
+import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarSecundario
 import cl.bootcamp.leeconnos.ui.components.campostexto.CampoTexto
 import cl.bootcamp.leeconnos.ui.components.cards.TarjetaOpcionesEntrega
 import cl.bootcamp.leeconnos.ui.components.dropdown.DropdownBusquedaDireccion
@@ -149,25 +153,30 @@ fun AgregarDireccionScreen(
 
         bottomBar = {
 
-            BotonPrincipal(
-                textoBtn = "Continuar",
-                enabled = uiState.puedeGuardarDireccion,
-                onClick = {
+            BottomBarSecundario (
+                content = {
+                    BotonPrincipal(
+                        textoBtn = "Continuar",
+                        enabled = uiState.puedeGuardarDireccion,
+                        onClick = {
 
-                    val direccionFinal = uiState.direccionSugeridaGeocoding
+                            val direccionFinal = uiState.direccionSugeridaGeocoding
 
-                    if (direccionFinal != null) {
+                            if (direccionFinal != null) {
 
-                        checkoutViewModel.confirmarDireccion(direccionFinal)
+                                checkoutViewModel.confirmarDireccion(direccionFinal)
 
-                        onNavigateBack()
-                    }
-                },
-                modifier = Modifier.padding(horizontal = 16.dp),
-                estiloTexto = MaterialTheme.typography.bodyMedium,
-                contentPadding = PaddingValues(vertical = 12.dp)
+                                onNavigateBack()
+                            }
+                        },
+                        estiloTexto = MaterialTheme.typography.bodyMedium,
+                        contentPadding = PaddingValues(vertical = 12.dp)
+                    )
+                }
             )
-        }
+        },
+
+        contentWindowInsets = WindowInsets.systemBars
 
     ) { paddingValues ->
 

@@ -1,12 +1,17 @@
 package cl.bootcamp.leeconnos.ui.screens
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.ui.components.AlertaConfirmacion
 import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarDetalleCarrito
+import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarSecundario
 import cl.bootcamp.leeconnos.ui.components.carruseles.CantidadItems
 import cl.bootcamp.leeconnos.ui.components.carruseles.ItemCarrito
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
@@ -50,14 +56,20 @@ fun CarritoScreen(
 
         bottomBar = {
 
-            BottomBarDetalleCarrito(
-                textoBtn = "Comprar",
-                ahorro = ahorroCompra,
-                total = totalCompra,
-                puedeNavegar = itemsCarrito.isNotEmpty(),
-                onNavigateToCheckout = onNavigateTo
+            BottomBarSecundario(
+                content = {
+                    BottomBarDetalleCarrito(
+                        textoBtn = "Comprar",
+                        ahorro = ahorroCompra,
+                        total = totalCompra,
+                        puedeNavegar = itemsCarrito.isNotEmpty(),
+                        onNavigateToCheckout = onNavigateTo
+                    )
+                }
             )
-        }
+        },
+
+        contentWindowInsets = WindowInsets.systemBars
 
     ) { paddingValues ->
 
