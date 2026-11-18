@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,8 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -43,6 +46,7 @@ import androidx.compose.ui.window.Dialog
 import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
+import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarSecundario
 import cl.bootcamp.leeconnos.ui.components.campostexto.CampoTextoCupon
 import cl.bootcamp.leeconnos.ui.components.cards.TarjetaMetodoEntrega
 import cl.bootcamp.leeconnos.ui.components.desplegables.DesplegableCompra
@@ -115,15 +119,20 @@ fun ConfirmacionCompraScreen(
 
         bottomBar = {
 
-            BotonPrincipal(
-                textoBtn = "Pagar",
-                enabled = uiState.puedePagar,
-                onClick = onPagarClick,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                estiloTexto = MaterialTheme.typography.bodyMedium,
-                contentPadding = PaddingValues(vertical = 12.dp)
+            BottomBarSecundario(
+                content = {
+                    BotonPrincipal(
+                        textoBtn = "Pagar",
+                        enabled = uiState.puedePagar,
+                        onClick = onPagarClick,
+                        estiloTexto = MaterialTheme.typography.bodyMedium,
+                        contentPadding = PaddingValues(vertical = 12.dp)
+                    )
+                }
             )
-        }
+        },
+
+        contentWindowInsets = WindowInsets.systemBars
 
     ) { paddingValues ->
 

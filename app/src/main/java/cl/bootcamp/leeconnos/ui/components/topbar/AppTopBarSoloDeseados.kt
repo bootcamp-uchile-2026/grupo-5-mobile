@@ -45,8 +45,6 @@ fun AppTopBarSoloDeseados(
             containerColor = Color.Transparent
         ),
 
-        windowInsets = WindowInsets(0.dp),
-
         modifier = modifier
     )
 }

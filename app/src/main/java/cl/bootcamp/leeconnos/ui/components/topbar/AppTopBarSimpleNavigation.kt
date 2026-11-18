@@ -39,6 +39,5 @@ fun AppTopBarSimpleNavigation(
             navigationIconContentColor = MaterialTheme.colorScheme.onSurface
         ),
 
-        windowInsets = WindowInsets(0.dp)
     )
 }

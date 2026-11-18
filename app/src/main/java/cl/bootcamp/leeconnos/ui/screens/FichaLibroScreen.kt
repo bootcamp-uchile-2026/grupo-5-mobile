@@ -3,11 +3,14 @@ package cl.bootcamp.leeconnos.ui.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,6 +25,7 @@ import cl.bootcamp.leeconnos.data.modelos.AutorResena
 import cl.bootcamp.leeconnos.data.modelos.Resena
 import cl.bootcamp.leeconnos.ui.components.SeccionResenas
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
+import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarSecundario
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleFichaProducto
 import cl.bootcamp.leeconnos.ui.components.detalles.RecomendacionVideo
 import cl.bootcamp.leeconnos.ui.components.imagenes.ImagenFichaLibro
@@ -44,20 +48,26 @@ fun FichaLibroScreen(
 
         bottomBar = {
 
-            BotonPrincipal(
-                textoBtn = "Agregar al carrito",
-                icono = R.drawable.ic_carrito,
-                onClick = {
+            BottomBarSecundario(
+                content = {
+                    BotonPrincipal(
+                        textoBtn = "Agregar al carrito",
+                        icono = R.drawable.ic_carrito,
+                        onClick = {
 
-                    if (libro != null ){
-                        mainViewModel.agregarItemCarrito(libro!!)
-                    }
-                },
-                modifier = Modifier.padding(horizontal = 16.dp),
-                estiloTexto = MaterialTheme.typography.bodyMedium,
-                contentPadding = PaddingValues(vertical = 12.dp)
+                            if (libro != null ){
+                                mainViewModel.agregarItemCarrito(libro!!)
+                            }
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        estiloTexto = MaterialTheme.typography.bodyMedium,
+                        contentPadding = PaddingValues(vertical = 12.dp)
+                    )
+                }
             )
-        }
+        },
+
+        //contentWindowInsets = WindowInsets.systemBars
 
     ) { paddingValues ->
 

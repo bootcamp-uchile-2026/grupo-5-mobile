@@ -10,6 +10,21 @@ sealed class SecondaryRoutes(
     override val showBottomBar: Boolean = true
 ) : ScreenData {
 
+    //LOGIN
+    object BienvenidaScreen : SecondaryRoutes(
+        route = "bienvenida",
+        title = "Bienvenida",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
+    object LoginScreen : SecondaryRoutes(
+        route = "login",
+        title = "Iniciar Sesión",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
     //TOP BAR [Flotantes]
     object Carrito : SecondaryRoutes(
         route = "carrito",
@@ -110,6 +125,8 @@ sealed class SecondaryRoutes(
 
     companion object {
         fun getValues(): List<SecondaryRoutes> = listOf(
+            BienvenidaScreen,
+            LoginScreen,
             Carrito,
             ConfirmacionCompra,
             AgregarDireccion,

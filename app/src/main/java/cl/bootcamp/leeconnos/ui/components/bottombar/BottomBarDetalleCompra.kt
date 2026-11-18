@@ -4,10 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,15 +29,10 @@ fun BottomBarDetalleCarrito(
     total: Int,
     puedeNavegar: Boolean,
     onNavigateToCheckout: (String) -> Unit
-){
+) {
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surface)
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
 
         DetalleSubtotalCompra(
@@ -57,4 +56,5 @@ fun BottomBarDetalleCarrito(
             contentPadding = PaddingValues(vertical = 12.dp)
         )
     }
+
 }

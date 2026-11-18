@@ -3,9 +3,11 @@ package cl.bootcamp.leeconnos.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimple
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
@@ -26,8 +29,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MiCuentaScreen(
+    mainViewModel: MainViewModel,
+    onNavigateBottomBar: (String) -> Unit
 ){
-    val mainViewModel: MainViewModel = koinViewModel()
+
 
     val isDark by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
 
@@ -36,7 +41,18 @@ fun MiCuentaScreen(
             AppTopBarSimple(
                 titulo = ScreenRoutes.MI_CUENTA.title
             )
-        }
+        },
+
+        bottomBar = {
+            AppBottomBar(
+                rutaActual = ScreenRoutes.MI_CUENTA.route,
+                onNavigateTo = onNavigateBottomBar
+            )
+        },
+
+        contentWindowInsets = WindowInsets.systemBars
+
+        
     ) { paddingValues ->
 
         LazyColumn(

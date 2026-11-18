@@ -45,8 +45,6 @@ fun AppTopBarSoloCarrito(
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             actionIconContentColor = MaterialTheme.colorScheme.onSurface,
             navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-        ),
-
-        windowInsets = WindowInsets(0.dp)
+        )
     )
 }
