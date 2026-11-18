@@ -3,6 +3,7 @@ package cl.bootcamp.leeconnos.ui.screens
 import android.Manifest
 import android.annotation.SuppressLint
 import android.location.Location
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,11 +22,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
@@ -51,9 +55,15 @@ import com.google.maps.android.compose.rememberUpdatedMarkerState
 @Composable
 fun AgregarDireccionScreen(
     checkoutViewModel: CheckoutViewModel,
-    onNavigateBack: () -> Unit,
-    onContinuarClick: () -> Unit
+    onNavigateBack: () -> Unit
 ) {
+
+    //Limpia el error al salir de la pantalla, ya que al compartir el viewmodel sigue estando el error al navegar
+    DisposableEffect(Unit) {
+        onDispose {
+            checkoutViewModel.limpiarErrorDireccion()
+        }
+    }
 
     val uiState by checkoutViewModel.uiState.collectAsState()
 
@@ -90,11 +100,11 @@ fun AgregarDireccionScreen(
         markerState.position = ubicacionPorDefecto
     }
 
-    LaunchedEffect(uiState.direccionSugeridaGeocoding){
+    LaunchedEffect(uiState.direccionSugeridaGeocoding) {
 
         val direccion = uiState.direccionSugeridaGeocoding
 
-        if(direccion != null && direccion.latitud != 0.0) {
+        if (direccion != null && direccion.latitud != 0.0) {
 
             val nuevaUbicacion = LatLng(direccion.latitud, direccion.longitud)
             cameraPositionState.animate(
@@ -141,8 +151,18 @@ fun AgregarDireccionScreen(
 
             BotonPrincipal(
                 textoBtn = "Continuar",
-                enabled = true,
-                onClick = {},
+                enabled = uiState.puedeGuardarDireccion,
+                onClick = {
+
+                    val direccionFinal = uiState.direccionSugeridaGeocoding
+
+                    if (direccionFinal != null) {
+
+                        checkoutViewModel.confirmarDireccion(direccionFinal)
+
+                        onNavigateBack()
+                    }
+                },
                 modifier = Modifier.padding(horizontal = 16.dp),
                 estiloTexto = MaterialTheme.typography.bodyMedium,
                 contentPadding = PaddingValues(vertical = 12.dp)
@@ -192,6 +212,7 @@ fun AgregarDireccionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .imePadding()
                     .verticalScroll(rememberScrollState())
             ) {
 
@@ -201,36 +222,53 @@ fun AgregarDireccionScreen(
                         .fillMaxWidth()
                 ) {
 
+                    Box(
+                        modifier = Modifier.onFocusChanged { focusState ->
+
+                            if (!focusState.isFocused) {
+
+                                val calleActual = uiState.direccionSugeridaGeocoding?.calle
+                                val latActual = uiState.direccionSugeridaGeocoding?.latitud ?: 0.0
+
+                                if (!calleActual.isNullOrBlank() && latActual == 0.0) {
+
+                                    checkoutViewModel.convertirTextoADireccion(calleActual)
+                                }
+
+                                checkoutViewModel.actualizarTextoBusqueda("")
+                            }
+                        }
+                    ){
                         CampoTexto(
                             texto = uiState.direccionSugeridaGeocoding?.calle ?: "",
-                            label = "Ingresa una dirección",
+                            label = "Ingresa una dirección *",
                             onValueChange = { nuevaDireccion ->
 
                                 checkoutViewModel.actualizarTextoIngresarDireccion(nuevaDireccion)
 
                                 //Para mostrar sugerencias de direcciones con Places API
                                 checkoutViewModel.actualizarTextoBusqueda(nuevaDireccion)
-                            }
+                            },
+                            isError = uiState.errorDireccionNoEncontrada,
+                            mensajeError = "No pudimos encontrar esta dirección. Por favor, selecciona una sugerencia o usa el mapa."
                         )
+                    }
 
-                        AnimatedVisibility(
-                            visible = uiState.sugerenciasDirecciones.isNotEmpty() &&
-                                    uiState.direccionSugeridaGeocoding?.calle?.isNotEmpty() == true
-                        ) {
+                    DropdownBusquedaDireccion(
+                        visible = uiState.sugerenciasDirecciones.isNotEmpty() &&
+                                uiState.direccionSugeridaGeocoding?.calle?.isNotEmpty() == true,
+                        listaOpciones = uiState.sugerenciasDirecciones,
+                        onOpcionClick = { prediccion ->
 
-                            DropdownBusquedaDireccion(
-                                listaOpciones = uiState.sugerenciasDirecciones,
-                                onOpcionClick = { prediccion ->
+                            checkoutViewModel.actualizarTextoBusqueda("")
 
-                                    checkoutViewModel.actualizarTextoBusqueda("")
-
-                                    checkoutViewModel.seleccionarDireccionDesdePrediccion(
-                                        prediccion = prediccion,
-                                        onExito = {}
-                                    )
-                                }
+                            checkoutViewModel.seleccionarDireccionDesdePrediccion(
+                                prediccion = prediccion,
+                                onExito = {}
                             )
                         }
+                    )
+
 
                     CampoTexto(
                         texto = uiState.direccionSugeridaGeocoding?.detalle ?: "",
@@ -263,7 +301,9 @@ fun AgregarDireccionScreen(
                         texto = uiState.direccionSugeridaGeocoding?.informacionAdicional ?: "",
                         label = "Información adicional",
                         onValueChange = { nuevaInformacionAdicional ->
-                            checkoutViewModel.actualizarTextoInformacionAdicional(nuevaInformacionAdicional)
+                            checkoutViewModel.actualizarTextoInformacionAdicional(
+                                nuevaInformacionAdicional
+                            )
                         }
                     )
                 }
@@ -281,7 +321,7 @@ fun AgregarDireccionScreen(
 
                     CampoTexto(
                         texto = uiState.direccionSugeridaGeocoding?.nombreReceptor ?: "",
-                        label = "Nombre de quien recibe",
+                        label = "Nombre de quien recibe *",
                         onValueChange = { nuevoNombreReceptor ->
                             checkoutViewModel.actualizarTextoNombreReceptor(nuevoNombreReceptor)
                         }
@@ -289,7 +329,7 @@ fun AgregarDireccionScreen(
 
                     CampoTexto(
                         texto = uiState.direccionSugeridaGeocoding?.telefono ?: "",
-                        label = "Teléfono",
+                        label = "Teléfono *",
                         onValueChange = { nuevoTelefono ->
                             checkoutViewModel.actualizarTextoTelefonoDireccion(nuevoTelefono)
                         }

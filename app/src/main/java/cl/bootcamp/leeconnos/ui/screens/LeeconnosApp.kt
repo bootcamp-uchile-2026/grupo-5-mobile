@@ -280,7 +280,6 @@ fun LeeconnosApp(
                     AgregarDireccionScreen(
                         checkoutViewModel = checkoutViewModel,
                         onNavigateBack = { navController.popBackStack() },
-                        onContinuarClick = {}
                     )
                 }
 

@@ -1,6 +1,7 @@
 package cl.bootcamp.leeconnos.ui.components.campostexto
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +28,8 @@ fun CampoTexto(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isError: Boolean = false,
+    mensajeError: String? = null
 ) {
 
     //Lógica necesaria para que el cursor no se quede atrás al seleccionar una recomendación de dirección
@@ -51,10 +54,19 @@ fun CampoTexto(
         },
         label = { Text(text = label, style = MaterialTheme.typography.bodySmall) },
         enabled = enabled,
+        isError = isError,
         singleLine = true,
         shape = MaterialTheme.shapes.large,
         textStyle = MaterialTheme.typography.bodySmall,
         modifier = modifier.fillMaxWidth(),
+        supportingText = {
+            if (isError && mensajeError != null)
+                Text(
+                    text = mensajeError,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+        },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,

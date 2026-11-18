@@ -1,5 +1,6 @@
 package cl.bootcamp.leeconnos.ui.components.dropdown
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,49 +19,55 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 
 @Composable
 fun DropdownBusquedaDireccion(
+    visible: Boolean,
     listaOpciones: List<AutocompletePrediction>,
     onOpcionClick: (AutocompletePrediction) -> Unit,
 ) {
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            //Limitar el alto del desplegable
-            .heightIn(max = 140.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    AnimatedVisibility(
+        visible = visible
     ) {
 
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                //Limitar el alto del desplegable
+                .heightIn(max = 140.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
-            items(listaOpciones.size) { index ->
-                val prediccion = listaOpciones[index]
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onOpcionClick(prediccion)
-                        }
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = prediccion.getPrimaryText(null).toString(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = prediccion.getSecondaryText(null).toString(),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(listaOpciones.size) { index ->
+                    val prediccion = listaOpciones[index]
 
-                //Divisor entre opciones
-                if (index < listaOpciones.lastIndex) {
-                    androidx.compose.material3.HorizontalDivider(
-                        color = MaterialTheme.colorScheme.outlineVariant
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onOpcionClick(prediccion)
+                            }
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = prediccion.getPrimaryText(null).toString(),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            text = prediccion.getSecondaryText(null).toString(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    //Divisor entre opciones
+                    if (index < listaOpciones.lastIndex) {
+                        androidx.compose.material3.HorizontalDivider(
+                            color = MaterialTheme.colorScheme.outlineVariant
+                        )
+                    }
                 }
             }
         }

@@ -8,7 +8,7 @@ data class Direccion(
     val detalle: String = "",
     val informacionAdicional: String = "",
     val nombreReceptor: String = "",
-    //Necesito guardar la latitud y longitud para poder centrar la cámara del mapa
+    //Se guarda la latitud y longitud para poder centrar la cámara del mapa
     val latitud: Double = 0.0,
     val longitud: Double = 0.0
 ) {

@@ -59,10 +59,24 @@ data class CheckoutUiState(
     val descuentoCupon: Int = 0,
     val totalCompra: Int = 0,
 
-    val direccionSugeridaGeocoding: Direccion? = null
+    val direccionSugeridaGeocoding: Direccion? = null,
+    val errorDireccionNoEncontrada: Boolean = false
 ){
     val puedePagar: Boolean
         get() = metodoEntrega != MetodoEntrega.NINGUNO && metodoPago != MetodoPago.NINGUNO
+
+    val puedeGuardarDireccion: Boolean
+        get() = direccionSugeridaGeocoding != null &&
+
+                direccionSugeridaGeocoding.calle.isNotBlank() &&
+                direccionSugeridaGeocoding.comuna.isNotBlank() &&
+                direccionSugeridaGeocoding.region.isNotBlank() &&
+                direccionSugeridaGeocoding.nombreReceptor.isNotBlank() &&
+                direccionSugeridaGeocoding.telefono.isNotBlank() &&
+
+                //Usa el mapa o las sugerencias
+                direccionSugeridaGeocoding.latitud != 0.0 &&
+                direccionSugeridaGeocoding.longitud != 0.0
 }
 
 
@@ -165,8 +179,9 @@ class CheckoutViewModel(
         _uiState.update { state ->
             state.copy(
                 direccionSeleccionada = direccion,
+                metodoEntrega = MetodoEntrega.DELIVERY,
                 mostrarDialogoEntrega = false,
-                costoDespacho = 4000 //Por ahora hardcodeado, cambiar cuando haya validación a futuro
+                costoDespacho = 4000 //TODO: Por ahora hardcodeado, cambiar cuando haya validación a futuro
             )
         }
     }
@@ -174,6 +189,7 @@ class CheckoutViewModel(
     fun cambiarDireccionSugerida(direccion: Direccion) {
         _uiState.update { it.copy(direccionSugeridaGeocoding = direccion) }
     }
+
 
     //Con la nueva API de Places hay que generar un token para cada sesión de búsqueda
     private var token = AutocompleteSessionToken.newInstance()
@@ -301,6 +317,60 @@ class CheckoutViewModel(
         }
     }
 
+    fun convertirTextoADireccion(texto: String) {
+
+        if (texto.isBlank()) return
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            launch(Dispatchers.Main) {
+                _uiState.update { it.copy(errorDireccionNoEncontrada = false) }
+            }
+
+            try {
+
+                val direcciones = geocoder.getFromLocationName(texto, 1)
+
+                if (!direcciones.isNullOrEmpty()) {
+                    val address = direcciones[0]
+
+                    val latitud = address.latitude
+                    val longitud = address.longitude
+                    val comuna = address.locality ?: ""
+                    val region = address.adminArea ?: ""
+
+                    launch(Dispatchers.Main) {
+                        _uiState.update { state ->
+
+                            val direccionActualizada = state.direccionSugeridaGeocoding?.copy(
+                                comuna = comuna,
+                                region = region,
+                                latitud = latitud,
+                                longitud = longitud
+                            ) ?: Direccion(
+                                calle = texto,
+                                comuna = comuna,
+                                region = region,
+                                latitud = latitud,
+                                longitud = longitud
+                            )
+
+                            state.copy(direccionSugeridaGeocoding = direccionActualizada)
+                        }
+                    }
+
+                } else {
+                    launch(Dispatchers.Main) {
+                        _uiState.update { it.copy(errorDireccionNoEncontrada = true) }
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("GEOCODER_ERROR", "Error resolviendo texto a coordenadas: ${e.message}")
+            }
+        }
+    }
+
     fun ejecutarBusquedaEnPlaces(busqueda: String) {
 
         if (busqueda.isEmpty()) {
@@ -330,10 +400,16 @@ class CheckoutViewModel(
 
         _uiState.update { state ->
 
-            val direccionActualizada = state.direccionSugeridaGeocoding?.copy(calle = nuevaDireccion)
+            val direccionActualizada = state.direccionSugeridaGeocoding?.copy(
+                calle = nuevaDireccion,
+                latitud = 0.0,
+                longitud = 0.0,
+                comuna = "",
+                region = ""
+            )
                 ?: Direccion(calle = nuevaDireccion)
 
-            state.copy(direccionSugeridaGeocoding = direccionActualizada)
+            state.copy(direccionSugeridaGeocoding = direccionActualizada, errorDireccionNoEncontrada = false)
         }
     }
 
@@ -383,5 +459,9 @@ class CheckoutViewModel(
 
     fun limpiarTokenDeBusqueda() {
         token = AutocompleteSessionToken.newInstance()
+    }
+
+    fun limpiarErrorDireccion() {
+        _uiState.update { it.copy(errorDireccionNoEncontrada = false) }
     }
 }

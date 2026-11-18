@@ -180,7 +180,8 @@ fun ConfirmacionCompraScreen(
                     },
                     contenidoDesplegable = {
 
-                        if (uiState.metodoEntrega == MetodoEntrega.NINGUNO) {
+                        if (uiState.metodoEntrega == MetodoEntrega.NINGUNO ||
+                            (uiState.metodoEntrega == MetodoEntrega.DELIVERY && uiState.direccionSeleccionada == null)) {
 
                             DetalleConfirmacionCompra(
                                 textoPrimerItem = "Delivery",
@@ -197,12 +198,12 @@ fun ConfirmacionCompraScreen(
                                 }
                             )
 
-                        } else {
+                        } else if (uiState.metodoEntrega == MetodoEntrega.DELIVERY) {
 
                             TarjetaMetodoEntrega(
+                                direccion = uiState.direccionSeleccionada!!,
+                                costoEnvio = uiState.costoDespacho,
                                 onCambiarDireccionClick = {
-
-                                    checkoutViewModel.seleccionarMetodoEntrega(MetodoEntrega.NINGUNO)
                                     checkoutViewModel.cambiarMostrarDialogoEntrega(true)
                                 }
                             )
