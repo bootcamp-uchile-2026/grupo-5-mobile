@@ -11,19 +11,24 @@ import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 enum class MetodoEntrega {
     NINGUNO,
@@ -60,11 +65,26 @@ data class CheckoutUiState(
         get() = metodoEntrega != MetodoEntrega.NINGUNO && metodoPago != MetodoPago.NINGUNO
 }
 
+
+@OptIn(FlowPreview::class)
 class CheckoutViewModel(
     private val libroRepository: LibroRepository,
     private val placesClient: PlacesClient,
     private val geocoder: Geocoder
 ) : ViewModel() {
+
+    //Flujo necesario para no llamar a la API por cada cambio del TextField
+    private val _textoBusquedaDebounce = MutableStateFlow("")
+
+    init {
+        _textoBusquedaDebounce
+            .debounce(500.milliseconds)
+            .distinctUntilChanged()
+            .onEach { busqueda ->
+                ejecutarBusquedaEnPlaces(busqueda)
+            }
+            .launchIn(viewModelScope)
+    }
 
     val itemsCarrito: StateFlow<List<Libro>> = libroRepository.carrito
         .stateIn(
@@ -159,31 +179,9 @@ class CheckoutViewModel(
     private var token = AutocompleteSessionToken.newInstance()
 
     fun actualizarTextoBusqueda(busqueda: String) {
-
         _uiState.update { it.copy(textoBusqueda = busqueda) }
 
-        if (busqueda.isEmpty()) {
-            _uiState.update { it.copy(sugerenciasDirecciones = emptyList()) }
-            return
-        }
-
-        val peticion = FindAutocompletePredictionsRequest.builder()
-            .setSessionToken(token)
-            .setQuery(busqueda)
-            .setTypesFilter(listOf("geocode"))
-            .setCountries("CL") //Restringe la busqueda solo a Chile
-            .build()
-
-        placesClient.findAutocompletePredictions(peticion)
-            //Hay resultados que coinciden
-            .addOnSuccessListener { response ->
-                _uiState.update { it.copy(sugerenciasDirecciones = response.autocompletePredictions) }
-            }
-            //Sin resultados que coincidan
-            .addOnFailureListener { exception ->
-                Log.e("PLACES_API_ERROR", "Error buscando lugares: ${exception.message}", exception)
-                _uiState.update { it.copy(sugerenciasDirecciones = emptyList()) }
-            }
+        _textoBusquedaDebounce.value = busqueda
     }
 
     fun seleccionarDireccionDesdePrediccion(prediccion: AutocompletePrediction, onExito: () -> Unit) {
@@ -203,20 +201,28 @@ class CheckoutViewModel(
                 val coordenadas = place.location
 
                 var calle = ""
+                var numeroCalle = ""
                 var comuna = ""
                 var region = ""
 
                 place.addressComponents?.asList()?.forEach { component ->
                     if (component.types.contains("route")) calle = component.name
-                    if (component.types.contains("street_number")) calle += " ${component.name}"
+                    if (component.types.contains("street_number")) numeroCalle = " ${component.name}"
                     if (component.types.contains("locality")) comuna = component.name
                     if (component.types.contains("administrative_area_level_1")) region = component.name
+                }
+
+                val calleCompleta = if (numeroCalle.isNotEmpty()) {
+                    "$calle$numeroCalle".trim()
+
+                } else {
+                    calle
                 }
 
                 if (coordenadas != null) {
 
                     val nuevaDireccion = Direccion(
-                        calle = calle.ifEmpty { prediccion.getPrimaryText(null).toString() },
+                        calle = calleCompleta.ifEmpty { prediccion.getPrimaryText(null).toString() },
                         comuna = comuna,
                         region = region,
                         latitud = coordenadas.latitude,
@@ -225,6 +231,15 @@ class CheckoutViewModel(
 
                     cambiarDireccionSugerida(nuevaDireccion)
                     cambiarMostrarDialogoEntrega(false)
+
+                    _uiState.update {
+                        it.copy(
+                            textoBusqueda = "",
+                            sugerenciasDirecciones = emptyList()
+                        )
+                    }
+
+                    _textoBusquedaDebounce.value = ""
 
                     limpiarTokenDeBusqueda()
 
@@ -284,6 +299,31 @@ class CheckoutViewModel(
                 }
             }
         }
+    }
+
+    fun ejecutarBusquedaEnPlaces(busqueda: String) {
+
+        if (busqueda.isEmpty()) {
+            _uiState.update { it.copy(sugerenciasDirecciones = emptyList()) }
+            return
+        }
+
+        val peticion = FindAutocompletePredictionsRequest.builder()
+            .setSessionToken(token)
+            .setQuery(busqueda)
+            .setTypesFilter(listOf("geocode"))
+            .setCountries("CL") //Restringe la busqueda solo a Chile
+            .build()
+
+        placesClient.findAutocompletePredictions(peticion)
+
+            .addOnSuccessListener { response ->
+                _uiState.update { it.copy(sugerenciasDirecciones = response.autocompletePredictions) }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("PLACES_API_ERROR", "Error buscando lugares: ${exception.message}", exception)
+                _uiState.update { it.copy(sugerenciasDirecciones = emptyList()) }
+            }
     }
 
     fun actualizarTextoIngresarDireccion(nuevaDireccion: String) {

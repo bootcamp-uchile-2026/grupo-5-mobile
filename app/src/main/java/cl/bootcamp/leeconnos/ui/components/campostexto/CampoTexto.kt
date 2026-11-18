@@ -8,8 +8,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
@@ -22,10 +29,25 @@ fun CampoTexto(
     enabled: Boolean = true,
 ) {
 
+    //Lógica necesaria para que el cursor no se quede atrás al seleccionar una recomendación de dirección
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(text = texto)) }
+
+    LaunchedEffect(texto) {
+        if (texto != textFieldValue.text) {
+            textFieldValue = TextFieldValue(
+                text = texto,
+                selection = TextRange(texto.length)
+            )
+        }
+    }
+
     OutlinedTextField(
-        value = texto,
+        value = textFieldValue,
         onValueChange = { nuevoValor ->
-            onValueChange(nuevoValor)
+
+            textFieldValue = nuevoValor
+
+            onValueChange(nuevoValor.text)
         },
         label = { Text(text = label, style = MaterialTheme.typography.bodySmall) },
         enabled = enabled,

@@ -3,7 +3,9 @@ package cl.bootcamp.leeconnos.ui.screens
 import android.Manifest
 import android.annotation.SuppressLint
 import android.location.Location
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.campostexto.CampoTexto
 import cl.bootcamp.leeconnos.ui.components.cards.TarjetaOpcionesEntrega
+import cl.bootcamp.leeconnos.ui.components.dropdown.DropdownBusquedaDireccion
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimpleNavigation
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
@@ -195,13 +200,37 @@ fun AgregarDireccionScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    CampoTexto(
-                        texto = uiState.direccionSugeridaGeocoding?.calle ?: "",
-                        label = "Ingresa una dirección",
-                        onValueChange = { nuevaDireccion ->
-                            checkoutViewModel.actualizarTextoIngresarDireccion(nuevaDireccion)
+
+                        CampoTexto(
+                            texto = uiState.direccionSugeridaGeocoding?.calle ?: "",
+                            label = "Ingresa una dirección",
+                            onValueChange = { nuevaDireccion ->
+
+                                checkoutViewModel.actualizarTextoIngresarDireccion(nuevaDireccion)
+
+                                //Para mostrar sugerencias de direcciones con Places API
+                                checkoutViewModel.actualizarTextoBusqueda(nuevaDireccion)
+                            }
+                        )
+
+                        AnimatedVisibility(
+                            visible = uiState.sugerenciasDirecciones.isNotEmpty() &&
+                                    uiState.direccionSugeridaGeocoding?.calle?.isNotEmpty() == true
+                        ) {
+
+                            DropdownBusquedaDireccion(
+                                listaOpciones = uiState.sugerenciasDirecciones,
+                                onOpcionClick = { prediccion ->
+
+                                    checkoutViewModel.actualizarTextoBusqueda("")
+
+                                    checkoutViewModel.seleccionarDireccionDesdePrediccion(
+                                        prediccion = prediccion,
+                                        onExito = {}
+                                    )
+                                }
+                            )
                         }
-                    )
 
                     CampoTexto(
                         texto = uiState.direccionSugeridaGeocoding?.detalle ?: "",
