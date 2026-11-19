@@ -52,7 +52,7 @@ fun BottomBarDetalleCarrito(
             onClick = {
                 onNavigateToCheckout(SecondaryRoutes.ConfirmacionCompra.route)
             },
-            estiloTexto = MaterialTheme.typography.bodyMedium,
+            textStyle = MaterialTheme.typography.bodyMedium,
             contentPadding = PaddingValues(vertical = 12.dp)
         )
     }

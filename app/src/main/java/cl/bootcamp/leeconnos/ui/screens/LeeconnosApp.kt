@@ -13,6 +13,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,9 +62,17 @@ fun LeeconnosApp(
     val mainViewModel: MainViewModel = koinViewModel()
     val checkoutViewModel: CheckoutViewModel = koinViewModel()
 
+    val estaLogueado by mainViewModel.estaLogueado.collectAsState()
+
+    if (estaLogueado == null) {
+        return
+    }
+
+    val rutaInicial = if (estaLogueado == true) "graph_home" else "graph_login"
+
     NavHost(
         navController = navController,
-        startDestination = "graph_home",
+        startDestination = rutaInicial,
         modifier = Modifier
             .fillMaxSize(),
 
@@ -139,7 +148,24 @@ fun LeeconnosApp(
 
                 val tipoAuth = backStackEntry.arguments?.getString("tipoAuth") ?: "login"
 
-                LoginScreen(tipo = tipoAuth)
+                LoginScreen(
+                    tipo = tipoAuth,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onLoginExitoso = {
+
+                        navController.navigate("graph_home") {
+
+                            //Borra de la pila las pantallas de login
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+
+                            launchSingleTop
+                        }
+                    }
+                )
             }
         }
 
