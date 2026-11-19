@@ -229,7 +229,7 @@ fun LeeconnosApp(
 
         navigation(
             startDestination = SecondaryRoutes.FichaLibro.route,
-            route = "graph_route"
+            route = "graph_ficha_libro"
         ) {
 
             composable(SecondaryRoutes.FichaLibro.route) {
@@ -243,7 +243,7 @@ fun LeeconnosApp(
             }
 
             composable(SecondaryRoutes.Resenas.route) {
-
+                //Pantalla reseñas
             }
         }
 
@@ -262,7 +262,10 @@ fun LeeconnosApp(
                     onNavigateTo = { ruta ->
                         navController.navigate(ruta)
                     },
-                    onPagarClick = {}
+                    onPagarClick = {
+                        //Forzamos enviar el parámetro esExito = true por falta de validación real del checkout
+                        navController.navigate(SecondaryRoutes.ResultadoTransaccion.route + "/true")
+                    }
                 )
             }
 
@@ -277,6 +280,31 @@ fun LeeconnosApp(
                 AgregarTarjetaScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onAgregarClick = {}
+                )
+            }
+
+            composable(
+                route = SecondaryRoutes.ResultadoTransaccion.route + "/{esExito}",
+                arguments = listOf(navArgument("esExito") { type = NavType.StringType })
+            ) { backStackEntry ->
+
+                val esExitoString = backStackEntry.arguments?.getString("esExito")
+                val esExito = esExitoString == "true"
+
+                ResultadoTransaccionScreen(
+                    esExito = esExito,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToHome = {
+
+                        navController.navigate("graph_home") {
+
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+
+                            launchSingleTop
+                        }
+                    }
                 )
             }
         }

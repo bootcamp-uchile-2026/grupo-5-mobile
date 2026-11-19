@@ -80,6 +80,13 @@ sealed class SecondaryRoutes(
         showBottomBar = false
     )
 
+    object ResultadoTransaccion : SecondaryRoutes(
+        route = "resultado_transaccion",
+        title = "",
+        showGlobalTopBar = false,
+        showBottomBar = false
+    )
+
     // PENDIENTES (sin Wireframes)
 
     object FichaLibrero : SecondaryRoutes(
@@ -131,6 +138,7 @@ sealed class SecondaryRoutes(
             ConfirmacionCompra,
             AgregarDireccion,
             AgregarTarjeta,
+            ResultadoTransaccion,
             ListaDeseados,
             FichaLibro,
             Resenas,

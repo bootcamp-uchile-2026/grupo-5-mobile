@@ -223,7 +223,7 @@ fun ConfirmacionCompraScreen(
 
                 //Métodos de pago
                 DesplegableCompra(
-                    icono = R.drawable.ic_credit_card,
+                    icono = R.drawable.ic_billetera,
                     nombre = "Métodos de pago",
                     resultado = {},
                     contenidoDesplegable = {
@@ -232,7 +232,7 @@ fun ConfirmacionCompraScreen(
                             textoPrimerItem = "Agregar tarjeta crédito / débito",
                             textoSegundoItem = "Transferencia",
                             iconoPrimerItem = R.drawable.ic_credit_card,
-                            iconoSegundoItem = R.drawable.ic_shopping_bag,
+                            iconoSegundoItem = R.drawable.ic_transferencia,
                             primerItemSelected = uiState.metodoPago == MetodoPago.TARJETA,
                             segundoItemSelected = uiState.metodoPago == MetodoPago.TRANSFERENCIA,
                             primerItemOnClick = {
