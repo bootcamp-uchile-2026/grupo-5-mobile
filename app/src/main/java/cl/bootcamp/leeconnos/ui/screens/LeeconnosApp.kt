@@ -63,7 +63,7 @@ fun LeeconnosApp(
 
     NavHost(
         navController = navController,
-        startDestination = "graph_home",
+        startDestination = "graph_login",
         modifier = Modifier
             .fillMaxSize(),
 
@@ -139,7 +139,12 @@ fun LeeconnosApp(
 
                 val tipoAuth = backStackEntry.arguments?.getString("tipoAuth") ?: "login"
 
-                LoginScreen(tipo = tipoAuth)
+                LoginScreen(
+                    tipo = tipoAuth,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
 

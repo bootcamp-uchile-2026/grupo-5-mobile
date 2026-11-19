@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
@@ -79,9 +80,9 @@ fun BienvenidaScreen(
                     textoBtn = "Iniciar Sesión",
                     onClick = onNavigateToLogin,
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    estiloTexto = MaterialTheme.typography.bodyMedium,
-                    contentPadding = PaddingValues(vertical = 24.dp)
-
+                    textStyle = MaterialTheme.typography.bodyMedium,
+                    textFontWeight = FontWeight.Bold,
+                    contentPadding = PaddingValues(vertical = 20.dp)
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

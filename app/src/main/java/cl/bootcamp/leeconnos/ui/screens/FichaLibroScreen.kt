@@ -60,7 +60,7 @@ fun FichaLibroScreen(
                             }
                         },
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        estiloTexto = MaterialTheme.typography.bodyMedium,
+                        textStyle = MaterialTheme.typography.bodyMedium,
                         contentPadding = PaddingValues(vertical = 12.dp)
                     )
                 }

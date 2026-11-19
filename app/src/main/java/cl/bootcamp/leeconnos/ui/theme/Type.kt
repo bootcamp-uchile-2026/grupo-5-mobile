@@ -17,7 +17,7 @@ val AppFontFamily = FontFamily(
     Font(R.font.lexend_bold, FontWeight.Bold)
 )
 
-val AppTitleFontFamily = FontFamily(
+val AppSecondaryFontFamily = FontFamily(
     Font(R.font.bree_serif_regular, weight = FontWeight.Normal)
 )
 
@@ -25,14 +25,14 @@ val Typography = Typography(
 
     //Display
     displayLarge = TextStyle(
-        fontFamily = AppTitleFontFamily,
+        fontFamily = AppSecondaryFontFamily,
         fontSize = 72.sp,
         lineHeight = 88.sp,
         letterSpacing = (-0.8).sp
     ),
 
     displayMedium = TextStyle(
-        fontFamily = AppTitleFontFamily,
+        fontFamily = AppSecondaryFontFamily,
         fontSize = 64.sp,
         lineHeight = 76.sp,
         letterSpacing = (-0.8).sp
@@ -64,7 +64,7 @@ val Typography = Typography(
 
     //Title -> Heading(md, sm)
     titleLarge = TextStyle(
-        fontFamily = AppTitleFontFamily,
+        fontFamily = AppSecondaryFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 32.sp,
         lineHeight = 38.sp,

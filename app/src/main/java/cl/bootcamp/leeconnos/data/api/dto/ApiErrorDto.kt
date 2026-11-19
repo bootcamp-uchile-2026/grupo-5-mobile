@@ -10,7 +10,7 @@ data class ApiErrorDto(
     @SerializedName("message")
     val message: String,
     @SerializedName("detalles")
-    val detalles: String? = null,
+    val detalles: List<String>? = null,
     @SerializedName("requestId")
     val requestId: String,
     @SerializedName("timestamp")

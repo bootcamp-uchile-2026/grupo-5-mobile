@@ -125,7 +125,7 @@ fun ConfirmacionCompraScreen(
                         textoBtn = "Pagar",
                         enabled = uiState.puedePagar,
                         onClick = onPagarClick,
-                        estiloTexto = MaterialTheme.typography.bodyMedium,
+                        textStyle = MaterialTheme.typography.bodyMedium,
                         contentPadding = PaddingValues(vertical = 12.dp)
                     )
                 }
@@ -330,7 +330,7 @@ fun ConfirmacionCompraScreen(
 
                 onDismiss = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) },
 
-                //Lista de direcciones "guardadas" por defecto para hito 3, cambiar cuando haya endpoint
+                //Lista de direcciones "guardadas" por defecto para hito 3
                 listaDirecciones = listOf(
                     Direccion(
                         calle = "Calle 1444",
@@ -360,10 +360,8 @@ fun ConfirmacionCompraScreen(
             DialogoTarjeta(
                 onTarjetaCreditoClick = {
 
-                    //Por ahora para confirmar funcionamiento de interfaz
                     checkoutViewModel.seleccionarMetodoPago(MetodoPago.TARJETA)
                     checkoutViewModel.cambiarMostrarDialogoTarjeta(false)
-                    //onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)
                 },
                 onTarjetaDebitoPrepagoClick = {
                     onNavigateTo(SecondaryRoutes.AgregarTarjeta.route)

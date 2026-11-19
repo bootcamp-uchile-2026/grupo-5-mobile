@@ -3,7 +3,9 @@ package cl.bootcamp.leeconnos.di
 import android.location.Geocoder
 import cl.bootcamp.leeconnos.data.api.ApiClient
 import cl.bootcamp.leeconnos.data.local.database.AppDatabase
+import cl.bootcamp.leeconnos.data.local.datastore.AuthPreferences
 import cl.bootcamp.leeconnos.data.local.datastore.ThemePreferences
+import cl.bootcamp.leeconnos.data.repositorio.AuthRepository
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
 import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
@@ -18,6 +20,7 @@ import java.util.Locale
 
 val appModule = module {
 
+    //Room
     single {
         AppDatabase.getInstance(androidContext())
     }
@@ -27,17 +30,11 @@ val appModule = module {
     }
 
 
+    //API
     single {
         ApiClient.apiService
     }
 
-    single {
-        ThemePreferences(androidContext())
-    }
-
-    single {
-        ThemeRepository(get())
-    }
     single {
         LibroRepository(
             api = get(),
@@ -45,6 +42,27 @@ val appModule = module {
         )
     }
 
+    single {
+        AuthPreferences(androidContext())
+    }
+
+    single {
+        AuthRepository(
+            api = get(),
+            authPreferences = get()
+        )
+    }
+
+    //Preferencias usuario (tema)
+    single {
+        ThemePreferences(androidContext())
+    }
+
+    single {
+        ThemeRepository(get())
+    }
+
+    //GOOGLE MAPS API
     single {
         Places.createClient(androidContext())
     }
@@ -54,6 +72,7 @@ val appModule = module {
     }
 
 
+    //ViewModels
     viewModel {
 
         MainViewModel(

@@ -25,7 +25,8 @@ fun BotonPrincipal(
     modifier: Modifier = Modifier,
     icono: Int? = null,
     enabled: Boolean = true,
-    estiloTexto: TextStyle = MaterialTheme.typography.labelMedium,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+    textFontWeight: FontWeight = FontWeight.Normal,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding
 ){
 
@@ -60,7 +61,8 @@ fun BotonPrincipal(
 
             Text(
                 text = textoBtn,
-                style = estiloTexto
+                style = textStyle,
+                fontWeight = textFontWeight
             )
         }
     }
