@@ -34,7 +34,8 @@ fun CampoTextoCupon(
             Icon(
                 painter = painterResource(id = R.drawable.ic_descuento),
                 contentDescription = null,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.primary
             )
 
         },
