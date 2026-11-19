@@ -3,14 +3,12 @@ package cl.bootcamp.leeconnos.ui.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,25 +22,25 @@ import cl.bootcamp.leeconnos.R
 import cl.bootcamp.leeconnos.data.modelos.AutorResena
 import cl.bootcamp.leeconnos.data.modelos.Resena
 import cl.bootcamp.leeconnos.ui.components.SeccionResenas
+import cl.bootcamp.leeconnos.ui.components.botones.BotonIconoDeseados
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarSecundario
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleFichaProducto
 import cl.bootcamp.leeconnos.ui.components.detalles.RecomendacionVideo
 import cl.bootcamp.leeconnos.ui.components.imagenes.ImagenFichaLibro
-import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSoloDeseados
-import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
+import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarFichaLibro
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun FichaLibroScreen(
     mainViewModel: MainViewModel,
     onNavigateTo: (String) -> Unit,
     onNavigateBack: () -> Unit
-){
+) {
 
     val libro by mainViewModel.libroSeleccionado.collectAsState()
     val listaItems by mainViewModel.itemsListaDeseados.collectAsState()
+    val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
 
     Scaffold(
 
@@ -55,7 +53,7 @@ fun FichaLibroScreen(
                         icono = R.drawable.ic_carrito,
                         onClick = {
 
-                            if (libro != null ){
+                            if (libro != null) {
                                 mainViewModel.agregarItemCarrito(libro!!)
                             }
                         },
@@ -74,7 +72,7 @@ fun FichaLibroScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = paddingValues.calculateBottomPadding())
+                .padding(paddingValues)
         ) {
 
             libro?.let { libroSeguro ->
@@ -89,10 +87,34 @@ fun FichaLibroScreen(
 
                     item {
 
-                        ImagenFichaLibro(
-                            imagen = libroSeguro.portadaUrl,
-                            contentDescription = libroSeguro.titulo
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            ImagenFichaLibro(
+                                imagen = libroSeguro.portadaUrl,
+                                contentDescription = libroSeguro.titulo
+                            )
+
+                            BotonIconoDeseados(
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(end = 16.dp, bottom = 16.dp),
+                                estaEnListaDeseados = esDeseado,
+                                buttonSize = 64.dp,
+                                iconSize = 36.dp,
+                                onClick = {
+
+                                    if (esDeseado) {
+                                        mainViewModel.eliminarItemListaDeseados(libroSeguro.id)
+
+                                    } else {
+                                        mainViewModel.agregarItemListaDeseados(libroSeguro)
+                                    }
+                                }
+                            )
+                        }
+
 
                         Spacer(modifier = Modifier.height(32.dp))
                     }
@@ -143,20 +165,16 @@ fun FichaLibroScreen(
                     }
                 }
 
-                AppTopBarSoloDeseados(
+                AppTopBarFichaLibro (
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .statusBarsPadding(),
-                    estaEnListaDeseados = esDeseado,
+                        .align(Alignment.TopCenter),
                     onNavigateBack = onNavigateBack,
-                    onDeseadosClick = {
-
-                        if (esDeseado) {
-                            mainViewModel.eliminarItemListaDeseados(libroSeguro.id)
-
-                        } else {
-                            mainViewModel.agregarItemListaDeseados(libroSeguro)
-                        }
+                    onDeseadosClick = { rutaListaDeseados ->
+                        onNavigateTo(rutaListaDeseados)
+                    },
+                    cantidadItemsCarrito = { itemsCarrito.sumOf { it.cantidad } },
+                    onCarritoClick = { rutaCarrito ->
+                        onNavigateTo(rutaCarrito)
                     }
                 )
             }

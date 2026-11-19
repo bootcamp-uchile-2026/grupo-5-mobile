@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.ui.components.detalles.DetalleTarjetaLibro
-import cl.bootcamp.leeconnos.ui.components.botones.BotonFlotanteAgregarListaDeseados
+import cl.bootcamp.leeconnos.ui.components.botones.BotonIconoDeseados
 import cl.bootcamp.leeconnos.ui.components.imagenes.ImagenTarjetaLibro
 
 @Composable
@@ -41,11 +41,17 @@ fun TarjetaLibro(
                         aspectRatio = 1f
                     )
 
-                    BotonFlotanteAgregarListaDeseados(
+//                    BotonFlotanteAgregarListaDeseados(
+//
+//                        libro = libro,
+//                        modifier = Modifier.align(Alignment.BottomEnd),
+//                        onIconButtonClick = onDeseadosClick
+//                    )
 
-                        libro = libro,
+                    BotonIconoDeseados(
                         modifier = Modifier.align(Alignment.BottomEnd),
-                        onIconButtonClick = onDeseadosClick
+                        estaEnListaDeseados = libro.estaEnListaDeseados,
+                        onClick = onDeseadosClick
                     )
                 }
 

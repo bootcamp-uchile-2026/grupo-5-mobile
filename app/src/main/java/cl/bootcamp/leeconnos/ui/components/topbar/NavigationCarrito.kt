@@ -5,10 +5,12 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
@@ -17,7 +19,9 @@ import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 @Composable
 fun NavigationCarrito(
     cantidadItems: () -> Int,
-    onNavigateTo: (String) -> Unit
+    onNavigateTo: (String) -> Unit,
+    containerColor: Color = Color.Transparent,
+    tint: Color = MaterialTheme.colorScheme.onBackground
 ) {
 
     BadgedBox(
@@ -45,12 +49,15 @@ fun NavigationCarrito(
         IconButton(
             onClick = {
                 onNavigateTo(SecondaryRoutes.Carrito.route)
-            }
+            },
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = containerColor
+            )
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_carrito),
                 contentDescription = "Ver carrito",
-                tint = MaterialTheme.colorScheme.onBackground
+                tint = tint
             )
         }
     }
