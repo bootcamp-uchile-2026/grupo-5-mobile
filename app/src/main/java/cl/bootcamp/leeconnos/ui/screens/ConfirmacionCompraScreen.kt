@@ -78,6 +78,7 @@ fun ConfirmacionCompraScreen(
 
     val itemsCarrito by checkoutViewModel.itemsCarrito.collectAsState()
     val subtotalCompra by checkoutViewModel.subtotalCompra.collectAsState()
+    val direccionesGuardadas by checkoutViewModel.direccionesGuardadas.collectAsState()
 
     val uiState by checkoutViewModel.uiState.collectAsState()
 
@@ -323,29 +324,14 @@ fun ConfirmacionCompraScreen(
                 onDireccionGuardada = { direccion ->
                     checkoutViewModel.seleccionarMetodoEntrega(MetodoEntrega.DELIVERY)
                     checkoutViewModel.cambiarMostrarDialogoEntrega(false)
-                    checkoutViewModel.confirmarDireccion(direccion)
+                    checkoutViewModel.seleccionarDireccionExistente(direccion)
                 },
 
                 onPedirPermiso = { locationPermissionsState.launchMultiplePermissionRequest() },
 
                 onDismiss = { checkoutViewModel.cambiarMostrarDialogoEntrega(false) },
 
-                //Lista de direcciones "guardadas" por defecto para hito 3
-                listaDirecciones = listOf(
-                    Direccion(
-                        calle = "Calle 1444",
-                        comuna = "Copiapó",
-                        region = "Atacama",
-                        telefono = "+56911223344"
-                    ),
-
-                    Direccion(
-                        calle = "Calle 1444",
-                        comuna = "Copiapó",
-                        region = "Atacama",
-                        telefono = "+56911223344"
-                    )
-                )
+                listaDirecciones = direccionesGuardadas
             )
         }
     }
