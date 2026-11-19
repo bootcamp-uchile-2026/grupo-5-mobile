@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.bottombar.BottomBarSecundario
@@ -164,7 +165,7 @@ fun AgregarDireccionScreen(
 
                             if (direccionFinal != null) {
 
-                                checkoutViewModel.confirmarDireccion(direccionFinal)
+                                checkoutViewModel.crearYConfirmarDireccion(direccionFinal)
 
                                 onNavigateBack()
                             }
@@ -339,6 +340,7 @@ fun AgregarDireccionScreen(
                     CampoTexto(
                         texto = uiState.direccionSugeridaGeocoding?.telefono ?: "",
                         label = "Teléfono *",
+                        keyboardType = KeyboardType.Phone,
                         onValueChange = { nuevoTelefono ->
                             checkoutViewModel.actualizarTextoTelefonoDireccion(nuevoTelefono)
                         }

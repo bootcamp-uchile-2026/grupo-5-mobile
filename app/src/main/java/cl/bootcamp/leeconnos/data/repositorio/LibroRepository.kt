@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class LibroRepository(
-    private val api: LeeconnosApi = ApiClient.apiService,
+    private val api: LeeconnosApi,
     private val libroDao: LibroDao
 ) {
 

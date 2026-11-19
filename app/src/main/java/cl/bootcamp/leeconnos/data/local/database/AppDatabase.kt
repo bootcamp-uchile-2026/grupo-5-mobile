@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [LibroEntity::class], version = 2, exportSchema = false)
+@Database(entities = [LibroEntity::class, DireccionEntity::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun libroDao(): LibroDao
+    abstract fun direccionDao(): DireccionDao
 
     companion object {
         @Volatile
@@ -21,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "leeconnos_database"
                 )
-                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .fallbackToDestructiveMigration(dropAllTables = true) //Para pruebas
                     .build()
                 INSTANCE = instance
                 instance

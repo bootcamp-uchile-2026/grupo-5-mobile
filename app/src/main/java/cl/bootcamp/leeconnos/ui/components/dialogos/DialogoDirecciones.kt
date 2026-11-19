@@ -151,7 +151,7 @@ fun DialogoDirecciones(
                 //item de lista
                 ItemDialogoDirecciones(
                     titulo = "${direccion.calle}, ${direccion.comuna}, ${direccion.region}",
-                    subtitulo = "[NOMBRE(CAMBIAR)] \n${direccion.telefono}",
+                    subtitulo = "${direccion.nombreReceptor} \n${direccion.telefono}",
                     onClick = { onDireccionGuardada(direccion) }
                 )
 

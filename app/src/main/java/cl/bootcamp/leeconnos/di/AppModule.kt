@@ -6,6 +6,7 @@ import cl.bootcamp.leeconnos.data.local.database.AppDatabase
 import cl.bootcamp.leeconnos.data.local.datastore.AuthPreferences
 import cl.bootcamp.leeconnos.data.local.datastore.ThemePreferences
 import cl.bootcamp.leeconnos.data.repositorio.AuthRepository
+import cl.bootcamp.leeconnos.data.repositorio.DireccionRepository
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
 import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
@@ -30,10 +31,34 @@ val appModule = module {
         get<AppDatabase>().libroDao()
     }
 
+    single {
+        get<AppDatabase>().direccionDao()
+    }
+
 
     //API
     single {
-        ApiClient.apiService
+        ApiClient(
+            authPreferences = get()
+        )
+    }
+
+    single {
+        get<ApiClient>().apiService
+    }
+
+    single {
+        AuthPreferences(androidContext())
+    }
+
+
+    //Repositorios
+
+    single {
+        AuthRepository(
+            api = get(),
+            authPreferences = get()
+        )
     }
 
     single {
@@ -44,13 +69,9 @@ val appModule = module {
     }
 
     single {
-        AuthPreferences(androidContext())
-    }
-
-    single {
-        AuthRepository(
+        DireccionRepository(
             api = get(),
-            authPreferences = get()
+            direccionDao = get()
         )
     }
 
@@ -91,6 +112,7 @@ val appModule = module {
     viewModel {
         CheckoutViewModel(
             libroRepository = get(),
+            direccionRepository = get(),
             placesClient = get(),
             geocoder = get()
         )

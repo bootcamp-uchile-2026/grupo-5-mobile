@@ -7,7 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.bootcamp.leeconnos.data.modelos.Direccion
 import cl.bootcamp.leeconnos.data.modelos.Libro
+import cl.bootcamp.leeconnos.data.repositorio.DireccionRepository
+import cl.bootcamp.leeconnos.data.repositorio.DireccionResult
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
+import cl.bootcamp.leeconnos.utils.obtenerSiglaRegion
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -83,12 +86,20 @@ data class CheckoutUiState(
 @OptIn(FlowPreview::class)
 class CheckoutViewModel(
     private val libroRepository: LibroRepository,
+    private val direccionRepository: DireccionRepository,
     private val placesClient: PlacesClient,
     private val geocoder: Geocoder
 ) : ViewModel() {
 
     //Flujo necesario para no llamar a la API por cada cambio del TextField
     private val _textoBusquedaDebounce = MutableStateFlow("")
+
+    val direccionesGuardadas: StateFlow<List<Direccion>> = direccionRepository.direccionesLocales
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     init {
         _textoBusquedaDebounce
@@ -98,6 +109,11 @@ class CheckoutViewModel(
                 ejecutarBusquedaEnPlaces(busqueda)
             }
             .launchIn(viewModelScope)
+
+        //Cada vez que se crea el viewmodel llama a sincronizar direcciones
+        viewModelScope.launch(Dispatchers.IO) {
+            direccionRepository.sincronizarDireccionesDesdeServidor()
+        }
     }
 
     val itemsCarrito: StateFlow<List<Libro>> = libroRepository.carrito
@@ -174,14 +190,62 @@ class CheckoutViewModel(
         _uiState.update { it.copy(textoCupon = texto) }
     }
 
-    fun confirmarDireccion(direccion: Direccion) {
+    fun crearYConfirmarDireccion(direccion: Direccion) {
+
+        viewModelScope.launch {
+
+            //Endpoint pide un telefono con formato chileno [+5692345678]
+            val telefonoLimpio = direccion.telefono.replace(" ", "").replace("-", "")
+
+            val telefonoFormateado = when {
+                //+56912345678
+                telefonoLimpio.startsWith("+") -> telefonoLimpio
+
+                //12345678
+                telefonoLimpio.length == 8 -> "+569$telefonoLimpio"
+
+                //912345678
+                telefonoLimpio.length == 9 -> "+56$telefonoLimpio"
+
+                //56912345678
+                telefonoLimpio.length == 11 && telefonoLimpio.startsWith("56") -> "+$telefonoLimpio"
+
+
+                else -> telefonoLimpio
+            }
+
+            val direccionFinal = direccion.copy(telefono = telefonoFormateado)
+
+            when (val result = direccionRepository.crearDireccion(direccionFinal)) {
+
+                is DireccionResult.Success -> {
+
+                    _uiState.update { state ->
+                        state.copy(
+                            direccionSeleccionada = direccionFinal,
+                            metodoEntrega = MetodoEntrega.DELIVERY,
+                            mostrarDialogoEntrega = false,
+                            costoDespacho = 4000 //TODO: endpoint envíos con datos DUMMY, se atrasa su implementación
+                        )
+                    }
+                }
+
+                is DireccionResult.Error -> {
+
+                    Log.e("CHECKOUT", "Error al crear: ${result.mensaje}")
+                }
+            }
+        }
+    }
+
+    fun seleccionarDireccionExistente(direccion: Direccion) {
 
         _uiState.update { state ->
             state.copy(
                 direccionSeleccionada = direccion,
                 metodoEntrega = MetodoEntrega.DELIVERY,
                 mostrarDialogoEntrega = false,
-                costoDespacho = 4000 //TODO: Por ahora hardcodeado, cambiar cuando haya validación a futuro
+                costoDespacho = 4000 //TODO: endpoint envíos con datos DUMMY, se atrasa su implementación
             )
         }
     }
@@ -219,13 +283,29 @@ class CheckoutViewModel(
                 var calle = ""
                 var numeroCalle = ""
                 var comuna = ""
+                var ciudad = ""
                 var region = ""
+                var codigoPostal = ""
 
                 place.addressComponents?.asList()?.forEach { component ->
                     if (component.types.contains("route")) calle = component.name
                     if (component.types.contains("street_number")) numeroCalle = " ${component.name}"
-                    if (component.types.contains("locality")) comuna = component.name
+
+                    if (component.types.contains("locality") || component.types.contains("sublocality")) {
+                        comuna = component.name
+                    }
+
+                    if (component.types.contains("administrative_area_level_2")) {
+                        ciudad = component.name
+                    }
+
                     if (component.types.contains("administrative_area_level_1")) region = component.name
+                    if (component.types.contains("postal_code")) codigoPostal = component.name
+                }
+
+                //Para proteger de validación en backend
+                if (ciudad.isBlank()) {
+                    ciudad = comuna
                 }
 
                 val calleCompleta = if (numeroCalle.isNotEmpty()) {
@@ -240,7 +320,9 @@ class CheckoutViewModel(
                     val nuevaDireccion = Direccion(
                         calle = calleCompleta.ifEmpty { prediccion.getPrimaryText(null).toString() },
                         comuna = comuna,
-                        region = region,
+                        ciudad = ciudad,
+                        codigoPostal = codigoPostal,
+                        region = obtenerSiglaRegion(region),
                         latitud = coordenadas.latitude,
                         longitud = coordenadas.longitude
                     )
@@ -283,15 +365,22 @@ class CheckoutViewModel(
 
                     val calle = direccionStr.thoroughfare ?: ""
                     val numero = direccionStr.subThoroughfare ?: ""
-                    val ciudad = direccionStr.locality ?: ""
+                    val comuna = direccionStr.locality ?: ""
+                    val ciudad = direccionStr.subAdminArea?.takeIf { it.isNotBlank() } ?: comuna
+                    val codigoPostal = direccionStr.postalCode ?: ""
                     val region = direccionStr.adminArea ?: ""
 
-                    val textoLegible = "$calle $numero, $ciudad, $region"
+                    val regionSigla = obtenerSiglaRegion(direccionStr.adminArea)
+
+                    val calleCompleta = if (numero.isNotBlank()) "$calle $numero" else calle
+                    val textoLegible = "$calleCompleta, $ciudad, $region"
 
                     val direccionParaFormulario = Direccion(
-                        calle = "$calle $numero",
-                        comuna = ciudad,
-                        region = region,
+                        calle = calleCompleta,
+                        comuna = comuna,
+                        ciudad = ciudad,
+                        codigoPostal = codigoPostal,
+                        region = regionSigla,
                         telefono = "",
                         latitud = location.latitude,
                         longitud = location.longitude
@@ -336,21 +425,30 @@ class CheckoutViewModel(
 
                     val latitud = address.latitude
                     val longitud = address.longitude
+
                     val comuna = address.locality ?: ""
+                    val ciudad = address.subAdminArea?.takeIf { it.isNotBlank() } ?: comuna
+                    val codigoPostal = address.postalCode ?: ""
                     val region = address.adminArea ?: ""
+
+                    val regionSigla = obtenerSiglaRegion(region)
 
                     launch(Dispatchers.Main) {
                         _uiState.update { state ->
 
                             val direccionActualizada = state.direccionSugeridaGeocoding?.copy(
                                 comuna = comuna,
-                                region = region,
+                                ciudad = ciudad,
+                                codigoPostal = codigoPostal,
+                                region = regionSigla,
                                 latitud = latitud,
                                 longitud = longitud
                             ) ?: Direccion(
                                 calle = texto,
                                 comuna = comuna,
-                                region = region,
+                                ciudad = ciudad,
+                                codigoPostal = codigoPostal,
+                                region = regionSigla,
                                 latitud = latitud,
                                 longitud = longitud
                             )
@@ -405,6 +503,7 @@ class CheckoutViewModel(
                 latitud = 0.0,
                 longitud = 0.0,
                 comuna = "",
+                ciudad = "",
                 region = ""
             )
                 ?: Direccion(calle = nuevaDireccion)
