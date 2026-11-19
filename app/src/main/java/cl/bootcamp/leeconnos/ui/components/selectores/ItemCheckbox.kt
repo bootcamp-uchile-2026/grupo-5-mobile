@@ -21,7 +21,8 @@ fun ItemCheckbox(
     onCheckedChange: () -> Unit,
     texto: String,
     modifier: Modifier = Modifier,
-    esOpcional: Boolean = false
+    esOpcional: Boolean = false,
+    isError: Boolean = false
 ) {
 
     Row(
@@ -49,7 +50,8 @@ fun ItemCheckbox(
                 }
             },
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 8.dp),
+            color = if (!isError) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.error
         )
     }
 }

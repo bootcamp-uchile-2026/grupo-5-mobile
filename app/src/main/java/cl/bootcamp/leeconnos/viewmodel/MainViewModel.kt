@@ -3,6 +3,7 @@ package cl.bootcamp.leeconnos.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.bootcamp.leeconnos.data.modelos.Libro
+import cl.bootcamp.leeconnos.data.repositorio.AuthRepository
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +16,16 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val libroRepository: LibroRepository,
-    private val themeRepository: ThemeRepository
+    private val themeRepository: ThemeRepository,
+    private val authRepository: AuthRepository
 ): ViewModel() {
+
+    val estaLogueado: StateFlow<Boolean?> = authRepository.estaLogueado
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
 
     val isDarkMode: StateFlow<Boolean?> = themeRepository.isDarkMode
         .stateIn(

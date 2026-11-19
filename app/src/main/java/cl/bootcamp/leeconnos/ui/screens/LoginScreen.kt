@@ -34,6 +34,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
+import cl.bootcamp.leeconnos.ui.components.MensajeError
 import cl.bootcamp.leeconnos.ui.components.botones.BotonPrincipal
 import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
 import cl.bootcamp.leeconnos.ui.components.campostexto.CampoTexto
@@ -59,15 +62,26 @@ import cl.bootcamp.leeconnos.ui.components.selectores.ItemCheckbox
 import cl.bootcamp.leeconnos.ui.components.selectores.SelectorAutenticacion
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarSimple
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
+import cl.bootcamp.leeconnos.viewmodel.LoginViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
     tipo: String,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onLoginExitoso: () -> Unit
 ) {
 
+    val loginViewModel: LoginViewModel = koinViewModel()
+    val uiState by loginViewModel.uiState.collectAsState()
 
     var esLogin by rememberSaveable { mutableStateOf(tipo == "login") }
+
+    LaunchedEffect(uiState.loginExitoso) {
+        if (uiState.loginExitoso) {
+            onLoginExitoso()
+        }
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets.systemBars
@@ -95,7 +109,7 @@ fun LoginScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 830.dp)
+                    .heightIn(max = 860.dp)
                     .padding(paddingValues)
                     .padding(vertical = 24.dp, horizontal = 24.dp)
             ) {
@@ -112,8 +126,18 @@ fun LoginScreen(
 
                     SelectorAutenticacion(
                         esLogin = esLogin,
-                        onIniciarSesionClick = { esLogin = true },
-                        onRegistroClick = { esLogin = false },
+                        onIniciarSesionClick = {
+                            if (!esLogin) {
+                                esLogin = true
+                                loginViewModel.cambiarModoAutenticacion()
+                            }
+                        },
+                        onRegistroClick = {
+                            if (esLogin) {
+                                esLogin = false
+                                loginViewModel.cambiarModoAutenticacion()
+                            }
+                        },
                         modifier = Modifier
                             .padding(vertical = 16.dp)
                     )
@@ -132,22 +156,22 @@ fun LoginScreen(
                         ) {
 
                             CampoTexto(
-                                texto = "",
+                                texto = uiState.email,
                                 label = "Correo electrónico *",
-                                onValueChange = { nuevoValor ->
-
+                                onValueChange = { nuevoEmail ->
+                                    loginViewModel.onEmailChange(nuevoEmail)
                                 },
-                                isError = false,
-                                mensajeError = "Correo electrónico no es válido"
+                                isError = uiState.errorMessage != null,
+                                keyboardType = KeyboardType.Text //Por ahora obligado por el problema del recuadro amarillo
                             )
 
                             CampoTexto(
-                                texto = "",
+                                texto = uiState.contrasena,
                                 label = "Contraseña *",
-                                onValueChange = { nuevoValor ->
-
+                                onValueChange = { nuevaContrasena ->
+                                    loginViewModel.onContrasenaChange(nuevaContrasena)
                                 },
-                                isError = false,
+                                isError = uiState.errorMessage != null,
                                 keyboardType = KeyboardType.Password,
                                 esContrasena = true,
                                 modifier = Modifier.padding(bottom = 16.dp)
@@ -165,9 +189,17 @@ fun LoginScreen(
                                     }
                             )
 
+                            MensajeError(
+                                mensaje = uiState.errorMessage,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
                             BotonPrincipal(
-                                textoBtn = "Iniciar sesión",
-                                onClick = {},
+                                textoBtn = if (uiState.isLoading) "Cargando..." else "Iniciar sesión",
+                                onClick = {
+                                    loginViewModel.login()
+                                },
+                                enabled = uiState.esLoginValido && !uiState.isLoading,
                                 textStyle = MaterialTheme.typography.bodyLarge,
                                 textFontWeight = FontWeight.Bold,
                                 contentPadding = PaddingValues(vertical = 20.dp),
@@ -190,7 +222,7 @@ fun LoginScreen(
                                 modifier = Modifier
                                     .padding(bottom = 16.dp)
                                     .clickable {
-
+                                        //TODO: Pendiente implementación como modo invitado sin cuenta
                                     }
                             )
 
@@ -226,7 +258,9 @@ fun LoginScreen(
                                 BotonAccesoRedes(
                                     icono = R.drawable.ic_google,
                                     contentDescription = "Acceder con cuenta de google",
-                                    onClick = {}
+                                    onClick = {
+                                        //TODO: Pendiente
+                                    }
                                 )
 
                                 Spacer(modifier = Modifier.width(32.dp))
@@ -234,7 +268,9 @@ fun LoginScreen(
                                 BotonAccesoRedes(
                                     icono = R.drawable.ic_facebook,
                                     contentDescription = "Acceder con cuenta de facebook",
-                                    onClick = {}
+                                    onClick = {
+                                        //TODO: Pendiente
+                                    }
                                 )
                             }
                         }
@@ -252,63 +288,89 @@ fun LoginScreen(
                         ) {
 
                             CampoTexto(
-                                texto = "",
+                                texto = uiState.nombre,
                                 label = "Nombre *",
-                                onValueChange = {},
+                                onValueChange = { nuevoNombre ->
+                                    loginViewModel.onNombreChange(nuevoNombre)
+                                },
+                                //isError = uiState.errorMessage != null
                             )
 
                             CampoTexto(
-                                texto = "",
+                                texto = uiState.apellido,
                                 label = "Apellido *",
-                                onValueChange = {}
+                                onValueChange = { nuevoApellido ->
+                                    loginViewModel.onApellidoChange(nuevoApellido)
+                                },
+                                //isError = uiState.errorMessage != null
                             )
 
                             CampoTexto(
-                                texto = "",
+                                texto = uiState.email,
                                 label = "Correo electrónico *",
-                                onValueChange = {},
-                                isError = false,
-                                mensajeError = "Correo electrónico no es válido"
+                                onValueChange = { nuevoEmail ->
+                                    loginViewModel.onEmailChange(nuevoEmail)
+                                },
+                                isError = uiState.errorMessage != null,
+                                keyboardType = KeyboardType.Text
                             )
 
                             CampoTexto(
-                                texto = "",
+                                texto = uiState.contrasena,
                                 label = "Contraseña *",
-                                onValueChange = {},
-                                isError = false,
+                                onValueChange = { nuevaContrasena ->
+                                    loginViewModel.onContrasenaChange(nuevaContrasena)
+                                },
+                                isError = uiState.errorMessage != null,
                                 keyboardType = KeyboardType.Password,
-                                esContrasena = true
+                                esContrasena = true,
+                                modifier = Modifier.padding(bottom = 16.dp)
                             )
 
                             CampoTexto(
-                                texto = "",
+                                texto = uiState.repetirContrasena,
                                 label = "Repetir contraseña *",
-                                onValueChange = {},
-                                isError = false,
-                                mensajeError = "Contraseña no coincide",
+                                onValueChange = { nuevaContrasena ->
+                                    loginViewModel.onRepetirContrasenaChange(nuevaContrasena)
+                                },
+                                isError = uiState.errorMessage != null,
                                 keyboardType = KeyboardType.Password,
-                                esContrasena = true
-                            )
-
-                            ItemCheckbox(
-                                checked = false,
-                                onCheckedChange = {  },
-                                texto = "He leído y acepto los Términos y condiciones y la Política de privacidad de Leeconnos",
+                                esContrasena = true,
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
 
                             ItemCheckbox(
-                                checked = false,
-                                onCheckedChange = {  },
+                                checked = uiState.aceptoTerminos,
+                                onCheckedChange = {
+                                    loginViewModel.onAceptoTerminosChange(!uiState.aceptoTerminos)
+                                },
+                                texto = "He leído y acepto los Términos y condiciones y la Política de privacidad de Leeconnos",
+                                modifier = Modifier.padding(bottom = 16.dp),
+                                isError = uiState.errorMessage != null
+                            )
+
+                            ItemCheckbox(
+                                checked = uiState.recibirNovedades,
+                                onCheckedChange = {
+                                    loginViewModel.onRecibirNovedadesChange(!uiState.recibirNovedades)
+                                },
                                 texto = "Quiero recibir novedades, recomendaciones de libros y ofertas de Leeconnos por correo",
                                 esOpcional = true
                             )
 
+                            MensajeError(
+                                mensaje = uiState.errorMessage ?: uiState.mensajeErrorRegistro,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
                             BotonPrincipal(
                                 textoBtn = "Crear cuenta",
-                                onClick = {},
+                                onClick = {
+                                    loginViewModel.registrar()
+                                },
                                 textStyle = MaterialTheme.typography.bodyLarge,
                                 textFontWeight = FontWeight.Bold,
+                                enabled = uiState.esRegistroValido && !uiState.isLoading,
                                 contentPadding = PaddingValues(vertical = 20.dp),
                                 modifier = Modifier.padding(vertical = 16.dp)
                             )

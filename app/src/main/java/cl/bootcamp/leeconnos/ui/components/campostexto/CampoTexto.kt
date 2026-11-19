@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -57,9 +58,21 @@ fun CampoTexto(
         value = textFieldValue,
         onValueChange = { nuevoValor ->
 
-            textFieldValue = nuevoValor
+            //Nota: No funciona, aún así sigue mostrando el recuadro amarillo, tiempo perdido aquí: 45 minutos
+            //Código para arreglar el bug del recuadro amarillo al elegir sugerencias completas del teclado (Xiaomi y Gboard)
+            val textoAnterior = textFieldValue.text
+            val textoNuevo = nuevoValor.text
 
-            onValueChange(nuevoValor.text)
+            // Si el texto insertado de golpe es mayor a 1 carácter (sugerencia o pegar texto)
+            val valorAjustado = if (nuevoValor.composition != null && (textoNuevo.length - textoAnterior.length > 1)) {
+                nuevoValor.copy(composition = null)
+            } else {
+                nuevoValor
+            }
+
+            textFieldValue = valorAjustado
+
+            onValueChange(valorAjustado.text)
         },
         label = { Text(text = label, style = MaterialTheme.typography.bodySmall) },
         enabled = enabled,
@@ -68,7 +81,11 @@ fun CampoTexto(
         shape = MaterialTheme.shapes.large,
         textStyle = MaterialTheme.typography.bodySmall,
         modifier = modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType,
+            autoCorrectEnabled = false,
+
+        ),
         visualTransformation = if (esContrasena && !passwordVisible) {
             PasswordVisualTransformation()
         } else {
@@ -106,8 +123,12 @@ fun CampoTexto(
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+
             focusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedContainerColor = MaterialTheme.colorScheme.background
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+
+            errorContainerColor = MaterialTheme.colorScheme.background,
+            disabledContainerColor = MaterialTheme.colorScheme.background
         )
     )
 }

@@ -42,7 +42,7 @@ class AuthRepository(
                 AuthResult.Success
 
             } else {
-                AuthResult.Error(parsearErrorApi(response.errorBody()?.toString()))
+                AuthResult.Error(parsearErrorApi(response.errorBody()?.string()))
             }
 
         } catch (e: Exception) {
@@ -89,13 +89,17 @@ class AuthRepository(
     //Función para leer el body con el error
     private fun parsearErrorApi(errorBodyString: String?): String {
 
-        if (errorBodyString == null) return "Ocurrió un error inesperado"
+        if (errorBodyString == null || errorBodyString.isBlank()) return "Ocurrió un error inesperado (respuesta vacía)"
+
+        android.util.Log.d("AUTH_REPO", "Error JSON recibido: $errorBodyString")
 
         return try {
             val errorDto = Gson().fromJson(errorBodyString, ApiErrorDto::class.java)
-            errorDto.message
+
+            errorDto.message ?: "Ocurrió un error inesperado en el servidor"
 
         } catch(e: Exception) {
+            android.util.Log.e("AUTH_REPO", "Fallo al parsear JSON", e)
             "Ocurrió un error desconocido"
         }
     }

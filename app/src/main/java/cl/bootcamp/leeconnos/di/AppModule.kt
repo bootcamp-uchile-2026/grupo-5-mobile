@@ -10,6 +10,7 @@ import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
 import cl.bootcamp.leeconnos.viewmodel.CheckoutViewModel
 import cl.bootcamp.leeconnos.viewmodel.HomeViewModel
+import cl.bootcamp.leeconnos.viewmodel.LoginViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 import com.google.android.libraries.places.api.Places
 import org.koin.android.ext.koin.androidContext
@@ -74,10 +75,10 @@ val appModule = module {
 
     //ViewModels
     viewModel {
-
         MainViewModel(
             libroRepository = get(),
-            themeRepository = get()
+            themeRepository = get(),
+            authRepository = get()
         )
     }
 
@@ -92,6 +93,12 @@ val appModule = module {
             libroRepository = get(),
             placesClient = get(),
             geocoder = get()
+        )
+    }
+
+    viewModel {
+        LoginViewModel(
+            authRepository = get()
         )
     }
 }
