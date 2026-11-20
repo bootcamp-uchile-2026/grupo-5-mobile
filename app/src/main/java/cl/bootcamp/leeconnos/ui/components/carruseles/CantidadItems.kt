@@ -29,7 +29,7 @@ fun CantidadItems(
 
         Icon(
             painter = painterResource(id = R.drawable.ic_shopping_bag),
-            contentDescription = "Cantidad items"
+            contentDescription = "$cantidadItems items en el carrito"
         )
 
         Text(

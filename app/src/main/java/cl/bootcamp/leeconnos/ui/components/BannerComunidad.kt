@@ -49,6 +49,7 @@ fun BannerComunidad() {
             )
         }
 
+        //Hasta no manejar la url de la foto desde el servidor imagen mock
         Image(
             painter = painterResource(id = R.drawable.fondo_transparente),
             contentDescription = "Foto de comunidad",
