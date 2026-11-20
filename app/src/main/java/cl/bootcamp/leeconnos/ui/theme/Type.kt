@@ -38,6 +38,13 @@ val Typography = Typography(
         letterSpacing = (-0.8).sp
     ),
 
+    displaySmall = TextStyle(
+        fontFamily = AppSecondaryFontFamily,
+        fontSize = 48.sp,
+        lineHeight = 56.sp,
+        letterSpacing = (-0.6).sp
+    ),
+
     //Headline -> Heading(xxl, xl, lg)
     headlineLarge = TextStyle(
         fontFamily = AppFontFamily,
@@ -76,6 +83,13 @@ val Typography = Typography(
         fontSize = 24.sp,
         lineHeight = 28.sp,
         letterSpacing = (-0.2).sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
+        lineHeight = 26.sp,
+        letterSpacing = (-0.1).sp
     ),
 
     //Body

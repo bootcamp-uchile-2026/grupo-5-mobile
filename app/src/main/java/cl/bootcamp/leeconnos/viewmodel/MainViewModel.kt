@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.data.repositorio.AuthRepository
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
+import cl.bootcamp.leeconnos.data.repositorio.OperacionCantidad
 import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -81,11 +82,6 @@ class MainViewModel(
 
     //Carrito
 
-//    fun obtenerCantidadCarrito(): Int {
-//
-//        return itemsCarrito.value.sumOf { it.cantidad }
-//    }
-
     fun agregarItemCarrito(libro: Libro) {
 
         viewModelScope.launch {
@@ -93,13 +89,15 @@ class MainViewModel(
         }
     }
 
+    fun aumentarCantidadItemCarrito(libro: Libro) {
+        viewModelScope.launch {
+            libroRepository.modificarCantidadCarrito(libro.id, OperacionCantidad.SUMAR)
+        }
+    }
+
     fun disminuirCantidadItemCarrito(libro: Libro) {
         viewModelScope.launch {
-            if (libro.cantidad > 1) {
-                libroRepository.modificarCantidadCarrito(libro.id)
-            } else {
-                eliminarItemCarrito(libro.id)
-            }
+            libroRepository.modificarCantidadCarrito(libro.id, OperacionCantidad.RESTAR)
         }
     }
 

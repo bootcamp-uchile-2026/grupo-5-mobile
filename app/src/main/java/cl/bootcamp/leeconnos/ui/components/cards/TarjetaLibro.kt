@@ -41,13 +41,6 @@ fun TarjetaLibro(
                         aspectRatio = 1f
                     )
 
-//                    BotonFlotanteAgregarListaDeseados(
-//
-//                        libro = libro,
-//                        modifier = Modifier.align(Alignment.BottomEnd),
-//                        onIconButtonClick = onDeseadosClick
-//                    )
-
                     BotonIconoDeseados(
                         modifier = Modifier.align(Alignment.BottomEnd),
                         estaEnListaDeseados = libro.estaEnListaDeseados,
