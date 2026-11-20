@@ -26,7 +26,7 @@ fun DetalleTarjetaLibroRecomendado(
     ) {
         Text(
             text = titulo,
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodySmall,
             fontWeight = FontWeight.Bold,
             minLines = 2,
             maxLines = 2,

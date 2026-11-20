@@ -4,15 +4,15 @@ import com.google.gson.annotations.SerializedName
 
 data class ApiErrorDto(
     @SerializedName("statusCode")
-    val statusCode: Int,
+    val statusCode: Int? = null,
     @SerializedName("error")
-    val error: String,
+    val error: String? = null,
     @SerializedName("message")
-    val message: String,
+    val message: String? = null,
     @SerializedName("detalles")
-    val detalles: String? = null,
+    val detalles: List<String>? = null,
     @SerializedName("requestId")
-    val requestId: String,
+    val requestId: String? = null,
     @SerializedName("timestamp")
     val timestamp: String? = null,
     @SerializedName("path")

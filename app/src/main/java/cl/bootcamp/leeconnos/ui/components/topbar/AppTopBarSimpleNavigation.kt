@@ -16,7 +16,7 @@ fun AppTopBarSimpleNavigation(
     titulo: String,
     onNavigateBack: () -> Unit
 ) {
-
+    // Titulo + Navigation Back
 
     CenterAlignedTopAppBar(
 
@@ -39,6 +39,5 @@ fun AppTopBarSimpleNavigation(
             navigationIconContentColor = MaterialTheme.colorScheme.onSurface
         ),
 
-        windowInsets = WindowInsets(0.dp)
     )
 }

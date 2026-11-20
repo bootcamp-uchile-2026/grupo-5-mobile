@@ -38,7 +38,7 @@ fun RecomendacionVideo(
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray
+            containerColor = MaterialTheme.colorScheme.inverseOnSurface //Gris claro
         )
     ) {
         Column(
@@ -62,9 +62,10 @@ fun RecomendacionVideo(
                     .fillMaxWidth()
                     .height(160.dp)
                     .clip(MaterialTheme.shapes.large)
-                    .background(Color.Gray),
+                    .background(MaterialTheme.colorScheme.inverseSurface), //Gris oscuro
                 contentAlignment = Alignment.Center
             ) {
+                //Mock hasta manejar url de videos desde el servidor
                 Icon(
                     imageVector = Icons.Filled.PlayArrow,
                     contentDescription = "Reproducir video",

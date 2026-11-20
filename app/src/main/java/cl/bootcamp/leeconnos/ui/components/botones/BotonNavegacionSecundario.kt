@@ -12,27 +12,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
 
 @Composable
-fun BotonAgregarAlCarrito(
-    onBtnClick: () -> Unit
-){
+fun BotonNavegacionSecundario(
+    textoBtn: String,
+    onNavigateTo: (String) -> Unit
+) {
 
     Button(
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = Color.Gray,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
         ),
         onClick = {
-            onBtnClick()
+            onNavigateTo("resenas")
         },
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
 
         Row(
@@ -40,15 +42,10 @@ fun BotonAgregarAlCarrito(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_carrito),
-                contentDescription = "",
-                modifier = Modifier.padding(end = 8.dp)
-            )
 
             Text(
-                text = "Agregar al carrito",
-                style = MaterialTheme.typography.labelSmall,
+                text = textoBtn,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold
             )
         }

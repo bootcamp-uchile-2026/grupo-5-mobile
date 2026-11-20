@@ -1,13 +1,11 @@
 package cl.bootcamp.leeconnos.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.bootcamp.leeconnos.data.local.database.AppDatabase
-import cl.bootcamp.leeconnos.data.local.datastore.ThemePreferences
 import cl.bootcamp.leeconnos.data.modelos.Libro
+import cl.bootcamp.leeconnos.data.repositorio.AuthRepository
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
+import cl.bootcamp.leeconnos.data.repositorio.OperacionCantidad
 import cl.bootcamp.leeconnos.data.repositorio.ThemeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,21 +13,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel(application: Application): AndroidViewModel(application) {
+class MainViewModel(
+    private val libroRepository: LibroRepository,
+    private val themeRepository: ThemeRepository,
+    private val authRepository: AuthRepository
+): ViewModel() {
 
-    private val libroRepository: LibroRepository
-    private val themeRepository: ThemeRepository
-
-    init {
-        val database = AppDatabase.getInstance(application)
-        libroRepository = LibroRepository(
-            libroDao = database.libroDao()
+    val estaLogueado: StateFlow<Boolean?> = authRepository.estaLogueado
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
         )
-        themeRepository = ThemeRepository(ThemePreferences(application.applicationContext))
-    }
 
     val isDarkMode: StateFlow<Boolean?> = themeRepository.isDarkMode
         .stateIn(
@@ -84,28 +81,29 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
 
     //Carrito
+
     fun agregarItemCarrito(libro: Libro) {
 
         viewModelScope.launch {
             libroRepository.agregarAlCarrito(libro, cantidad = 1)
-            _mensajeSnackbar.value = "Libro agregado al carrito"
+        }
+    }
+
+    fun aumentarCantidadItemCarrito(libro: Libro) {
+        viewModelScope.launch {
+            libroRepository.modificarCantidadCarrito(libro.id, OperacionCantidad.SUMAR)
         }
     }
 
     fun disminuirCantidadItemCarrito(libro: Libro) {
         viewModelScope.launch {
-            if (libro.cantidad > 1) {
-                libroRepository.modificarCantidadCarrito(libro.id, delta = -1)
-            } else {
-                eliminarItemCarrito(libro.id)
-            }
+            libroRepository.modificarCantidadCarrito(libro.id, OperacionCantidad.RESTAR)
         }
     }
 
     fun eliminarItemCarrito(libroId: String) {
         viewModelScope.launch {
             libroRepository.eliminarDelCarrito(libroId)
-            mostrarMensajeSnackbar("Libro eliminado del carrito")
         }
     }
 
@@ -114,7 +112,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     fun agregarItemListaDeseados(libro: Libro) {
         viewModelScope.launch {
             libroRepository.toggleDeseado(libro)
-            mostrarMensajeSnackbar("Libro agregado a lista de deseados")
         }
     }
 
@@ -124,7 +121,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             if (libroAEliminar != null) {
                 libroRepository.toggleDeseado(libroAEliminar)
             }
-            mostrarMensajeSnackbar("Libro eliminado de lista de deseados")
         }
     }
 

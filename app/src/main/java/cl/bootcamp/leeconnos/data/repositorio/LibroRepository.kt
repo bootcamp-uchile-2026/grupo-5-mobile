@@ -1,6 +1,5 @@
 package cl.bootcamp.leeconnos.data.repositorio
 
-import cl.bootcamp.leeconnos.data.api.ApiClient
 import cl.bootcamp.leeconnos.data.api.LeeconnosApi
 import cl.bootcamp.leeconnos.data.local.database.LibroDao
 import cl.bootcamp.leeconnos.data.mapeadores.toDataClass
@@ -12,8 +11,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
+enum class OperacionCantidad { SUMAR, RESTAR }
+
 class LibroRepository(
-    private val api: LeeconnosApi = ApiClient.apiService,
+    private val api: LeeconnosApi,
     private val libroDao: LibroDao
 ) {
 
@@ -50,11 +51,17 @@ class LibroRepository(
         }
     }
 
-    suspend fun modificarCantidadCarrito(libroId: String, delta: Int) {
+    suspend fun modificarCantidadCarrito(libroId: String, operacion: OperacionCantidad) {
         val existente = libroDao.obtenerPorId(libroId) ?: return
-        val nuevaCantidad = existente.cantidadCarrito + delta
+
+        val nuevaCantidad = when (operacion) {
+            OperacionCantidad.SUMAR -> existente.cantidadCarrito + 1
+            OperacionCantidad.RESTAR -> existente.cantidadCarrito - 1
+        }
+
         if (nuevaCantidad > 0) {
             libroDao.actualizarCantidadCarrito(libroId, nuevaCantidad)
+
         } else {
             eliminarDelCarrito(libroId)
         }

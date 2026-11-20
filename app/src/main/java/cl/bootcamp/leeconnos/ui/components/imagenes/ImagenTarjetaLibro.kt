@@ -3,6 +3,7 @@ package cl.bootcamp.leeconnos.ui.components.imagenes
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,12 +32,7 @@ fun ImagenTarjetaLibro(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(aspectRatio)
-            .clip(
-                RoundedCornerShape(
-                    topStart = 16.dp,
-                    topEnd = 16.dp
-                )
-            ),
+            .clip(shape = MaterialTheme.shapes.large),
 
         placeholder = painterResource(id = R.drawable.fondo_transparente),
         error = painterResource(id = R.drawable.fondo_transparente)

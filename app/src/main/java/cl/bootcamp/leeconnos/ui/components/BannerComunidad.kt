@@ -13,12 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cl.bootcamp.leeconnos.R
-import cl.bootcamp.leeconnos.ui.theme.AppTitleFontFamily
+import cl.bootcamp.leeconnos.ui.theme.AppSecondaryFontFamily
 
 @Composable
 fun BannerComunidad() {
@@ -39,7 +38,7 @@ fun BannerComunidad() {
 
             Text(
                 text = "Únete a nuestra comunidad lectora",
-                fontFamily = AppTitleFontFamily,
+                fontFamily = AppSecondaryFontFamily,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
@@ -50,6 +49,7 @@ fun BannerComunidad() {
             )
         }
 
+        //Hasta no manejar la url de la foto desde el servidor imagen mock
         Image(
             painter = painterResource(id = R.drawable.fondo_transparente),
             contentDescription = "Foto de comunidad",

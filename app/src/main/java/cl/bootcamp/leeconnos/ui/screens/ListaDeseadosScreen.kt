@@ -1,9 +1,11 @@
 package cl.bootcamp.leeconnos.ui.screens
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
@@ -18,6 +20,7 @@ import cl.bootcamp.leeconnos.ui.components.carruseles.CantidadItems
 import cl.bootcamp.leeconnos.ui.components.carruseles.ItemListaDeseados
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ListaDeseadosScreen(
@@ -25,6 +28,7 @@ fun ListaDeseadosScreen(
     onNavigateTo: (String) -> Unit,
     onNavigateBack: () -> Unit
 ){
+
     val listaCarrito by mainViewModel.itemsCarrito.collectAsState()
     val listaItems by mainViewModel.itemsListaDeseados.collectAsState()
 
@@ -38,7 +42,9 @@ fun ListaDeseadosScreen(
                 onNavigateTo = onNavigateTo,
                 onNavigateBack = onNavigateBack
             )
-        }
+        },
+
+        contentWindowInsets = WindowInsets.systemBars
 
     ) { paddingValues ->
 

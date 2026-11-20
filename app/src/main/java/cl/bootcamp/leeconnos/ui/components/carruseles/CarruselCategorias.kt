@@ -34,7 +34,7 @@ fun CarruselCategorias(
                 modifier = Modifier
                     .border(
                         width = 1.dp,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onBackground,
                         shape = MaterialTheme.shapes.small
                     )
                     .padding(vertical = 4.dp, horizontal = 8.dp)

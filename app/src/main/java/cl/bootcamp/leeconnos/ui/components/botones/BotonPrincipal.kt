@@ -1,6 +1,7 @@
 package cl.bootcamp.leeconnos.ui.components.botones
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,15 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cl.bootcamp.leeconnos.R
 
 @Composable
-fun BotonPrincipalBottomBar(
+fun BotonPrincipal(
     textoBtn: String,
-    onComprarClick: () -> Unit
-) {
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icono: Int? = null,
+    enabled: Boolean = true,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+    textFontWeight: FontWeight = FontWeight.Normal,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding
+){
 
     Button(
         colors = ButtonDefaults.buttonColors(
@@ -31,9 +38,11 @@ fun BotonPrincipalBottomBar(
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
         ),
         onClick = {
-            onComprarClick()
+            onClick()
         },
-        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+        enabled = enabled,
+        modifier = modifier,
+        contentPadding = contentPadding
     ) {
 
         Row(
@@ -41,16 +50,19 @@ fun BotonPrincipalBottomBar(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_carrito),
-                contentDescription = "",
-                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, end = 8.dp)
-            )
+
+            if (icono != null) {
+                Icon(
+                    painter = painterResource(id = icono),
+                    contentDescription = "",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
 
             Text(
                 text = textoBtn,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
+                style = textStyle,
+                fontWeight = textFontWeight
             )
         }
     }

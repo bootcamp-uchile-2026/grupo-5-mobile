@@ -2,9 +2,11 @@ package cl.bootcamp.leeconnos.ui.screens
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -14,25 +16,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarDefault
 import cl.bootcamp.leeconnos.ui.components.BannerComunidad
 import cl.bootcamp.leeconnos.ui.components.carruseles.CarruselLibros
 import cl.bootcamp.leeconnos.ui.components.carruseles.CarruselLibrosRecomendados
 import cl.bootcamp.leeconnos.ui.components.SeccionBienvenida
+import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
+import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 import cl.bootcamp.leeconnos.ui.screens.screendata.SecondaryRoutes
 import cl.bootcamp.leeconnos.viewmodel.HomeUiState
 import cl.bootcamp.leeconnos.viewmodel.HomeViewModel
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
     mainViewModel: MainViewModel,
-    viewModel: HomeViewModel = viewModel(),
+    onNavigateBottomBar: (String) -> Unit,
     onNavigateTo: (String) -> Unit
 ){
 
-    val estadoUi by viewModel.uiState.collectAsState()
+    val homeViewModel: HomeViewModel = koinViewModel()
 
+    val estadoUi by homeViewModel.uiState.collectAsState()
     val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
     val itemsListaDeseados by mainViewModel.itemsListaDeseados.collectAsState()
 
@@ -40,9 +47,19 @@ fun HomeScreen(
         topBar = {
             AppTopBarDefault(
                 onNavigateTo = onNavigateTo,
-                cantidadItems = { itemsCarrito.size },
+                cantidadItems = { itemsCarrito.sumOf { it.cantidad } },
             )
-        }
+        },
+
+        bottomBar = {
+            AppBottomBar(
+                rutaActual = ScreenRoutes.HOME.route,
+                onNavigateTo = onNavigateBottomBar
+            )
+        },
+
+        contentWindowInsets = WindowInsets.systemBars
+
     ) { paddingValues ->
 
         LazyColumn(

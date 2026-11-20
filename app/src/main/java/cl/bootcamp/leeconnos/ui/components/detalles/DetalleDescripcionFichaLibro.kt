@@ -20,14 +20,13 @@ fun DetalleDescripcionFichaLibro(
     ) {
         Text(
             text = "Descripción",
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Light,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
         Text(
             text = descripcion,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Light
         )
     }

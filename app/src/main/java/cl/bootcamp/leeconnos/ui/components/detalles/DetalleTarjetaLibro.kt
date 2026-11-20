@@ -24,7 +24,7 @@ fun DetalleTarjetaLibro(
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier
-            .padding(8.dp)
+            .padding(16.dp)
     ) {
         Text(
             text = libro.titulo,

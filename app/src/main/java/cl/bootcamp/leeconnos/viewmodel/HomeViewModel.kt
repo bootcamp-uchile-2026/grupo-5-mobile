@@ -1,10 +1,7 @@
 package cl.bootcamp.leeconnos.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.bootcamp.leeconnos.data.local.database.AppDatabase
 import cl.bootcamp.leeconnos.data.modelos.Libro
 import cl.bootcamp.leeconnos.data.repositorio.LibroRepository
 import kotlinx.coroutines.async
@@ -12,8 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import cl.bootcamp.leeconnos.data.api.ApiClient.apiService
-import retrofit2.Retrofit
 
 sealed class HomeUiState {
     object Loading : HomeUiState()
@@ -27,20 +22,8 @@ sealed class HomeUiState {
 }
 
 class HomeViewModel(
-    application: Application
-) : AndroidViewModel(application) {
-
-    private val repository: LibroRepository
-
-    init {
-
-        val database = AppDatabase.getInstance(application)
-
-        repository = LibroRepository(
-            api = apiService,
-            libroDao = database.libroDao()
-        )
-    }
+    private val libroRepository: LibroRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -55,14 +38,14 @@ class HomeViewModel(
 
             _uiState.value = HomeUiState.Loading
 
-            val resultado = repository.obtenerLibrosHome()
+            val resultado = libroRepository.obtenerLibrosHome()
 
             try {
                 //Lógica solo para hito 2, muestra listas de items distintas en carruseles, no la misma duplicada
-                val peticionPage1 = async { repository.obtenerLibrosHome(page = 1) }
-                val peticionPage2 = async { repository.obtenerLibrosHome(page = 2) }
-                val peticionPage3 = async { repository.obtenerLibrosHome(page = 3) }
-                val peticionPage4 = async { repository.obtenerLibrosHome(page = 4) }
+                val peticionPage1 = async { libroRepository.obtenerLibrosHome(page = 1) }
+                val peticionPage2 = async { libroRepository.obtenerLibrosHome(page = 2) }
+                val peticionPage3 = async { libroRepository.obtenerLibrosHome(page = 3) }
+                val peticionPage4 = async { libroRepository.obtenerLibrosHome(page = 4) }
 
                 val recomendados = peticionPage1.await().getOrDefault(emptyList())
                 val masVendidos = peticionPage2.await().getOrDefault(emptyList())
