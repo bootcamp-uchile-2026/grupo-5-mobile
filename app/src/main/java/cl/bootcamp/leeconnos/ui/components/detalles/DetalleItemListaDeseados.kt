@@ -29,7 +29,7 @@ fun DetalleItemListaDeseados(
 
         BotonPrincipal(
             textoBtn = "Agregar al carrito",
-            icono = R.drawable.ic_carrito,
+            iconoIzquierda = R.drawable.ic_carrito,
             onClick = {
                 onAddClick()
             },

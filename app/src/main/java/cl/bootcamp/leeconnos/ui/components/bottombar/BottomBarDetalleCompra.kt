@@ -47,7 +47,7 @@ fun BottomBarDetalleCarrito(
 
         BotonPrincipal(
             textoBtn = textoBtn,
-            icono = R.drawable.ic_carrito,
+            iconoIzquierda = R.drawable.ic_carrito,
             enabled = puedeNavegar,
             onClick = {
                 onNavigateToCheckout(SecondaryRoutes.ConfirmacionCompra.route)

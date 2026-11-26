@@ -50,7 +50,7 @@ fun FichaLibroScreen(
                 content = {
                     BotonPrincipal(
                         textoBtn = "Agregar al carrito",
-                        icono = R.drawable.ic_carrito,
+                        iconoIzquierda = R.drawable.ic_carrito,
                         onClick = {
 
                             if (libro != null) {

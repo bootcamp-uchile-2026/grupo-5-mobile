@@ -155,8 +155,15 @@ fun LeeconnosApp(
                     },
                     onLoginExitoso = {
 
-                        navController.navigate("graph_home") {
+                        navController.navigate(SecondaryRoutes.OnboardHome.route)
+                    }
+                )
+            }
 
+            composable(SecondaryRoutes.OnboardHome.route) {
+                OnboardHome(
+                    onNavigateToHome = {
+                        navController.navigate("graph_home") {
                             //Borra de la pila las pantallas de login
                             popUpTo(navController.graph.id) {
                                 inclusive = true

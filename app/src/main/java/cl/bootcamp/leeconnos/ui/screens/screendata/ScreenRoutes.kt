@@ -6,44 +6,35 @@ import cl.bootcamp.leeconnos.R
 enum class ScreenRoutes(
     override val route: String,
     override val title: String,
-    override val icon: Int,
-    val selectedColor: Color? = null,
-    val iconSelectedColor: Color? = null,
-    override val showGlobalTopBar: Boolean = true,
-    override val showBottomBar: Boolean = true
+    override val icon: Int
 ) : ScreenData {
     HOME(
         route = "inicio",
         title = "Inicio",
-        icon = R.drawable.ic_home,
-        showGlobalTopBar = true
+        icon = R.drawable.ic_home
     ),
 
     CATALOGO(
         route = "catalogo",
         title = "Catálogo",
-        icon = R.drawable.ic_catalogo,
-        showGlobalTopBar = true
+        icon = R.drawable.ic_catalogo
     ),
 
     DESCUBRE(
         route = "descubre",
         title = "Descubre",
-        icon = R.drawable.ic_descubre,
-        showGlobalTopBar = false
+        icon = R.drawable.ic_descubre
     ),
 
     COMUNIDAD(
         route = "comunidad",
         title = "Comunidad",
-        icon = R.drawable.ic_comunidad,
-        showGlobalTopBar = false
+        icon = R.drawable.ic_comunidad
     ),
 
     MI_CUENTA(
         route = "mi_cuenta",
         title = "Mi Cuenta",
-        icon = R.drawable.ic_perfil,
-        showGlobalTopBar = false
+        icon = R.drawable.ic_perfil
     )
 }
