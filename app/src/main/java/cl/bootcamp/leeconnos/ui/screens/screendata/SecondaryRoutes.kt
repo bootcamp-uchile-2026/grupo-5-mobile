@@ -5,86 +5,69 @@ import cl.bootcamp.leeconnos.R
 sealed class SecondaryRoutes(
     override val route: String,
     override val title: String,
-    override val icon: Int? = null,
-    override val showGlobalTopBar: Boolean = true,
-    override val showBottomBar: Boolean = true
+    override val icon: Int? = null
 ) : ScreenData {
 
     //LOGIN
     object BienvenidaScreen : SecondaryRoutes(
         route = "bienvenida",
-        title = "Bienvenida",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = "Bienvenida"
     )
 
     object LoginScreen : SecondaryRoutes(
         route = "login",
-        title = "Iniciar Sesión",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = "Iniciar Sesión"
+    )
+
+    object OnboardHome : SecondaryRoutes(
+        route = "onboard_home",
+        title = "Onboard Home"
     )
 
     //TOP BAR [Flotantes]
     object Carrito : SecondaryRoutes(
         route = "carrito",
         title = "Mi carrito",
-        icon = R.drawable.ic_carrito,
-        showGlobalTopBar = false,
-        showBottomBar = false
+        icon = R.drawable.ic_carrito
     )
 
     object ListaDeseados : SecondaryRoutes(
         route = "lista_deseados",
         title = "Lista de deseados",
-        icon = R.drawable.ic_corazon_deseados,
-        showGlobalTopBar = false,
-        showBottomBar = false
+        icon = R.drawable.ic_corazon_deseados
     )
 
     // CATALOGO [Flotante]
     object FichaLibro : SecondaryRoutes(
         route = "ficha_libro",
-        title = "Ficha del Libro",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = "Ficha del Libro"
     )
 
     // RESEÑAS [Anidada de FichaLibro]
     object Resenas : SecondaryRoutes(
         route = "resenas",
-        title = "Reseñas",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = "Reseñas"
     )
 
     // CHECKOUT [Anidada de Carrito]
     object ConfirmacionCompra : SecondaryRoutes(
         route = "confirmacion_compra",
-        title = "Confirmación compra",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = "Confirmación compra"
     )
 
     object AgregarDireccion : SecondaryRoutes(
         route = "agregar_direccion",
-        title = "Elige la dirección de entrega",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = "Elige la dirección de entrega"
     )
 
     object AgregarTarjeta : SecondaryRoutes(
         route = "agregar_tarjeta",
-        title = "Ingresar método de pago",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = "Ingresar método de pago"
     )
 
     object ResultadoTransaccion : SecondaryRoutes(
         route = "resultado_transaccion",
-        title = "",
-        showGlobalTopBar = false,
-        showBottomBar = false
+        title = ""
     )
 
     // PENDIENTES (sin Wireframes)
@@ -96,8 +79,7 @@ sealed class SecondaryRoutes(
 
     object MiPerfil : SecondaryRoutes(
         route = "mi_perfil",
-        title = "Mi Perfil",
-        showGlobalTopBar = false
+        title = "Mi Perfil"
     )
 
     object HistorialCompras : SecondaryRoutes(
@@ -130,26 +112,26 @@ sealed class SecondaryRoutes(
         title = "Ayuda"
     )
 
-    companion object {
-        fun getValues(): List<SecondaryRoutes> = listOf(
-            BienvenidaScreen,
-            LoginScreen,
-            Carrito,
-            ConfirmacionCompra,
-            AgregarDireccion,
-            AgregarTarjeta,
-            ResultadoTransaccion,
-            ListaDeseados,
-            FichaLibro,
-            Resenas,
-            FichaLibrero,
-            MiPerfil,
-            HistorialCompras,
-            MiBiblioteca,
-            MisResenas,
-            MisConsultas,
-            Configuracion,
-            Ayuda
-        )
-    }
+//    companion object {
+//        fun getValues(): List<SecondaryRoutes> = listOf(
+//            BienvenidaScreen,
+//            LoginScreen,
+//            Carrito,
+//            ConfirmacionCompra,
+//            AgregarDireccion,
+//            AgregarTarjeta,
+//            ResultadoTransaccion,
+//            ListaDeseados,
+//            FichaLibro,
+//            Resenas,
+//            FichaLibrero,
+//            MiPerfil,
+//            HistorialCompras,
+//            MiBiblioteca,
+//            MisResenas,
+//            MisConsultas,
+//            Configuracion,
+//            Ayuda
+//        )
+//    }
 }

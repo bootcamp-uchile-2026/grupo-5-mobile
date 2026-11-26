@@ -23,7 +23,8 @@ fun BotonPrincipal(
     textoBtn: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icono: Int? = null,
+    iconoIzquierda: Int? = null,
+    iconoDerecha: Int? = null,
     enabled: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.labelMedium,
     textFontWeight: FontWeight = FontWeight.Normal,
@@ -51,10 +52,10 @@ fun BotonPrincipal(
             modifier = Modifier.fillMaxWidth()
         ) {
 
-            if (icono != null) {
+            if (iconoIzquierda != null) {
                 Icon(
-                    painter = painterResource(id = icono),
-                    contentDescription = "",
+                    painter = painterResource(id = iconoIzquierda),
+                    contentDescription = null,
                     modifier = Modifier.padding(end = 8.dp)
                 )
             }
@@ -64,6 +65,14 @@ fun BotonPrincipal(
                 style = textStyle,
                 fontWeight = textFontWeight
             )
+
+            if (iconoDerecha != null) {
+                Icon(
+                    painter = painterResource(id = iconoDerecha),
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
         }
     }
 }
