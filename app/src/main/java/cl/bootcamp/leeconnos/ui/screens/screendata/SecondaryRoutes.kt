@@ -37,7 +37,7 @@ sealed class SecondaryRoutes(
         icon = R.drawable.ic_corazon_deseados
     )
 
-    // CATALOGO [Flotante]
+    // FICHA LIBRO [Flotante]
     object FichaLibro : SecondaryRoutes(
         route = "ficha_libro",
         title = "Ficha del Libro"
@@ -111,27 +111,4 @@ sealed class SecondaryRoutes(
         route = "ayuda",
         title = "Ayuda"
     )
-
-//    companion object {
-//        fun getValues(): List<SecondaryRoutes> = listOf(
-//            BienvenidaScreen,
-//            LoginScreen,
-//            Carrito,
-//            ConfirmacionCompra,
-//            AgregarDireccion,
-//            AgregarTarjeta,
-//            ResultadoTransaccion,
-//            ListaDeseados,
-//            FichaLibro,
-//            Resenas,
-//            FichaLibrero,
-//            MiPerfil,
-//            HistorialCompras,
-//            MiBiblioteca,
-//            MisResenas,
-//            MisConsultas,
-//            Configuracion,
-//            Ayuda
-//        )
-//    }
 }

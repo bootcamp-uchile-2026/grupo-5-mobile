@@ -48,6 +48,7 @@ fun HomeScreen(
             AppTopBarDefault(
                 onNavigateTo = onNavigateTo,
                 cantidadItems = { itemsCarrito.sumOf { it.cantidad } },
+                placeHolderBuscador = "Busca tu libro aquí"
             )
         },
 

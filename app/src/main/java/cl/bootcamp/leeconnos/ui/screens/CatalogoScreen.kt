@@ -13,10 +13,9 @@ import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
 import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarDefault
 import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
 import cl.bootcamp.leeconnos.viewmodel.MainViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CatalogoScreen(
+fun GenerosScreen(
     mainViewModel: MainViewModel,
     onNavigateBottomBar: (String) -> Unit,
     onNavigateTo: (String) -> Unit
@@ -27,7 +26,8 @@ fun CatalogoScreen(
         topBar = {
             AppTopBarDefault(
                 cantidadItems = { itemsCarrito.sumOf { it.cantidad } },
-                onNavigateTo = onNavigateTo
+                onNavigateTo = onNavigateTo,
+                placeHolderBuscador = "Busca tu libro aquí"
             )
         },
 

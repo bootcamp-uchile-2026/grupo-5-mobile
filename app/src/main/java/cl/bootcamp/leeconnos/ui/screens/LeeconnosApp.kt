@@ -197,7 +197,7 @@ fun LeeconnosApp(
             route = "graph_catalogo"
         ) {
             composable(ScreenRoutes.CATALOGO.route) {
-                CatalogoScreen(
+                GenerosScreen(
                     mainViewModel = mainViewModel,
                     onNavigateBottomBar = onNavigateBottomBar,
                     onNavigateTo = { ruta ->

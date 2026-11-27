@@ -17,6 +17,7 @@ import cl.bootcamp.leeconnos.ui.components.campostexto.Buscador
 @Composable
 fun AppTopBarDefault(
     textoBusqueda: String = "",
+    placeHolderBuscador: String,
     onTextoBusquedaChange: (String) -> Unit = {},
     cantidadItems: () -> Int,
     onNavigateTo: (String) -> Unit
@@ -29,7 +30,7 @@ fun AppTopBarDefault(
 
             Buscador(
                 valor = textoBusqueda,
-                placeholder = "Ingresa una dirección",
+                placeholder = placeHolderBuscador,
                 onValueChange = onTextoBusquedaChange,
                 onBuscarClick = {},//onNavigateTo,
                 modifier = Modifier
