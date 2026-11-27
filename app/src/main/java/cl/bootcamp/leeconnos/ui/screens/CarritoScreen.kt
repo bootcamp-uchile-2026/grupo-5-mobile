@@ -91,27 +91,27 @@ fun CarritoScreen(
             }
 
             //Reemplazar luego con lista de libros
-            items(itemsCarrito) { item ->
+            items(itemsCarrito) { libro ->
 
                 ItemCarrito(
-                    libro = item,
+                    libro = libro,
                     onDeleteClick = {
-                        libroAEliminar = item
+                        libroAEliminar = libro
                     },
                     onIncrease = {
 
-                        if(item.cantidad < 99){
-                            mainViewModel.agregarItemCarrito(item)
+                        if(libro.cantidad < 99){
+                            mainViewModel.aumentarCantidadItemCarrito(libro)
                         }
                     },
                     onDecrease = {
 
-                        if (item.cantidad > 1) {
+                        if (libro.cantidad > 1) {
 
-                            mainViewModel.disminuirCantidadItemCarrito(item)
+                            mainViewModel.disminuirCantidadItemCarrito(libro)
 
                         } else {
-                            libroAEliminar = item
+                            libroAEliminar = libro
                         }
                     }
                 )

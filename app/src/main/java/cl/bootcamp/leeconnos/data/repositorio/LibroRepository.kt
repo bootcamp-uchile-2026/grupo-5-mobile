@@ -72,6 +72,11 @@ class LibroRepository(
         libroDao.limpiarHuerfanos()
     }
 
+    suspend fun vaciarCarrito() {
+        libroDao.vaciarCarrito()
+        libroDao.limpiarHuerfanos()
+    }
+
 
     suspend fun obtenerLibrosHome(page: Int = 1): Result<List<Libro>> {
 

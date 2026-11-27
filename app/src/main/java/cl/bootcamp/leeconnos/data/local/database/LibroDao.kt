@@ -26,6 +26,8 @@ interface LibroDao {
     @Query("UPDATE libros_locales SET cantidadCarrito = :cantidad WHERE id = :libroId")
     suspend fun actualizarCantidadCarrito(libroId: String, cantidad: Int)
 
+    @Query("UPDATE libros_locales SET enCarrito = 0, cantidadCarrito = 0")
+    suspend fun vaciarCarrito()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarOActualizar(libro: LibroEntity)

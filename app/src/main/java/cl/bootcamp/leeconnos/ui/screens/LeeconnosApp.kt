@@ -40,6 +40,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun LeeconnosApp(
+    mainViewModel: MainViewModel
 ) {
 
     val navController = rememberNavController()
@@ -57,10 +58,6 @@ fun LeeconnosApp(
         }
     }
 
-
-    //Implementación necesaria aquí para poder usar el mismo viewmodel entre pantallas y no creen una por su cuenta
-    val mainViewModel: MainViewModel = koinViewModel()
-    val checkoutViewModel: CheckoutViewModel = koinViewModel()
 
     val estaLogueado by mainViewModel.estaLogueado.collectAsState()
 
@@ -261,7 +258,13 @@ fun LeeconnosApp(
         ) {
 
 
-            composable(SecondaryRoutes.ConfirmacionCompra.route) {
+            composable(SecondaryRoutes.ConfirmacionCompra.route) { backStackEntry ->
+
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("graph_checkout")
+                }
+
+                val checkoutViewModel: CheckoutViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
 
                 ConfirmacionCompraScreen(
                     checkoutViewModel = checkoutViewModel,
@@ -270,20 +273,36 @@ fun LeeconnosApp(
                         navController.navigate(ruta)
                     },
                     onPagarClick = {
-                        //Forzamos enviar el parámetro esExito = true por falta de validación real del checkout
+
+                        mainViewModel.vaciarCarrito()
+
                         navController.navigate(SecondaryRoutes.ResultadoTransaccion.route + "/true")
                     }
                 )
             }
 
-            composable(SecondaryRoutes.AgregarDireccion.route) {
+            composable(SecondaryRoutes.AgregarDireccion.route) { backStackEntry ->
+
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("graph_checkout")
+                }
+
+                val checkoutViewModel: CheckoutViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
+
                 AgregarDireccionScreen(
                     checkoutViewModel = checkoutViewModel,
                     onNavigateBack = { navController.popBackStack() },
                 )
             }
 
-            composable(SecondaryRoutes.AgregarTarjeta.route) {
+            composable(SecondaryRoutes.AgregarTarjeta.route) { backStackEntry ->
+
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("graph_checkout")
+                }
+
+                val checkoutViewModel: CheckoutViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
+
                 AgregarTarjetaScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onAgregarClick = {}

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cl.bootcamp.leeconnos.ui.screens.LeeconnosApp
@@ -23,8 +24,10 @@ class MainActivity : ComponentActivity() {
 
             val isDark by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
 
-            LeeConNosTheme(darkTheme = isDark ?: false) {
-                LeeconnosApp()
+            LeeConNosTheme(darkTheme = isDark ?: isSystemInDarkTheme()) {
+                LeeconnosApp(
+                    mainViewModel = mainViewModel
+                )
             }
         }
     }

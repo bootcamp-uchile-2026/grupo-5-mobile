@@ -107,6 +107,12 @@ class MainViewModel(
         }
     }
 
+    fun vaciarCarrito() {
+        viewModelScope.launch {
+            libroRepository.vaciarCarrito()
+        }
+    }
+
 
     //Lista de deseados
     fun agregarItemListaDeseados(libro: Libro) {
