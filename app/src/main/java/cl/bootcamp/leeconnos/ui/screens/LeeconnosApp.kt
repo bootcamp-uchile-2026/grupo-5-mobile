@@ -190,10 +190,10 @@ fun LeeconnosApp(
         }
 
         navigation(
-            startDestination = ScreenRoutes.CATALOGO.route,
+            startDestination = ScreenRoutes.GENEROS.route,
             route = "graph_catalogo"
         ) {
-            composable(ScreenRoutes.CATALOGO.route) {
+            composable(ScreenRoutes.GENEROS.route) {
                 GenerosScreen(
                     mainViewModel = mainViewModel,
                     onNavigateBottomBar = onNavigateBottomBar,
@@ -201,6 +201,10 @@ fun LeeconnosApp(
                         navController.navigate(ruta)
                     }
                 )
+            }
+
+            composable(SecondaryRoutes.Catalogo.route) {
+                CatalogoScreen()
             }
         }
 

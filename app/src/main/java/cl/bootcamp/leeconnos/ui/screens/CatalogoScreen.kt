@@ -1,49 +1,9 @@
 package cl.bootcamp.leeconnos.ui.screens
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import cl.bootcamp.leeconnos.ui.components.bottombar.AppBottomBar
-import cl.bootcamp.leeconnos.ui.components.topbar.AppTopBarDefault
-import cl.bootcamp.leeconnos.ui.screens.screendata.ScreenRoutes
-import cl.bootcamp.leeconnos.viewmodel.MainViewModel
 
 @Composable
-fun GenerosScreen(
-    mainViewModel: MainViewModel,
-    onNavigateBottomBar: (String) -> Unit,
-    onNavigateTo: (String) -> Unit
-){
-    val itemsCarrito by mainViewModel.itemsCarrito.collectAsState()
+fun CatalogoScreen() {
 
-    Scaffold(
-        topBar = {
-            AppTopBarDefault(
-                cantidadItems = { itemsCarrito.sumOf { it.cantidad } },
-                onNavigateTo = onNavigateTo,
-                placeHolderBuscador = "Busca tu libro aquí"
-            )
-        },
-
-        bottomBar = {
-            AppBottomBar(
-                rutaActual = ScreenRoutes.CATALOGO.route,
-                onNavigateTo = onNavigateBottomBar
-            )
-        },
-
-        contentWindowInsets = WindowInsets.systemBars
-
-    ) { paddingValues ->
-
-        Text("Catalogo", modifier = Modifier.padding(paddingValues))
-
-    }
-
+    
 }

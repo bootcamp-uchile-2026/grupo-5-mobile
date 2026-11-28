@@ -15,7 +15,7 @@ enum class ScreenRoutes(
     ),
 
     //Ruta = "genero" porque la pantalla catálogo es la que sigue después del filtro de exploración mediante géneros
-    CATALOGO(
+    GENEROS(
         route = "genero",
         title = "Catálogo",
         icon = R.drawable.ic_catalogo

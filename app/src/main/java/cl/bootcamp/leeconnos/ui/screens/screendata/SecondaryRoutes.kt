@@ -37,6 +37,12 @@ sealed class SecondaryRoutes(
         icon = R.drawable.ic_corazon_deseados
     )
 
+    // CATALOGO
+    object Catalogo : SecondaryRoutes(
+        route = "catalogo",
+        title = "Catálogo"
+    )
+
     // FICHA LIBRO [Flotante]
     object FichaLibro : SecondaryRoutes(
         route = "ficha_libro",
@@ -69,6 +75,7 @@ sealed class SecondaryRoutes(
         route = "resultado_transaccion",
         title = ""
     )
+
 
     // PENDIENTES (sin Wireframes)
 
